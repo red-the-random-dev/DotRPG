@@ -11,10 +11,10 @@ namespace DotRPG._Example
 {
     public class Game1 : Game
     {
-        private SpriteController ScrollMarker;
-        private SpriteController Banana;
+        private ResourceHeap ResourceHGlobal = new ResourceHeap();
+        private List<Frame> Frames = new List<Frame>();
+        private Frame ActiveFrame;
         private TextObject PressStart;
-        private TextObject ScrollText;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SpriteFont _spriteFont;
@@ -23,26 +23,6 @@ namespace DotRPG._Example
         private Double GameStartMark;
         private Boolean[] IsCtrlKeyDown = new bool[8] { false, false, false, false, false, false, false, false};
         private Boolean FullScreen;
-        private Boolean Scrolling;
-        private SoundEffect SE_1;
-        private SoundEffect SE_2;
-        private SoundEffect SE_Next;
-        private Int32 DialogIndex = 0;
-        private String[] Dialog =
-        {
-            "* bananas\n* rotat e",
-            "* banan   a",
-            "* rotato faster",
-            "* banana",
-            "* go",
-            "* g    O",
-            "* can  u fEEl it",
-            "* b an      \n* an  ba?",
-            "* yES fEEl tHE SPED",
-            "* WE HAVE REAHCED MXAIMUN VLELOCIPY",
-            "-> Are you OK?",
-            "* Who are you to accuse me?"
-        };
         private Double EscapeTimer = 0.0f;
         #if DEBUG
         private Double LastRegisteredEventTime;
@@ -63,20 +43,22 @@ namespace DotRPG._Example
 
         private void StartScroll(Object sender, EventArgs e, GameTime gameTime)
         {
-            Scrolling = true;
+            ActiveFrame = Frames[0];
+            ActiveFrame.LoadContent();
         }
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = "GameData";
             IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
             ResetAspectRatio();
-
+            Frames.Add(new DemoFrame(this, ResourceHGlobal));
+            Frames[0].Initialize();
             base.Initialize();
         }
 
@@ -97,16 +79,12 @@ namespace DotRPG._Example
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _spriteFont = Content.Load<SpriteFont>("../GameData/Fonts/MainFont");
-            _spriteFontLarge = Content.Load<SpriteFont>("../GameData/Fonts/MainFont_Large");
-            SE_1 = Content.Load<SoundEffect>("../GameData/Sounds/text-scroll");
-            SE_2 = Content.Load<SoundEffect>("../GameData/Sounds/pixelText");
-            SE_Next = Content.Load<SoundEffect>("../GameData/Sounds/clickText");
+            ResourceHGlobal.Fonts.Add("vcr", Content.Load<SpriteFont>("Fonts/MainFont"));
+            ResourceHGlobal.Fonts.Add("vcr_large", Content.Load<SpriteFont>("Fonts/MainFont_Large"));
+            _spriteFontLarge = ResourceHGlobal.Fonts["vcr_large"];
+            _spriteFont = ResourceHGlobal.Fonts["vcr"];
+
             PressStart = new TextObject(_spriteFontLarge, "[Press START or ENTER]", 0.5f, 0.5f, Color.White, AlignMode.Center, (WideScreen ? 1080 : 960));
-            ScrollText = new TextObject(_spriteFontLarge, /*"* Scroll text test. 1234567890ABCDEFGHIJKLMN\n  OPQRSTUVWXYZ\n* OMFGWTFLMAOSUSCHUNGUS"*/ "* bananas\n* rotat e", 0.01f, 0.80f, Color.White, AlignMode.TopLeft, (WideScreen ? 1080 : 960), scrollPerTick: 1, scrollDelay: 0.16f);
-            ScrollText.ScrollingSound = SE_1;
-            ScrollMarker = new SpriteController(1000.0f / 60, Content.Load<Texture2D>("../GameData/Texture2D/ScrollMarker"), 27);
-            Banana = new SpriteController(1000.0f / 6, Content.Load<Texture2D>("../GameData/Texture2D/Banana"), 28);
             ResetAspectRatio();
 
             // TODO: use this.Content to load your game content here
@@ -144,41 +122,8 @@ namespace DotRPG._Example
             {
                 IsCtrlKeyDown[7] = false;
             }
-            if (DialogIndex == Dialog.Length-1)
-            {
-                ScrollText.ScrollingSound = SE_1;
-                ScrollText.ScrollDelay = 0.08f;
-                ScrollText.TextColor = Color.Red;
-                if (ScrollText.ReachedEnd)
-                    Exit();
-            }
-            if (DialogIndex == Dialog.Length - 2)
-            {
-                ScrollText.ScrollingSound = SE_2;
-                ScrollText.TextColor = Color.Yellow;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Z) && !IsCtrlKeyDown[4] && ScrollText.ReachedEnd)
-            {
-                DialogIndex++;
-                ScrollText.Text = Dialog[DialogIndex];
-                ScrollText.ResetToStart();
-                SE_Next.Play();
-                Banana.PlaybackSpeed = 1.0f + (0.25f * DialogIndex);
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Z) && IsCtrlKeyDown[4])
-            {
-                IsCtrlKeyDown[4] = true;
-                // ScrollText.ScrollDelay = 0.16f;
-            }
-            else if (Keyboard.GetState().IsKeyUp(Keys.Z))
-            {
-                IsCtrlKeyDown[4] = false;
-                // ScrollText.ScrollDelay = 0.16f;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.X))
-            {
-                ScrollText.SkipToEnd();
-            }
+            IsCtrlKeyDown[4] = Keyboard.GetState().IsKeyDown(Keys.Z);
+            IsCtrlKeyDown[5] = Keyboard.GetState().IsKeyDown(Keys.X);
 
             if (LogicEventSet.Count > 0)
             {
@@ -197,9 +142,9 @@ namespace DotRPG._Example
 
                 }
             }
-            if (Scrolling)
+            if (ActiveFrame != null)
             {
-                ScrollText.Update(gameTime);
+                ActiveFrame.Update(gameTime, IsCtrlKeyDown);
             }
             base.Update(gameTime);
         }
@@ -244,18 +189,10 @@ namespace DotRPG._Example
                     // Replaced with scalable method
                     // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.Yellow, 0.0f, new Vector2(0.0f), (FullScreen && WideScreen ? 2.0f : 1.0f), SpriteEffects.None, 0.0f);
                 }
-                Int32 JiggleDeviation = (int) ((gameTime.TotalGameTime.TotalMilliseconds - GameStartMark) / 1000 * 15.0f);
-                Window.Position = new Point(Math.Floor(gameTime.TotalGameTime.TotalMilliseconds) % 40 > 20 ? Window.Position.X + JiggleDeviation - 1: Window.Position.X - JiggleDeviation, Math.Floor(gameTime.TotalGameTime.TotalMilliseconds) % 40 > 20 ? Window.Position.Y + JiggleDeviation : Window.Position.Y - JiggleDeviation);
             }
-            if (Scrolling)
+            if (ActiveFrame != null)
             {
-                ScrollText.Draw(_spriteBatch, Window);
-                if (DialogIndex < Dialog.Length - 2)
-                    Banana.Draw(_spriteBatch, new Vector2((float)(Window.ClientBounds.Width / 2 - 125.0f), (float)(Window.ClientBounds.Height / 2 - 125.0f)), gameTime);
-                if (ScrollText.ReachedEnd)
-                {
-                    ScrollMarker.Draw(_spriteBatch, new Vector2(Window.ClientBounds.Width-90.0f, Window.ClientBounds.Height-90.0f), gameTime);
-                }
+                ActiveFrame.Draw(gameTime, _spriteBatch);
             }
             _spriteBatch.End();
 
