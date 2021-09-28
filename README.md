@@ -6,4 +6,4 @@ A game engine for creation of jRPGs and visual novels based on MonoGame.
 + Sprite display and animation assistance
 + Timed event firing
 
-[b]NOTE[/b]: To make sure everything compiles correctly, install MonoGame packages into solution manually.
+**NOTE**: To make sure everything compiles correctly, install MonoGame packages into solution manually.
