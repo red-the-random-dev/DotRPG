@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
+    <ProjectReference Include="..\DotRPG.Objects.csproj" />
   </ItemGroup>
 
 </Project>
