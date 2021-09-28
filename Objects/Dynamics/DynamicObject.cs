@@ -43,11 +43,7 @@ namespace DotRPG.Objects.Dynamics
 
         public void CollideWith(DynamicObject another)
         {
-            if (another.Fixed)
-            {
-                this.Velocity += Vector2.Zero;
-            }
-            Vector2 SummaryMomentum = (this.Momentum + another.Momentum) / 2;
+            Vector2 SummaryMomentum = (this.Momentum + another.Momentum);
             this.Velocity = SummaryMomentum / this.Mass;
             another.Velocity = SummaryMomentum / another.Mass;
         }
