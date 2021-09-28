@@ -11,26 +11,40 @@ namespace DotRPG.Objects
         protected ResourceHeap FrameResources;
         protected Game Owner;
 
-        // TODO: Add collections for game objects
-        protected HashSet<TimedEvent> LogicEventSet = new HashSet<TimedEvent>();
+        public abstract Int32 FrameID
+        {
+            get;
+        }
 
-        public Frame(Game owner, ResourceHeap globalGameResources)
+        // TODO: Add collections for game objects
+        protected HashSet<TimedEvent> LocalEventSet = new HashSet<TimedEvent>();
+        protected HashSet<TimedEvent> GlobalEventSet;
+
+        public void ResolveIncomingEvent(TimedEvent te)
+        {
+            LocalEventSet.Add(te);
+        }
+
+        public abstract void SetPlayerPosition(Object sender, EventArgs e, GameTime gameTime);
+
+        public Frame(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet)
         {
             Owner = owner;
             FrameResources = new ResourceHeap(globalGameResources);
+            GlobalEventSet = globalEventSet;
         }
 
         public virtual void Update(GameTime gameTime, Boolean[] controls)
         {
-            if (LogicEventSet.Count > 0)
+            if (LocalEventSet.Count > 0)
             {
                 try
                 {
-                    foreach (TimedEvent te in LogicEventSet)
+                    foreach (TimedEvent te in LocalEventSet)
                     {
-                        if (te.TryFire(this, new EventArgs(), gameTime))
+                        if (te.TryFire(this, gameTime))
                         {
-                            LogicEventSet.Remove(te);
+                            LocalEventSet.Remove(te);
                         }
                     }
                 }
@@ -48,5 +62,6 @@ namespace DotRPG.Objects
         }
         public abstract void LoadContent();
         public abstract void Initialize();
+        public abstract void UnloadContent();
     }
 }
