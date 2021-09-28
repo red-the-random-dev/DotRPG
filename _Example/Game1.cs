@@ -41,6 +41,30 @@ namespace DotRPG._Example
             }
         }
 
+        public static void SetFrameNumber(Object sender, EventArgs e, GameTime gameTime)
+        {
+            Game1 game = (Game1)sender;
+            if (e is FrameShiftEventArgs)
+            {
+                FrameShiftEventArgs fse = (FrameShiftEventArgs)e;
+                switch (fse.FrameID)
+                {
+                    case -1:
+                        game.ActiveFrame.UnloadContent();
+                        game.ActiveFrame = null;
+                        break;
+                    case Int32.MinValue:
+                        game.Exit();
+                        break;
+                    default:
+                        game.ActiveFrame.UnloadContent();
+                        game.ActiveFrame = game.Frames[fse.FrameID];
+                        game.ActiveFrame.LoadContent();
+                        break;
+                }
+            }
+        }
+
         private void StartScroll(Object sender, EventArgs e, GameTime gameTime)
         {
             ActiveFrame = Frames[0];
@@ -57,7 +81,7 @@ namespace DotRPG._Example
         protected override void Initialize()
         {
             ResetAspectRatio();
-            Frames.Add(new DemoFrame(this, ResourceHGlobal));
+            Frames.Add(new DemoFrame(this, ResourceHGlobal, LogicEventSet));
             Frames[0].Initialize();
             base.Initialize();
         }
@@ -122,8 +146,13 @@ namespace DotRPG._Example
             {
                 IsCtrlKeyDown[7] = false;
             }
-            IsCtrlKeyDown[4] = Keyboard.GetState().IsKeyDown(Keys.Z);
-            IsCtrlKeyDown[5] = Keyboard.GetState().IsKeyDown(Keys.X);
+            IsCtrlKeyDown[4] = Keyboard.GetState().IsKeyDown(Keys.Z) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.A);
+            IsCtrlKeyDown[5] = Keyboard.GetState().IsKeyDown(Keys.X) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.B);
+
+            IsCtrlKeyDown[0] = Keyboard.GetState().IsKeyDown(Keys.Up) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadUp);
+            IsCtrlKeyDown[1] = Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadDown);
+            IsCtrlKeyDown[2] = Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadLeft);
+            IsCtrlKeyDown[3] = Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadRight);
 
             if (LogicEventSet.Count > 0)
             {
@@ -131,7 +160,7 @@ namespace DotRPG._Example
                 {
                     foreach (TimedEvent te in LogicEventSet)
                     {
-                        if (te.TryFire(this, new EventArgs(), gameTime))
+                        if (te.TryFire(this, gameTime))
                         {
                             LogicEventSet.Remove(te);
                         }
@@ -167,7 +196,7 @@ namespace DotRPG._Example
 
             _spriteBatch.Begin();
             #if DEBUG
-            _spriteBatch.DrawString(_spriteFont, "FPS: "+FrameRate.ToString()+" || Fullscreen: "+FullScreen.ToString()+" || Aspect ratio: "+(WideScreen?"16:9":"4:3")+" Update rate: "+Math.Round(1000/LastRegisteredEventTime), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));
+            _spriteBatch.DrawString(_spriteFont, "FPS: "+FrameRate.ToString()+" || Fullscreen: "+FullScreen.ToString()+String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: "+(ActiveFrame != null?ActiveFrame.FrameID.ToString():"-1")+" || Update rate: "+Math.Round(1000/LastRegisteredEventTime), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));
             #endif
             _spriteBatch.DrawString(_spriteFont, "Quitting...", new Vector2(0, 12), new Color(new Vector4((float) EscapeTimer/1000)));
             if (!GameStarted)
@@ -188,6 +217,10 @@ namespace DotRPG._Example
                     PressStart.Draw(_spriteBatch, Window);
                     // Replaced with scalable method
                     // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.Yellow, 0.0f, new Vector2(0.0f), (FullScreen && WideScreen ? 2.0f : 1.0f), SpriteEffects.None, 0.0f);
+                }
+                if (gameTime.TotalGameTime.TotalMilliseconds - GameStartMark > 900.0)
+                {
+                    _spriteBatch.DrawString(_spriteFont, "Loading...", new Vector2(0, 36), Color.White);
                 }
             }
             if (ActiveFrame != null)

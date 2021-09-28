@@ -10,7 +10,7 @@ namespace DotRPG._Example
 {
     class DemoFrame : Frame
     {
-        public DemoFrame(Game owner, ResourceHeap rh) : base(owner, rh)
+        public DemoFrame(Game owner, ResourceHeap rh, HashSet<TimedEvent> eventSet) : base(owner, rh, eventSet)
         {
 
         }
@@ -50,6 +50,14 @@ namespace DotRPG._Example
             }
         }
 
+        public override int FrameID
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
         public override void Initialize()
         {
             
@@ -68,6 +76,10 @@ namespace DotRPG._Example
             ScrollText = new TextObject(FrameResources.Global.Fonts["vcr_large"], "* bananas\n* rotat e", 0.01f, 0.80f, Color.White, AlignMode.TopLeft, (WideScreen ? 1080 : 960), scrollPerTick: 1, scrollDelay: 0.16f);
             ScrollText.ScrollingSound = SE_1;
         }
+        public override void SetPlayerPosition(object sender, EventArgs e, GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
 
         public override void Update(GameTime gameTime, bool[] controls)
         {
@@ -77,7 +89,16 @@ namespace DotRPG._Example
                 ScrollText.ScrollDelay = 0.08f;
                 ScrollText.TextColor = Color.Red;
                 if (ScrollText.ReachedEnd)
-                    Owner.Exit();
+                    GlobalEventSet.Add(
+                        new TimedEvent(
+                            gameTime,
+                            0.0f,
+                            Game1.SetFrameNumber,
+                            new FrameShiftEventArgs(
+                                1, null
+                            )
+                        )
+                    );
             }
             if (DialogIndex == Dialog.Length - 2)
             {
@@ -108,6 +129,17 @@ namespace DotRPG._Example
             {
                 ScrollMarker.Draw(spriteBatch, new Vector2(Owner.Window.ClientBounds.Width - 90.0f, Owner.Window.ClientBounds.Height - 90.0f), gameTime);
             }
+        }
+        public override void UnloadContent()
+        {
+            Banana = null;
+            DialogIndex = 0;
+            ScrollText = null;
+            ScrollMarker = null;
+            SE_1 = null;
+            SE_2 = null;
+            SE_Next = null;
+            FrameResources.Dispose();
         }
     }
 }
