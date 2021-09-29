@@ -1,4 +1,5 @@
 ﻿// #define FORCE_4x3
+// #define MUTE
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -67,7 +68,7 @@ namespace DotRPG._Example
 
         private void StartScroll(Object sender, EventArgs e, GameTime gameTime)
         {
-            ActiveFrame = Frames[0];
+            ActiveFrame = Frames[1];
             ActiveFrame.LoadContent();
         }
 
@@ -83,6 +84,8 @@ namespace DotRPG._Example
             ResetAspectRatio();
             Frames.Add(new DemoFrame(this, ResourceHGlobal, LogicEventSet));
             Frames[0].Initialize();
+            Frames.Add(new DynamicsTestFrame(this, ResourceHGlobal, LogicEventSet));
+            Frames[1].Initialize();
             base.Initialize();
         }
 

@@ -14,6 +14,14 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Complexity\**" />
+    <Compile Remove="Dynamics\**" />
+    <EmbeddedResource Remove="Complexity\**" />
+    <EmbeddedResource Remove="Dynamics\**" />
+    <None Remove="Complexity\**" />
+    <None Remove="Dynamics\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>
