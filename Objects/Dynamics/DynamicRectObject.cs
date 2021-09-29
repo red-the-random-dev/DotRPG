@@ -58,6 +58,28 @@ namespace DotRPG.Objects.Dynamics
             if (another.Static)
             {
                 this.Velocity = new Vector2(!hitVertically ? 0.0f : this.Velocity.X, hitVertically ? 0.0f : this.Velocity.Y);
+                if (hitVertically)
+                {
+                    if (this.Location.Y >= another.Location.Y)
+                    {
+                        this.Location.Y += Math.Max((this.BodySize.Y / 2 + another.BodySize.Y / 2) - Math.Abs(this.Location.Y - another.Location.Y), 0);
+                    }
+                    else
+                    {
+                        this.Location.Y -= Math.Max((this.BodySize.Y / 2 + another.BodySize.Y / 2) - Math.Abs(this.Location.Y - another.Location.Y), 0);
+                    }
+                }
+                else
+                {
+                    if (this.Location.X >= another.Location.X)
+                    {
+                        this.Location.X += Math.Max((this.BodySize.X / 2 + another.BodySize.X / 2) - Math.Abs(this.Location.X - another.Location.X), 0);
+                    }
+                    else
+                    {
+                        this.Location.X -= Math.Max((this.BodySize.X / 2 + another.BodySize.X / 2) - Math.Abs(this.Location.X - another.Location.X), 0);
+                    }
+                }
                 return;
             }
             Single Summary_X_Momentum = (this.Momentum.X + another.Momentum.X) / 2;

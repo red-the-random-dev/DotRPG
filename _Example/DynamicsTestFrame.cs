@@ -69,9 +69,9 @@ namespace DotRPG._Example
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
             Locomotion *= 0.1f;
             Vector2 FrictionVector1 = new Vector2(0.0f - (Obstacle1.Velocity.X / (Obstacle1.Velocity.Length() != 0 ? Obstacle1.Velocity.Length() : 1.0f)), 0.0f - (Obstacle1.Velocity.Y / (Obstacle1.Velocity.Length() != 0 ? Obstacle1.Velocity.Length() : 1.0f)));
-            FrictionVector1 *= Obstacle1.Mass * 0.000001f;
+            FrictionVector1 *= Obstacle1.Mass * 0.00001f;
             Vector2 FrictionVector2 = new Vector2(0.0f - (Obstacle2.Velocity.X / (Obstacle2.Velocity.Length() != 0 ? Obstacle2.Velocity.Length() : 1.0f)), 0.0f - (Obstacle2.Velocity.Y / (Obstacle2.Velocity.Length() != 0 ? Obstacle2.Velocity.Length() : 1.0f)));
-            FrictionVector2 *= Obstacle2.Mass * 0.0000005f;
+            FrictionVector2 *= Obstacle2.Mass * 0.00000005f;
             if (Obstacle1.Velocity.Length() >= 0.001f)
             {
                 #if !MUTE
@@ -105,7 +105,7 @@ namespace DotRPG._Example
                 Obstacle2.Location = new Vector2(Obstacle2.Location.X, (Obstacle2.Collider.Y <= 0 ? 32.0f : 508.0f));
                 Obstacle2.Velocity = new Vector2(Obstacle2.Velocity.X, 0 - Obstacle2.Velocity.Y);
                 #if !MUTE
-                FrameResources.Sounds["impact"].Play();
+                // FrameResources.Sounds["impact"].Play();
                 #endif
             }
             if (Obstacle2.Collider.X <= 0 || Obstacle2.Collider.X >= 960)
@@ -113,7 +113,7 @@ namespace DotRPG._Example
                 Obstacle2.Location = new Vector2((Obstacle2.Collider.X <= 0 ? 32.0f : 928.0f), Obstacle2.Location.Y);
                 Obstacle2.Velocity = new Vector2(0 - Obstacle2.Velocity.X, Obstacle2.Velocity.Y);
                 #if !MUTE
-                FrameResources.Sounds["impact"].Play();
+                // FrameResources.Sounds["impact"].Play();
                 #endif
             }
             if (Player.TryCollideWith(Obstacle1) && Math.Max(Player.Momentum.Length(), Obstacle1.Momentum.Length()) > 1.5f)
@@ -123,11 +123,11 @@ namespace DotRPG._Example
                 FrameResources.Sounds["impact"].Play();
                 #endif
             }
-            if (Player.TryCollideWith(Obstacle2) && Math.Max(Player.Momentum.Length(), Obstacle2.Momentum.Length()) > 1.5f)
+            if (Player.TryCollideWith(Obstacle2))
             {
                 Player.FullStop();
                 #if !MUTE
-                FrameResources.Sounds["impact"].Play();
+                // FrameResources.Sounds["impact"].Play();
                 #endif
             }
             if (Obstacle1.TryCollideWith(Obstacle2) && Math.Max(Obstacle1.Momentum.Length(), Obstacle2.Momentum.Length()) > 1.5f)
