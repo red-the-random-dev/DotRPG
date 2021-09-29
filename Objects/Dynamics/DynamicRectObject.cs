@@ -67,11 +67,55 @@ namespace DotRPG.Objects.Dynamics
             {
                 this.Velocity = new Vector2(this.Velocity.X, Summary_Y_Momentum / this.Mass);
                 another.Velocity = new Vector2(another.Velocity.X, Summary_Y_Momentum / another.Mass);
+                if (this.Mass > another.Mass)
+                {
+                    if (this.Location.Y >= another.Location.Y)
+                    {
+                        another.Location.Y -= Math.Max((this.BodySize.Y / 2 + another.BodySize.Y / 2) - Math.Abs(this.Location.Y - another.Location.Y), 0);
+                    }
+                    else
+                    {
+                        another.Location.Y += Math.Max((this.BodySize.Y / 2 + another.BodySize.Y / 2) - Math.Abs(this.Location.Y - another.Location.Y), 0);
+                    }
+                }
+                else
+                {
+                    if (this.Location.Y >= another.Location.Y)
+                    {
+                        this.Location.Y += Math.Max((this.BodySize.Y / 2 + another.BodySize.Y / 2) - Math.Abs(this.Location.Y - another.Location.Y), 0);
+                    }
+                    else
+                    {
+                        this.Location.Y -= Math.Max((this.BodySize.Y / 2 + another.BodySize.Y / 2) - Math.Abs(this.Location.Y - another.Location.Y), 0);
+                    }
+                }
             }
             else
             {
                 this.Velocity = new Vector2(Summary_X_Momentum / this.Mass, this.Velocity.Y);
                 another.Velocity = new Vector2(Summary_X_Momentum / another.Mass, another.Velocity.Y);
+                if (this.Mass > another.Mass)
+                {
+                    if (this.Location.X >= another.Location.X)
+                    {
+                        another.Location.X -= Math.Max((this.BodySize.X / 2 + another.BodySize.X / 2) - Math.Abs(this.Location.X - another.Location.X), 0);
+                    }
+                    else
+                    {
+                        another.Location.X += Math.Max((this.BodySize.X / 2 + another.BodySize.X / 2) - Math.Abs(this.Location.X - another.Location.X), 0);
+                    }
+                }
+                else
+                {
+                    if (this.Location.X >= another.Location.X)
+                    {
+                        this.Location.X += Math.Max((this.BodySize.X / 2 + another.BodySize.X / 2) - Math.Abs(this.Location.X - another.Location.X), 0);
+                    }
+                    else
+                    {
+                        this.Location.X -= Math.Max((this.BodySize.X / 2 + another.BodySize.X / 2) - Math.Abs(this.Location.X - another.Location.X), 0);
+                    }
+                }
             }
         }
 
@@ -90,11 +134,11 @@ namespace DotRPG.Objects.Dynamics
         {
             if (this.Collider.Intersects(another.Collider))
             {
-                if (Math.Abs(this.Location.X - another.Location.X) <= (this.BodySize.X/2 + another.BodySize.X/2))
+                if (1.0 * Math.Abs(this.Location.X - another.Location.X) / (this.BodySize.X / 2 + another.BodySize.X / 2) >= 1.0 * Math.Abs(this.Location.Y - another.Location.Y) / (this.BodySize.Y / 2 + another.BodySize.Y / 2))
                 {
                     CollideWith(another, false);
                 }
-                if (Math.Abs(this.Location.Y - another.Location.Y) <= (this.BodySize.Y / 2 + another.BodySize.Y / 2))
+                else
                 {
                     CollideWith(another, true);
                 }

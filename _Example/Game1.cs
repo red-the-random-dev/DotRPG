@@ -1,4 +1,5 @@
 ﻿// #define FORCE_4x3
+// #define MUTE
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
