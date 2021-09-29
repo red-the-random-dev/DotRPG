@@ -53,7 +53,9 @@ namespace DotRPG._Example
             Player.Draw(spriteBatch, gameTime, 540, Point.Zero, new Point(drawZone.Width, drawZone.Height));
             Obstacle1.Draw(spriteBatch, gameTime, 540, Point.Zero, new Point(drawZone.Width, drawZone.Height));
             Obstacle2.Draw(spriteBatch, gameTime, 540, Point.Zero, new Point(drawZone.Width, drawZone.Height));
+            #if DEBUG
             spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], String.Format("Player: ({0}, {1}), Velocity=({2}, {3})", Player.Collider.X, Player.Collider.Y, Player.Velocity.X, Player.Velocity.Y), new Vector2(0, 12), Color.White);
+            #endif
         }
 
         public override void Initialize()

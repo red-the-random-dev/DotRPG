@@ -5,5 +5,6 @@ A game engine for creation of jRPGs and visual novels based on MonoGame.
 + Text display and scrolling
 + Sprite display and animation assistance
 + Timed event firing
++ Rigid body collision physics (see \_Example and Objects/Dynamics projects)
 
 **NOTE**: To make sure everything compiles correctly, install MonoGame packages into solution manually.
