@@ -69,7 +69,7 @@ namespace DotRPG.Objects
             }
             // Alighning text according to set anchor position and client bounds
             Vector2 position = SharedMethodSet.FindTextAlignment(Font, (ScrollPerTick > 0 ? WrittenString : Text), w.ClientBounds, RelativeAlignmentX, RelativeAlignmentY, AlignAnchor, w.ClientBounds.Height / DefaultScreenScale);
-            _sb.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation, new Vector2(0.0f), 1.0f*(w.ClientBounds.Height)/DefaultScreenScale, SpriteEffects.None, Depth);
+            _sb.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation, new Vector2(0.0f), 1.0f*w.ClientBounds.Height/DefaultScreenScale, SpriteEffects.None, Depth);
             LastDrawnText = DrawnText;
         }
         public void ResetToStart()

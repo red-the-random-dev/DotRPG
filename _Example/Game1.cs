@@ -27,8 +27,10 @@ namespace DotRPG._Example
         private Double EscapeTimer = 0.0f;
         #if DEBUG
         private Double LastRegisteredEventTime;
+        private Double TimeSinceError = 0.0f;
         #endif
         private HashSet<TimedEvent> LogicEventSet = new HashSet<TimedEvent>();
+        private Boolean ContinuityError = false;
         private Boolean WideScreen
         {
             get
@@ -54,13 +56,29 @@ namespace DotRPG._Example
                         game.ActiveFrame.UnloadContent();
                         game.ActiveFrame = null;
                         break;
+                    case -2:
+                        game.LogicEventSet.Clear();
+                        game.ActiveFrame = null;
+                        game.ContinuityError = true;
+                        game._spriteBatch.End();
+                        break;
                     case Int32.MinValue:
                         game.Exit();
                         break;
                     default:
-                        game.ActiveFrame.UnloadContent();
-                        game.ActiveFrame = game.Frames[fse.FrameID];
-                        game.ActiveFrame.LoadContent();
+                        try
+                        {
+                            game.ActiveFrame.UnloadContent();
+                            game.ActiveFrame = game.Frames[fse.FrameID];
+                            game.ActiveFrame.LoadContent();
+                        }
+                        catch (NullReferenceException)
+                        {
+                            game.ActiveFrame = null;
+                            game.ContinuityError = true;
+                            game._spriteBatch.End();
+                            game.LogicEventSet.Clear();
+                        }
                         break;
                 }
             }
@@ -98,9 +116,12 @@ namespace DotRPG._Example
             }
             else
             {
+                _graphics.IsFullScreen = FullScreen;
                 _graphics.PreferredBackBufferWidth = 800;
                 _graphics.PreferredBackBufferHeight = 600;
             }
+            Window.IsBorderless = FullScreen;
+            _graphics.ApplyChanges();
         }
 
         protected override void LoadContent()
@@ -178,16 +199,16 @@ namespace DotRPG._Example
             {
                 ActiveFrame.Update(gameTime, IsCtrlKeyDown);
             }
+            if (ContinuityError)
+            {
+                TimeSinceError += gameTime.ElapsedGameTime.TotalSeconds;
+            }
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            if (FullScreen != _graphics.IsFullScreen)
-            {
-                ResetAspectRatio();
-                _graphics.ToggleFullScreen();
-            }
+            ResetAspectRatio();
             Double FrameRate = Math.Round(1000 / gameTime.ElapsedGameTime.TotalMilliseconds);
             if (GameStarted && gameTime.TotalGameTime.TotalMilliseconds - GameStartMark < 1000.0)
             {
@@ -202,6 +223,14 @@ namespace DotRPG._Example
             _spriteBatch.DrawString(_spriteFont, "FPS: "+FrameRate.ToString()+" || Fullscreen: "+FullScreen.ToString()+String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: "+(ActiveFrame != null?ActiveFrame.FrameID.ToString():"-1")+" || Update rate: "+Math.Round(1000/LastRegisteredEventTime), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));
             #endif
             _spriteBatch.DrawString(_spriteFont, "Quitting...", new Vector2(0, 12), new Color(new Vector4((float) EscapeTimer/1000)));
+            if (ContinuityError)
+            {
+                _spriteBatch.DrawString(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", SharedMethodSet.FindTextAlignment(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", Window.ClientBounds, 0.5f, 0.5f), Color.Red);
+                _spriteBatch.DrawString(_spriteFont, "This is not an easter egg. Something is wrong with the game.", SharedMethodSet.FindTextAlignment(_spriteFont, "This is not an easter egg. Something is wrong with the game.", Window.ClientBounds, 0.5f, 0.6f, AlignMode.TopCenter), new Color(new Vector4(Math.Min((Single)TimeSinceError*0.02f, 255.0f))));
+                _spriteBatch.End();
+                base.Draw(gameTime);
+                return;
+            }
             if (!GameStarted)
             {
                 if (Math.Floor(gameTime.TotalGameTime.TotalSeconds) % 2 == 1)
