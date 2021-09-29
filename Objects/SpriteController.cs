@@ -55,7 +55,7 @@ namespace DotRPG.Objects
             LoopTo.Add(sequenceName, loopTo);
         }
 
-        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime)
+        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Single drawSize = 1.0f)
         {
             Single addFrames = 0.0f;
             if (PlaybackSpeed > 0.0f)
@@ -88,7 +88,7 @@ namespace DotRPG.Objects
                 Color.White,
                 0,
                 Vector2.Zero,
-                1,
+                drawSize,
                 SpriteEffects.None,
                 0
             );

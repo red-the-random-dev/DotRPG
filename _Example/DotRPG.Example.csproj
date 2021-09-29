@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -30,5 +30,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
+    <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
   </ItemGroup>
 </Project>
