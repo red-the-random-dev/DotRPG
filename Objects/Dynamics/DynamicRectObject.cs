@@ -46,18 +46,27 @@ namespace DotRPG.Objects.Dynamics
                 return new Vector2(Velocity.X * Mass, Velocity.Y * Mass);
             }
         }
-        public DynamicRectObject(Point StartLocation, Point colliderSize, Single mass)
+        public DynamicRectObject(Point StartLocation, Point colliderSize, Single mass, Boolean isStatic = false)
         {
             Location = StartLocation.ToVector2();
             BodySize = colliderSize;
             Mass = mass;
+            Static = isStatic;
         }
 
-        public void CollideWith(DynamicRectObject another, Boolean hitVertically)
+        public void CollideWith(DynamicRectObject another, Boolean hitVertically, Boolean splitVector)
         {
             if (another.Static)
             {
-                this.Velocity = new Vector2(!hitVertically ? 0.0f : this.Velocity.X, hitVertically ? 0.0f : this.Velocity.Y);
+                if (splitVector)
+                {
+                    this.Velocity = new Vector2(!hitVertically ? 0.0f : this.Velocity.X, hitVertically ? 0.0f : this.Velocity.Y);
+                }
+                else
+                {
+                    this.Velocity = Vector2.Zero;
+                }
+                
                 if (hitVertically)
                 {
                     if (this.Location.Y >= another.Location.Y)
@@ -87,8 +96,17 @@ namespace DotRPG.Objects.Dynamics
 
             if (hitVertically)
             {
-                this.Velocity = new Vector2(this.Velocity.X, Summary_Y_Momentum / this.Mass);
-                another.Velocity = new Vector2(another.Velocity.X, Summary_Y_Momentum / another.Mass);
+                if (splitVector)
+                {
+                    this.Velocity = new Vector2(this.Velocity.X, Summary_Y_Momentum / this.Mass);
+                    another.Velocity = new Vector2(another.Velocity.X, Summary_Y_Momentum / another.Mass);
+                }
+                else
+                {
+                    this.Velocity = new Vector2(Summary_X_Momentum / this.Mass, Summary_Y_Momentum / this.Mass);
+                    another.Velocity = new Vector2(Summary_X_Momentum / another.Mass, Summary_Y_Momentum / another.Mass);
+                }
+                
                 if (this.Mass > another.Mass)
                 {
                     if (this.Location.Y >= another.Location.Y)
@@ -114,8 +132,16 @@ namespace DotRPG.Objects.Dynamics
             }
             else
             {
-                this.Velocity = new Vector2(Summary_X_Momentum / this.Mass, this.Velocity.Y);
-                another.Velocity = new Vector2(Summary_X_Momentum / another.Mass, another.Velocity.Y);
+                if (splitVector)
+                {
+                    this.Velocity = new Vector2(Summary_X_Momentum / this.Mass, this.Velocity.Y);
+                    another.Velocity = new Vector2(Summary_X_Momentum / another.Mass, another.Velocity.Y);
+                }
+                else
+                {
+                    this.Velocity = new Vector2(Summary_X_Momentum / this.Mass, Summary_Y_Momentum / this.Mass);
+                    another.Velocity = new Vector2(Summary_X_Momentum / another.Mass, Summary_Y_Momentum / another.Mass);
+                }
                 if (this.Mass > another.Mass)
                 {
                     if (this.Location.X >= another.Location.X)
@@ -152,24 +178,24 @@ namespace DotRPG.Objects.Dynamics
             Sprite.Draw(_sb, location, gameTime, sizeMorph);
         }
 
-        public Boolean TryCollideWith(DynamicRectObject another)
+        public Boolean TryCollideWith(DynamicRectObject another, Boolean splitVector = false)
         {
             if (this.Collider.Intersects(another.Collider))
             {
                 if (1.0 * Math.Abs(this.Location.X - another.Location.X) / (this.BodySize.X / 2 + another.BodySize.X / 2) >= 1.0 * Math.Abs(this.Location.Y - another.Location.Y) / (this.BodySize.Y / 2 + another.BodySize.Y / 2))
                 {
-                    CollideWith(another, false);
+                    CollideWith(another, false, splitVector);
                 }
                 else
                 {
-                    CollideWith(another, true);
+                    CollideWith(another, true, splitVector);
                 }
                 return true;
             }
             return false;
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             Velocity += AppliedForce / ((Single)gameTime.ElapsedGameTime.TotalSeconds * this.Mass);
             Location += Velocity / (Single)gameTime.ElapsedGameTime.TotalSeconds;

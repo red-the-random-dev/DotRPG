@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Pipeline\**" />
+    <EmbeddedResource Remove="Pipeline\**" />
+    <None Remove="Pipeline\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLua" Version="1.5.11" />
+  </ItemGroup>
+
+</Project>

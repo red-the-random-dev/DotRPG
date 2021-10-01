@@ -16,6 +16,11 @@ namespace DotRPG._Example
         DynamicRectObject Obstacle2;
         SoundEffectInstance Sliding;
 
+        DynamicRectObject WallTop = new DynamicRectObject(new Point(480, -60), new Point(960, 120), 100.0f, true);
+        DynamicRectObject WallBottom = new DynamicRectObject(new Point(480, 600), new Point(960, 120), 100.0f, true);
+        DynamicRectObject WallLeft = new DynamicRectObject(new Point(-60, 270), new Point(120, 540), 100.0f, true);
+        DynamicRectObject WallRight = new DynamicRectObject(new Point(1020, 270), new Point(120, 540), 100.0f, true);
+
         public override int FrameID
         {
             get
@@ -57,7 +62,7 @@ namespace DotRPG._Example
         {
             Player = new DynamicRectObject(new Point(48, 48), new Point(32, 32), 20.0f);
             Obstacle1 = new DynamicRectObject(new Point(128, 128), new Point(32, 32), 10.0f);
-            Obstacle2 = new DynamicRectObject(new Point(192, 128), new Point(64, 64), 15.0f);
+            Obstacle2 = new DynamicRectObject(new Point(192, 128), new Point(64, 64), 10.0f);
         }
 
         public override void Update(GameTime gameTime, bool[] controls)
@@ -141,15 +146,23 @@ namespace DotRPG._Example
             Player.Velocity = Locomotion;
             Player.Update(gameTime);
             Obstacle1.Update(gameTime);
-            if (Player.Collider.Y <= 0 || Player.Collider.Y >= 540)
+            Player.TryCollideWith(WallTop);
+            Player.TryCollideWith(WallBottom);
+            Player.TryCollideWith(WallLeft);
+            Player.TryCollideWith(WallRight);
+            if (Player.Collider.Y >= 540)
             {
-                Player.Location = new Vector2(Player.Location.X, (Player.Collider.Y <= 0 ? 16.0f : 524.0f));
-                Player.FullStop();
-            }
-            if (Player.Collider.X <= 0 || Player.Collider.X >= 960)
-            {
-                Player.Location = new Vector2((Player.Collider.X <= 0 ? 16.0f : 944.0f), Player.Location.Y);
-                Player.FullStop();
+                Sliding.Stop();
+                GlobalEventSet.Add(
+                    new TimedEvent(
+                        gameTime,
+                        0.0f,
+                        Game1.SetFrameNumber,
+                        new FrameShiftEventArgs(
+                            -2, null
+                        )
+                    )
+                );
             }
             base.Update(gameTime, controls);
         }
