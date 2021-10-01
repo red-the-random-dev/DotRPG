@@ -82,7 +82,7 @@ namespace DotRPG._Example
             }
             Player.Velocity = Locomotion;
             Player.TryCollideWith(dro);
-            if (controls[4] /*&& !lastInputCollection[4]*/ || (ShowingText && DialogForm.ReachedEnd && SceneSwitches.AutoScroll))
+            if (controls[4] && !lastInputCollection[4] || (ShowingText && DialogForm.ReachedEnd && SceneSwitches.AutoScroll))
             {
                 if (Player.SightArea.Intersects(dro.Collider) && !ShowingText)
                 {
@@ -114,7 +114,10 @@ namespace DotRPG._Example
             }
             Player.Update(gameTime);
             base.Update(gameTime, controls);
-            lastInputCollection = controls;
+            for (int i = 0; i < Math.Min(lastInputCollection.Length, controls.Length); i++)
+            {
+                lastInputCollection[i] = controls[i];
+            }
         }
 
         public override void SetPlayerPosition(object sender, EventArgs e, GameTime gameTime)
