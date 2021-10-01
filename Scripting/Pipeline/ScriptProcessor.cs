@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content.Pipeline;
 
-using TInput = System.String;
+using TInput = DotRPG.Scripting.LuaModule;
 using TOutput = DotRPG.Scripting.LuaModule;
 
 namespace ScriptImporter
@@ -10,7 +10,7 @@ namespace ScriptImporter
     {
         public override TOutput Process(TInput input, ContentProcessorContext context)
         {
-            return new TOutput(input);
+            return input;
         }
     }
 }
