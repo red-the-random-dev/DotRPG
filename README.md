@@ -15,4 +15,4 @@ A game engine for creation of jRPGs and visual novels based on MonoGame.
 
 (C) 2021 red-the-random-dev
 
-Distributed under GPL license 3.0
+Distributed under LGPL license 2.1
