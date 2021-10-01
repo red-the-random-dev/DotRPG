@@ -32,6 +32,5 @@
     <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
     <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
     <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
-    <ProjectReference Include="..\Scripting\Pipeline\DotRPG.Scripting.Pipeline.csproj" />
   </ItemGroup>
 </Project>

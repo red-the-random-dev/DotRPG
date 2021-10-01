@@ -12,7 +12,7 @@ namespace DotRPG.Scripting
         public Lua Runtime;
         public Boolean IsUp = true;
         public Int32 EventID;
-        public readonly Int32 EventAmount;
+        public readonly Double EventAmount;
 
         public LuaModule(String initFile, Int32 eventAmount)
         {
@@ -26,7 +26,7 @@ namespace DotRPG.Scripting
             Runtime = new Lua();
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile);
-            EventAmount = (Int32) Runtime["event_count"];
+            EventAmount = (Double) Runtime["event_count"];
         }
 
         public void Update(Single elapsedTime, Single totalTime)

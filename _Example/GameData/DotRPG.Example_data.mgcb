@@ -27,6 +27,9 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/MainFont_Large.spritefont
 
+#begin Scripts/dialog.lua
+/copy:Scripts/dialog.lua
+
 #begin Sounds/clickText.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
