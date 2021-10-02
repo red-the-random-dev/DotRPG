@@ -11,32 +11,33 @@ namespace DotRPG.Scripting
     {
         public Lua Runtime;
         public Boolean IsUp = true;
-        public Int32 EventID;
-        public readonly Int32 EventAmount;
+        public readonly LuaTable EventAmounts;
+        public Int32[] EventIDs;
 
-        public LuaModule(String initFile, Int32 eventAmount)
+        public LuaModule(String initFile, LuaTable eventAmounts)
         {
             Runtime = new Lua();
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile);
-            EventAmount = eventAmount;
+            EventAmounts = eventAmounts;
         }
         public LuaModule(String initFile)
         {
             Runtime = new Lua();
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile);
-            EventAmount = (Int32) Runtime["event_count"];
+            EventAmounts = (LuaTable) Runtime["event_counts"];
+            EventIDs = new int[EventAmounts.Values.Count];
         }
 
-        public void Update(Single elapsedTime, Single totalTime)
+        public void Update(Int32 ObjectID, Single elapsedTime, Single totalTime)
         {
             LuaFunction loopFunction = Runtime["loop"] as LuaFunction;
-            loopFunction.Call(EventID, elapsedTime, totalTime);
-            EventID++;
-            if (EventID >= EventAmount)
+            loopFunction.Call(ObjectID, EventIDs[ObjectID], elapsedTime, totalTime);
+            EventIDs[ObjectID]++;
+            if (EventIDs[ObjectID] >= (Int64)EventAmounts[ObjectID+1])
             {
-                EventID = 0;
+                EventIDs[ObjectID] = 0;
             }
         }
     }
