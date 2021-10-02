@@ -10,7 +10,7 @@ namespace DotRPG.Objects.Dynamics
         Up=0, Down=1, Left=2, Right=3
     };
 
-    public class Player : DynamicRectObject
+    public class PlayerObject : DynamicRectObject
     {
         protected Point SightAreaSize;
         public Direction SightDirection; 
@@ -19,14 +19,15 @@ namespace DotRPG.Objects.Dynamics
         {
             get
             {
+                Rectangle c = Collider;
                 switch (SightDirection)
                 {
                     case Direction.Up:
                     {
                             return new Rectangle
                             (
-                                Collider.X + Collider.Width / 2 - SightAreaSize.X,
-                                Collider.Y - SightAreaSize.Y,
+                                c.X + c.Width / 2 - SightAreaSize.X,
+                                c.Y - SightAreaSize.Y,
                                 SightAreaSize.X,
                                 SightAreaSize.Y
                             );
@@ -35,8 +36,8 @@ namespace DotRPG.Objects.Dynamics
                     {
                             return new Rectangle
                             (
-                                Collider.X + Collider.Width / 2 - SightAreaSize.X,
-                                Collider.Y + Collider.Height + SightAreaSize.Y,
+                                c.X + c.Width / 2 - SightAreaSize.X,
+                                c.Y + c.Height + SightAreaSize.Y,
                                 SightAreaSize.X,
                                 SightAreaSize.Y
                             );
@@ -45,28 +46,28 @@ namespace DotRPG.Objects.Dynamics
                     {
                             return new Rectangle
                             (
-                                Collider.X - SightArea.X,
-                                Collider.Y + Collider.Height / 2 - SightAreaSize.Y,
-                                SightAreaSize.X,
-                                SightAreaSize.Y
+                                c.X - SightAreaSize.X,
+                                c.Y + c.Height / 2 - SightAreaSize.Y,
+                                SightAreaSize.Y,
+                                SightAreaSize.X
                             );
                     }
                     case Direction.Right:
                     {
                             return new Rectangle
                             (
-                                Collider.X + Collider.Width + SightArea.X,
-                                Collider.Y + Collider.Height / 2 - SightAreaSize.Y,
-                                SightAreaSize.X,
-                                SightAreaSize.Y
+                                c.X + c.Width + SightAreaSize.X,
+                                c.Y + c.Height / 2 - SightAreaSize.Y,
+                                SightAreaSize.Y,
+                                SightAreaSize.X
                             );
                     }
                     default:
                     {
                             return new Rectangle
                             (
-                                Collider.X + Collider.Width / 2 - SightAreaSize.X / 2,
-                                Collider.Y + Collider.Height / 2 - SightAreaSize.Y / 2,
+                                c.X + c.Width / 2 - SightAreaSize.X / 2,
+                                c.Y + c.Height / 2 - SightAreaSize.Y / 2,
                                 SightAreaSize.X,
                                 SightAreaSize.Y
                             );
@@ -75,7 +76,7 @@ namespace DotRPG.Objects.Dynamics
             }
         }
 
-        public Player(Point StartLocation, Point colliderSize, Single mass, Point sightAreaSize) : base(StartLocation, colliderSize, mass, false)
+        public PlayerObject(Point StartLocation, Point colliderSize, Single mass, Point sightAreaSize) : base(StartLocation, colliderSize, mass, false)
         {
             SightAreaSize = sightAreaSize;
         }

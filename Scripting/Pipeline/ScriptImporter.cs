@@ -2,16 +2,14 @@
 using Scripting = DotRPG.Scripting;
 using System.IO;
 
-using TImport = System.String;
-
 namespace DotRPG.Scripting.Pipeline
 {
     [ContentImporter(".lua", DisplayName = "DotRPG embeddable script handler", DefaultProcessor = "ScriptProcessor")]
-    public class ScriptImporter : ContentImporter<TImport>
+    public class ScriptImporter : ContentImporter<LuaModule>
     {
-        public override TImport Import(string filename, ContentImporterContext context)
+        public override LuaModule Import(string filename, ContentImporterContext context)
         {
-            return File.ReadAllText(filename);
+            return new Scripting::LuaModule(File.ReadAllText(filename));
         }
     }
 }
