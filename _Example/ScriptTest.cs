@@ -89,7 +89,7 @@ namespace DotRPG._Example
                     SceneSwitches.AutoScroll = false;
                     SceneSwitches.ExitDialog = false;
                     ShowingText = true;
-                    DialogTest1.Update((float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
+                    DialogTest1.Update(0, (float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
                     DialogForm.ResetToStart();
                 }
                 else if (DialogForm.ReachedEnd)
@@ -102,7 +102,7 @@ namespace DotRPG._Example
                     {
                         SceneSwitches.AutoScroll = false;
                         SceneSwitches.ExitDialog = false;
-                        DialogTest1.Update((float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
+                        DialogTest1.Update(0, (float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
                         DialogForm.ResetToStart();
                     }
                 }

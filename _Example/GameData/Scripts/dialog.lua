@@ -1,8 +1,9 @@
 import ('DotRPG.Scripting', 'DotRPG.Objects')
 
-event_count = 7
+event_counts = {7}
 
-function loop(eventID, frameTime, totalTime)
+function loop(objID, eventID, frameTime, totalTime)
+    if objID == 0 then
     if eventID == 0 then
         dialog.Text = "You ran across white rectangular object.\nSo what?"
     elseif eventID == 1 then
@@ -24,4 +25,5 @@ function loop(eventID, frameTime, totalTime)
         dialog.Text = "COME ON, QUIT IT ALREADY!"
         scene.ExitDialog = true
     end
+end
 end
