@@ -221,10 +221,7 @@ namespace DotRPG._Example
                 GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
-            #if DEBUG
-            _spriteBatch.DrawString(_spriteFont, "FPS: "+FrameRate.ToString()+" || Fullscreen: "+FullScreen.ToString()+String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: "+(ActiveFrame != null?ActiveFrame.FrameID.ToString():"-1")+" || Update rate: "+Math.Round(1000/LastRegisteredEventTime), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));
-            #endif
-            _spriteBatch.DrawString(_spriteFont, "Quitting...", new Vector2(0, 12), new Color(new Vector4((float) EscapeTimer/1000)));
+            
             if (ContinuityError)
             {
                 _spriteBatch.DrawString(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", SharedMethodSet.FindTextAlignment(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", Window.ClientBounds, 0.5f, 0.5f), Color.Red);
@@ -261,6 +258,10 @@ namespace DotRPG._Example
             {
                 ActiveFrame.Draw(gameTime, _spriteBatch);
             }
+#if DEBUG
+            _spriteBatch.DrawString(_spriteFont, "FPS: " + FrameRate.ToString() + " || Fullscreen: " + FullScreen.ToString() + String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: " + (ActiveFrame != null ? ActiveFrame.FrameID.ToString() : "-1") + " || Update rate: " + Math.Round(1000 / LastRegisteredEventTime), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));
+#endif
+            _spriteBatch.DrawString(_spriteFont, "Quitting...", new Vector2(0, 12), new Color(new Vector4((float)EscapeTimer / 1000)));
             _spriteBatch.End();
 
             base.Draw(gameTime);

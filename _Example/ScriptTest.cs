@@ -39,14 +39,21 @@ namespace DotRPG._Example
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
-            Player.Draw(spriteBatch, gameTime, 540, new Point(0, 0), new Point(drawZone.Width, drawZone.Height));
-            dro.Draw(spriteBatch, gameTime, 540, new Point(0, 0), new Point(drawZone.Width, drawZone.Height));
+            spriteBatch.Draw(FrameResources.Textures["backdrop"], Vector2.Zero, new Rectangle(0, 0, 960, 540), Color.White, 0, Vector2.Zero, (drawZone.Height / 540), SpriteEffects.None, 1.0f);
+            dro.Draw(spriteBatch, gameTime, 540, new Point(0, 0), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (dro.Location.Y / 540))));
+            Player.Draw(spriteBatch, gameTime, 540, new Point(0, 0), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (Player.Location.Y / 540))));
             if (ShowingText)
             {
+                Texture2D rect = new Texture2D(spriteBatch.GraphicsDevice, drawZone.Width, drawZone.Height / 5);
+                Color[] data = new Color[drawZone.Width * drawZone.Height / 5];
+                for (int i = 0; i < data.Length; i++) data[i] = Color.Black;
+                rect.SetData(data);
+                Vector2 textBoxLocation = new Vector2(0, drawZone.Height * 4 / 5);
+                spriteBatch.Draw(rect, textBoxLocation, Color.White);
                 DialogForm.Draw(spriteBatch, Owner.Window);
             }
 #if DEBUG
-            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], String.Format("Sight: {0}, Z key: {1}", Player.SightArea, lastInputCollection[4]), new Vector2(0, 12), Color.White);
+            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], String.Format("Sight: {0}, Direction: {1}, AnimFrame: {2}", Player.SightArea, Player.SightDirection.ToString().ToLower(), Player.Sprite.SpriteIndex), new Vector2(0, 12), Color.White);
 #endif
         }
 
@@ -73,6 +80,11 @@ namespace DotRPG._Example
             if (controls[3] && !(controls[1] || controls[0] || controls[2]))
             {
                 Player.SightDirection = Direction.Right;
+            }
+            String newAnimSequence = String.Format("red.idle.{0}", Player.SightDirection.ToString().ToLower());
+            if (Player.Sprite.CurrentAnimationSequence != newAnimSequence)
+            {
+                Player.Sprite.SetAnimationSequence(newAnimSequence);
             }
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
             Locomotion *= 0.1f;
@@ -127,14 +139,22 @@ namespace DotRPG._Example
 
         public override void LoadContent()
         {
+            FrameResources.Textures.Add("backdrop", Owner.Content.Load<Texture2D>("Texture2D/backdrop"));
             DialogForm = new TextObject(FrameResources.Global.Fonts["vcr_large"], "...", 0.01f, 0.80f, Color.White, AlignMode.TopLeft, 1080, scrollPerTick: 1, scrollDelay: 0.04f);
             DialogTest1 = new LuaModule(System.IO.File.ReadAllText(System.IO.Path.Join(Owner.Content.RootDirectory, "Scripts/dialog.lua")));
             DialogTest1.Runtime["dialog"] = DialogForm;
             DialogTest1.Runtime["scene"] = SceneSwitches;
-            Player = new PlayerObject(new Point(32, 32), new Point(32, 32), 20.0f, new Point(32, 8));
-            dro = new DynamicRectObject(new Point(32, 128), new Point(32, 32), 30.0f, true);
-            FrameResources.Textures.Add("cube-p", Owner.Content.Load<Texture2D>("Texture2D/cube-p"));
-            Player.Sprite = new SpriteController(1000 / 60.0f, FrameResources.Textures["cube-p"]);
+            Player = new PlayerObject(new Point(32, 64), new Point(32, 32), 20.0f, new Point(64, 64));
+            dro = new DynamicRectObject(new Point(128, 128), new Point(32, 32), 30.0f, true);
+            FrameResources.Textures.Add("red.idle.down", Owner.Content.Load<Texture2D>("Texture2D/red.idle.down"));
+            FrameResources.Textures.Add("red.idle.up", Owner.Content.Load<Texture2D>("Texture2D/red.idle.up"));
+            FrameResources.Textures.Add("red.idle.right", Owner.Content.Load<Texture2D>("Texture2D/red.idle.right"));
+            FrameResources.Textures.Add("red.idle.left", Owner.Content.Load<Texture2D>("Texture2D/red.idle.left"));
+            Player.Sprite = new SpriteController(1000 / 6.0f, FrameResources.Textures["red.idle.down"], 12);
+            Player.Sprite.AddAnimationSequence("red.idle.down", FrameResources.Textures["red.idle.down"], 12);
+            Player.Sprite.AddAnimationSequence("red.idle.up", FrameResources.Textures["red.idle.up"], 1);
+            Player.Sprite.AddAnimationSequence("red.idle.left", FrameResources.Textures["red.idle.left"], 12);
+            Player.Sprite.AddAnimationSequence("red.idle.right", FrameResources.Textures["red.idle.right"], 12);
             FrameResources.Textures.Add("cube-o", Owner.Content.Load<Texture2D>("Texture2D/cube-o"));
             dro.Sprite = new SpriteController(1000 / 60.0f, FrameResources.Textures["cube-o"]);
         }

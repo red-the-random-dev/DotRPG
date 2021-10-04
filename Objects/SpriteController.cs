@@ -55,7 +55,15 @@ namespace DotRPG.Objects
             LoopTo.Add(sequenceName, loopTo);
         }
 
-        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Single drawSize = 1.0f)
+        public Point SpriteSize
+        {
+            get
+            {
+                return new Point(AnimationSequenceCollection[CurrentAnimationSequence].Width / FrameAmount[CurrentAnimationSequence], AnimationSequenceCollection[CurrentAnimationSequence].Height);
+            }
+        }
+
+        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Single drawSize = 1.0f, Single ZIndex = 0.0f)
         {
             Single addFrames = 0.0f;
             if (PlaybackSpeed > 0.0f)
@@ -66,13 +74,13 @@ namespace DotRPG.Objects
                 ScrollTimer -= (FrameTime / PlaybackSpeed) * (addFrames / PlaybackSpeed);
             }
             Single newPos = _i + addFrames;
-            while (newPos > FrameAmount[CurrentAnimationSequence])
+            if (newPos >= FrameAmount[CurrentAnimationSequence])
             {
-                newPos = (ushort)(newPos % FrameAmount[CurrentAnimationSequence] + LoopTo[CurrentAnimationSequence]);
+                newPos = LoopTo[CurrentAnimationSequence];
             }
             Texture2D toDraw = AnimationSequenceCollection[CurrentAnimationSequence];
             Single widthPerFrame = toDraw.Width / FrameAmount[CurrentAnimationSequence];
-            UInt16 newPosI = (ushort)Math.Round(newPos);
+            UInt16 newPosI = (ushort)Math.Floor(newPos);
             Rectangle lololol = new Rectangle
             (
                 (int)(newPosI * widthPerFrame),
@@ -90,7 +98,7 @@ namespace DotRPG.Objects
                 Vector2.Zero,
                 drawSize,
                 SpriteEffects.None,
-                0
+                ZIndex
             );
             _i = newPos;
         }

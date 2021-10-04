@@ -167,15 +167,15 @@ namespace DotRPG.Objects.Dynamics
             }
         }
 
-        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize)
+        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Single ZIndex = 0.0f)
         {
             Single sizeMorph = 1.0f * scrollSize.Y / VirtualVSize;
             Vector2 location = new Vector2
             (
-                Location.X * sizeMorph - (BodySize.X * sizeMorph / 2) - scrollOffset.X * sizeMorph,
-                Location.Y * sizeMorph - (BodySize.Y * sizeMorph / 2) - scrollOffset.Y * sizeMorph
+                Location.X * sizeMorph - (Sprite.SpriteSize.X * sizeMorph / 2) - scrollOffset.X * sizeMorph,
+                Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - (Sprite.SpriteSize.Y * sizeMorph) - scrollOffset.Y * sizeMorph
             );
-            Sprite.Draw(_sb, location, gameTime, sizeMorph);
+            Sprite.Draw(_sb, location, gameTime, sizeMorph, ZIndex);
         }
 
         public Boolean TryCollideWith(DynamicRectObject another, Boolean splitVector = false)
