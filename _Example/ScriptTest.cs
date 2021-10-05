@@ -127,12 +127,20 @@ namespace DotRPG._Example
             Player.Update(gameTime);
             Player.TryCollideWith(dro);
             Player.TryCollideWith(dro);
+            if (ShowingText)
+            {
+                cam.TrackTarget = dro.Location.ToPoint();
+            }
+            else
+            {
+                cam.TrackTarget = Player.Location.ToPoint();
+            }
+            cam.Update(gameTime);
             base.Update(gameTime, controls);
             for (int i = 0; i < Math.Min(lastInputCollection.Length, controls.Length); i++)
             {
                 lastInputCollection[i] = controls[i];
             }
-            cam.Focus = Player.Location.ToPoint();
         }
 
         public override void SetPlayerPosition(object sender, EventArgs e, GameTime gameTime)
@@ -148,6 +156,8 @@ namespace DotRPG._Example
             DialogTest1.Runtime["dialog"] = DialogForm;
             DialogTest1.Runtime["scene"] = SceneSwitches;
             Player = new PlayerObject(new Point(32, 64), new Point(32, 32), 20.0f, new Point(64, 64));
+            cam.Focus = Player.Location.ToPoint();
+            cam.CameraVelocity = 256f;
             dro = new DynamicRectObject(new Point(128, 128), new Point(32, 32), 30.0f, true);
             FrameResources.Textures.Add("red.idle.down", Owner.Content.Load<Texture2D>("Texture2D/red.idle.down"));
             FrameResources.Textures.Add("red.idle.up", Owner.Content.Load<Texture2D>("Texture2D/red.idle.up"));
