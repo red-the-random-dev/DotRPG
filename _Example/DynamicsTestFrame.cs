@@ -74,11 +74,11 @@ namespace DotRPG._Example
             if (controls[3]) { loco_x += 1.0f; }
             Vector2 Locomotion = new Vector2(loco_x, loco_y);
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
-            Locomotion *= 0.1f;
+            Locomotion *= 256f;
             Vector2 FrictionVector1 = new Vector2(0.0f - (Obstacle1.Velocity.X / (Obstacle1.Velocity.Length() != 0 ? Obstacle1.Velocity.Length() : 1.0f)), 0.0f - (Obstacle1.Velocity.Y / (Obstacle1.Velocity.Length() != 0 ? Obstacle1.Velocity.Length() : 1.0f)));
-            FrictionVector1 *= Obstacle1.Mass * 0.00001f;
+            FrictionVector1 *= Obstacle1.Mass * 0.5f;
             Vector2 FrictionVector2 = new Vector2(0.0f - (Obstacle2.Velocity.X / (Obstacle2.Velocity.Length() != 0 ? Obstacle2.Velocity.Length() : 1.0f)), 0.0f - (Obstacle2.Velocity.Y / (Obstacle2.Velocity.Length() != 0 ? Obstacle2.Velocity.Length() : 1.0f)));
-            FrictionVector2 *= Obstacle2.Mass * 0.00000005f;
+            FrictionVector2 *= Obstacle2.Mass * 0.05f;
             if (Obstacle1.Velocity.Length() >= 0.001f)
             {
                 #if !MUTE
