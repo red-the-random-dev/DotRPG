@@ -11,8 +11,8 @@ with.
     <!--
     Modify this string to change the font that will be imported.
     -->
-    <FontName>VCR OSD Mono</FontName>
-
+	  <!--<FontName>VCR OSD Mono</FontName>-->
+	  <FontName>Alef</FontName>
     <!--
     Size is a float value, measured in points. Modify this value to change
     the size of the font.

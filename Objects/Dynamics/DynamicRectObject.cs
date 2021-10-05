@@ -167,15 +167,15 @@ namespace DotRPG.Objects.Dynamics
             }
         }
 
-        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize)
+        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Single ZIndex = 0.0f)
         {
             Single sizeMorph = 1.0f * scrollSize.Y / VirtualVSize;
             Vector2 location = new Vector2
             (
-                Location.X * sizeMorph - (BodySize.X * sizeMorph / 2) - scrollOffset.X * sizeMorph,
-                Location.Y * sizeMorph - (BodySize.Y * sizeMorph / 2) - scrollOffset.Y * sizeMorph
+                Location.X * sizeMorph - (Sprite.SpriteSize.X * sizeMorph / 2) - scrollOffset.X,
+                Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - (Sprite.SpriteSize.Y * sizeMorph) - scrollOffset.Y
             );
-            Sprite.Draw(_sb, location, gameTime, sizeMorph);
+            Sprite.Draw(_sb, location, gameTime, sizeMorph, ZIndex);
         }
 
         public Boolean TryCollideWith(DynamicRectObject another, Boolean splitVector = false)
@@ -197,8 +197,8 @@ namespace DotRPG.Objects.Dynamics
 
         public virtual void Update(GameTime gameTime)
         {
-            Velocity += AppliedForce / ((Single)gameTime.ElapsedGameTime.TotalSeconds * this.Mass);
-            Location += Velocity / (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            Velocity += AppliedForce * ((Single)gameTime.ElapsedGameTime.TotalSeconds * this.Mass);
+            Location += Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
             AppliedForce = Vector2.Zero;
         }
 
