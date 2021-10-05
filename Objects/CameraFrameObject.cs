@@ -10,10 +10,11 @@ namespace DotRPG.Objects
         public Point Focus;
         public Point TrackTarget;
         public Single CameraVelocity;
+        public Int32 DefaultHeight;
 
         public Point GetTopLeftAngle(Point screenSize)
         {
-            return new Point(Focus.X - screenSize.X/2, Focus.Y - screenSize.Y/2);
+            return new Point(Focus.X * (screenSize.Y / DefaultHeight) - screenSize.X/2, Focus.Y - screenSize.Y/2);
         }
         public void Update(GameTime gameTime)
         {
