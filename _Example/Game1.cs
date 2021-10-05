@@ -25,10 +25,10 @@ namespace DotRPG._Example
         private Boolean[] IsCtrlKeyDown = new bool[8] { false, false, false, false, false, false, false, false};
         private Boolean FullScreen;
         private Double EscapeTimer = 0.0f;
-        #if DEBUG
+#if DEBUG
         private Double LastRegisteredEventTime;
+#endif
         private Double TimeSinceError = 0.0f;
-        #endif
         private HashSet<TimedEvent> LogicEventSet = new HashSet<TimedEvent>();
         private Boolean ContinuityError = false;
         private Boolean WideScreen
