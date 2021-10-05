@@ -18,6 +18,7 @@ namespace DotRPG._Example
         DynamicRectObject dro;
         Boolean[] lastInputCollection = new bool[8];
         Boolean ShowingText;
+        CameraFrameObject cam = new CameraFrameObject();
 
         public override int FrameID
         {
@@ -39,9 +40,9 @@ namespace DotRPG._Example
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
-            spriteBatch.Draw(FrameResources.Textures["backdrop"], Vector2.Zero, new Rectangle(0, 0, 960, 540), Color.White, 0, Vector2.Zero, (drawZone.Height / 540), SpriteEffects.None, 1.0f);
-            dro.Draw(spriteBatch, gameTime, 540, new Point(0, 0), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (dro.Location.Y / 540))));
-            Player.Draw(spriteBatch, gameTime, 540, new Point(0, 0), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (Player.Location.Y / 540))));
+            spriteBatch.Draw(FrameResources.Textures["backdrop"], Vector2.Zero - cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)).ToVector2(), new Rectangle(0, 0, 960, 540), Color.White, 0, Vector2.Zero, (drawZone.Height / 540), SpriteEffects.None, 1.0f);
+            dro.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (dro.Location.Y / 540))));
+            Player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (Player.Location.Y / 540))));
             if (ShowingText)
             {
                 Texture2D rect = new Texture2D(spriteBatch.GraphicsDevice, drawZone.Width, drawZone.Height / 5);
@@ -130,6 +131,7 @@ namespace DotRPG._Example
             {
                 lastInputCollection[i] = controls[i];
             }
+            cam.Focus = Player.Location.ToPoint();
         }
 
         public override void SetPlayerPosition(object sender, EventArgs e, GameTime gameTime)
