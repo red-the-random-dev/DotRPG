@@ -197,8 +197,8 @@ namespace DotRPG.Objects.Dynamics
 
         public virtual void Update(GameTime gameTime)
         {
-            Velocity += AppliedForce / ((Single)gameTime.ElapsedGameTime.TotalSeconds * this.Mass);
-            Location += Velocity / (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            Velocity += AppliedForce * ((Single)gameTime.ElapsedGameTime.TotalSeconds * this.Mass);
+            Location += Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
             AppliedForce = Vector2.Zero;
         }
 

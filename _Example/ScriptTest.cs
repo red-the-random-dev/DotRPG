@@ -87,7 +87,7 @@ namespace DotRPG._Example
                 Player.Sprite.SetAnimationSequence(newAnimSequence);
             }
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
-            Locomotion *= 0.1f;
+            Locomotion *= 256f;
             if (ShowingText)
             {
                 Locomotion = Vector2.Zero;
