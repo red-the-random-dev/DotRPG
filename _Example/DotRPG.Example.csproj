@@ -8,6 +8,12 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <AssemblyVersion>1.2.3.0</AssemblyVersion>
+    <FileVersion>1.2.3.0</FileVersion>
+    <Version>1.2.3</Version>
+    <Authors>red-the-random-dev</Authors>
+    <Product>DotRPG</Product>
+    <PackageId>DotRPG Example Application</PackageId>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="GameData\DotRPG.Example_data.mgcb" />

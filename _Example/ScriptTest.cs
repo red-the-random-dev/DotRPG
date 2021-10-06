@@ -6,6 +6,7 @@ using DotRPG.Objects;
 using DotRPG.Objects.Dynamics;
 using DotRPG.Scripting;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace DotRPG._Example
 {
@@ -94,6 +95,9 @@ namespace DotRPG._Example
                 Locomotion = Vector2.Zero;
             }
             Player.Velocity = Locomotion;
+            if (controls[5] && !lastInputCollection[5] && ShowingText)
+                DialogForm.SkipToEnd();
+
             if (controls[4] && !lastInputCollection[4] || (ShowingText && DialogForm.ReachedEnd && SceneSwitches.AutoScroll))
             {
                 if (Player.SightArea.Intersects(dro.Collider) && !ShowingText)
@@ -157,7 +161,8 @@ namespace DotRPG._Example
             DialogTest1.Runtime["scene"] = SceneSwitches;
             Player = new PlayerObject(new Point(32, 64), new Point(32, 32), 20.0f, new Point(64, 64));
             cam.Focus = Player.Location.ToPoint();
-            cam.CameraVelocity = 256f;
+            cam.CameraVelocity = 300f;
+            cam.DefaultHeight = 540;
             dro = new DynamicRectObject(new Point(128, 128), new Point(32, 32), 30.0f, true);
             FrameResources.Textures.Add("red.idle.down", Owner.Content.Load<Texture2D>("Texture2D/red.idle.down"));
             FrameResources.Textures.Add("red.idle.up", Owner.Content.Load<Texture2D>("Texture2D/red.idle.up"));
@@ -170,6 +175,8 @@ namespace DotRPG._Example
             Player.Sprite.AddAnimationSequence("red.idle.right", FrameResources.Textures["red.idle.right"], 12);
             FrameResources.Textures.Add("cube-o", Owner.Content.Load<Texture2D>("Texture2D/cube-o"));
             dro.Sprite = new SpriteController(1000 / 60.0f, FrameResources.Textures["cube-o"]);
+            FrameResources.Sounds.Add("pixelText", Owner.Content.Load<SoundEffect>("Sounds/text-scroll"));
+            DialogForm.ScrollingSound = FrameResources.Sounds["pixelText"];
         }
 
         public override void UnloadContent()
