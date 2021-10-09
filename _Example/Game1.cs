@@ -1,17 +1,14 @@
 ﻿// #define FORCE_4x3
+// #define MUTE
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
 using DotRPG.Objects;
 
 namespace DotRPG._Example
 {
-    /// <summary>
-    /// WARNING: This code sucks.
-    /// </summary>
     public class Game1 : Game
     {
         private ResourceHeap ResourceHGlobal = new ResourceHeap();

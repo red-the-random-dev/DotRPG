@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>red-the-random-dev</Authors>
+    <Product>DotRPG</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
+  </ItemGroup>
+
+</Project>
