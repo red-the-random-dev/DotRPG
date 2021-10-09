@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DotRPG.Objects;
 
-namespace DotRPG.Objects
+namespace DotRPG.Behavior
 {
     public abstract class Frame
     {

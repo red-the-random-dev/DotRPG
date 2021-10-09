@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -37,6 +38,17 @@ namespace DotRPG.Behavior
                 }
             }
             throw new InvalidOperationException("Unable to fetch appropriate scene builder instance for behavior type \""+behaviorType+"\" among registered types.");
+        }
+
+        public static DotRPG.Behavior.Frame LoadFrame(XDocument Document, Assembly lookIn)
+        {
+            throw new NotImplementedException();
+
+            XElement xe = Document.Root;
+            if (xe.Name != "Frame")
+            {
+                throw new InvalidOperationException("Loaded document has root tag <" + xe.Name + "> as opposed to required <Frame>.");
+            }
         }
     }
 }

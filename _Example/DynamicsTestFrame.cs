@@ -6,6 +6,7 @@ using DotRPG.Objects.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using DotRPG.Behavior;
 
 namespace DotRPG._Example
 {
