@@ -11,6 +11,7 @@ namespace DotRPG.Behavior
     {
         protected ResourceHeap FrameResources;
         protected Game Owner;
+        public Boolean Instantiated { get; protected set; }
 
         public abstract Int32 FrameID
         {
@@ -33,6 +34,7 @@ namespace DotRPG.Behavior
             Owner = owner;
             FrameResources = new ResourceHeap(globalGameResources);
             GlobalEventSet = globalEventSet;
+            Instantiated = true;
         }
 
         public virtual void Update(GameTime gameTime, Boolean[] controls)
