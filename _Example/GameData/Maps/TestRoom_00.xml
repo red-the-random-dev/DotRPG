@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE dotrpg-frame>
 
-<Scene id="Testroom 00" behaviorType="example/topdown">
+<Scene id="Testroom 00" behaviorType="example/topdown" index="0">
     <!-- Used to pre-load resources -->
     <Require>
         <Texture2D id="backdrop" location="Texture2D/backdrop"/>

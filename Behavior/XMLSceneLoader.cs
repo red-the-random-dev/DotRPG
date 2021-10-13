@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Reflection;
-using System.Text;
+using System.Runtime.Serialization;
 
 namespace DotRPG.Behavior
 {
@@ -74,6 +74,35 @@ namespace DotRPG.Behavior
             }
 
             return ixsb.BuildFromXML(Document, buildData);
+        }
+
+        public static IEnumerable<ResourceLoadTask> FetchLoadTasks(XElement loadRoot)
+        {
+            foreach (XElement xe2 in loadRoot.Elements())
+            {
+                ResourceLoadTask rlt = new ResourceLoadTask();
+                switch (xe2.Name.LocalName.ToString().ToLower())
+                {
+                    case "texture2d":
+                        rlt.Resource = ResourceType.Texture2D;
+                        break;
+                    case "soundeffect":
+                        rlt.Resource = ResourceType.SoundEffect;
+                        break;
+                    case "spritefont":
+                        rlt.Resource = ResourceType.SpriteFont;
+                        break;
+                    case "song":
+                        rlt.Resource = ResourceType.Song;
+                        break;
+                    default:
+                        throw new SerializationException("No such resource type: " + xe2.Name.ToString());
+                }
+                rlt.ResourceID = xe2.Attribute(XName.Get("id")).Value;
+                rlt.ResourcePath = xe2.Attribute(XName.Get("location")).Value;
+                rlt.LoadFrom = ResourceLocation.ContentFolder;
+                yield return rlt;
+            }
         }
     }
 }
