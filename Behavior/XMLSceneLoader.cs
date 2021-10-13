@@ -24,7 +24,7 @@ namespace DotRPG.Behavior
             {
                 if (Attribute.IsDefined(type, typeof(SceneBuilderAttribute)))
                 {
-                    if (type.BaseType == typeof(IXMLSceneBuilder))
+                    if (typeof(IXMLSceneBuilder).IsAssignableFrom(type))
                     {
                         Object[] attrs = type.GetCustomAttributes(false);
                         

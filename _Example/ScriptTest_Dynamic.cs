@@ -21,6 +21,8 @@ namespace DotRPG.Example
         List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<XElement> objectPrototypes = new List<XElement>();
 
+        Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
+
         public override int FrameID
         {
             get
@@ -54,6 +56,7 @@ namespace DotRPG.Example
                         break;
                 }
             }
+            throw new NotImplementedException();
         }
 
         public ScriptTest_Dynamic(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)

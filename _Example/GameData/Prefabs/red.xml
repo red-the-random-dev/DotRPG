@@ -15,7 +15,7 @@
             <Animation id="red.idle.up" local="red.idle.up" frameAmount="1"/>
             <Animation id="red.idle.left" local="red.idle.left" frameAmount="12"/>
             <Animation id="red.idle.right" local="red.idle.right" frameAmount="12"/>
-        </Srpite>
+        </Sprite>
         <Motion movementSpeed="256.0f">
             <IdleAnimation id="red.idle.{0}"/>
             <WalkingAnimation id="red.idle.{0}"/>

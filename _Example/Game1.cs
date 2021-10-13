@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using DotRPG.Objects;
 using DotRPG.Behavior;
+using System.Xml.Linq;
+using System.IO;
+using System.Reflection;
 
 namespace DotRPG._Example
 {
@@ -106,6 +109,8 @@ namespace DotRPG._Example
             Frames[1].Initialize();
             Frames.Add(new ScriptTest(this, ResourceHGlobal, LogicEventSet));
             Frames[2].Initialize();
+            // String dummy;
+            // Frames.Add(XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(Path.Combine(Content.RootDirectory, "Maps/TestRoom_00.xml"))), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet}, out dummy));
             base.Initialize();
         }
 

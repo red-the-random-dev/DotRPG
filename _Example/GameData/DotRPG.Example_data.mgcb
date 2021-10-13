@@ -27,6 +27,15 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/MainFont_Large.spritefont
 
+#begin Maps/TestRoom_00.xml
+/copy:Maps/TestRoom_00.xml
+
+#begin Prefabs/red.xml
+/copy:Prefabs/red.xml
+
+#begin Prefabs/whiterect.xml
+/copy:Prefabs/whiterect.xml
+
 #begin Scripts/dialog.lua
 /copy:Scripts/dialog.lua
 
