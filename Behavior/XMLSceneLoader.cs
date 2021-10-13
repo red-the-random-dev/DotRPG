@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.IO;
+using DotRPG.Objects;
 
 namespace DotRPG.Behavior
 {
@@ -58,7 +60,7 @@ namespace DotRPG.Behavior
                 throw new System.Runtime.Serialization.SerializationException("Unable to load data from document of following type: " + Document.DocumentType.Name + " (type \"dotrpg-frame\" expected).");
             }
             XElement rt = Document.Root;
-            if (rt.Name.ToString().ToLower() != "scene")
+            if (rt.Name.LocalName.ToString().ToLower() != "scene")
             {
                 throw new System.Runtime.Serialization.SerializationException("Unable to load data from root tag of following type: <"+ rt.Name+"> (type <Scene> expected).");
             }
@@ -103,6 +105,36 @@ namespace DotRPG.Behavior
                 rlt.LoadFrom = ResourceLocation.ContentFolder;
                 yield return rlt;
             }
+        }
+
+        public static XElement GetObjectPrototype(String elementName, String prefabFileName, List<ResourceLoadTask> addResources = null)
+        {
+            XDocument Document = XDocument.Parse(File.ReadAllText(prefabFileName));
+
+            if (Document.DocumentType.Name != "dotrpg-prefab")
+            {
+                throw new System.Runtime.Serialization.SerializationException("Unable to load prototype data from document of following type: " + Document.DocumentType.Name + " (type \"dotrpg-prefab\" expected).");
+            }
+            XElement rt = Document.Root;
+            if (rt.Name.LocalName.ToString().ToLower() != "objectprefab")
+            {
+                throw new System.Runtime.Serialization.SerializationException("Unable to load data from root tag of following type: <" + rt.Name + "> (type <ObjectPrefab> expected).");
+            }
+            foreach (XElement xe in Document.Root.Elements())
+            {
+                if (xe.Name.LocalName.ToLower() == "require" && addResources != null)
+                {
+                    foreach (ResourceLoadTask rlt in FetchLoadTasks(xe))
+                    {
+                        addResources.Add(rlt);
+                    }
+                }
+                else if (xe.Name.LocalName.ToLower() == elementName.ToLower())
+                {
+                    return xe;
+                }
+            }
+            throw new SerializationException("No data found for following tag: " + elementName + ".");
         }
     }
 }

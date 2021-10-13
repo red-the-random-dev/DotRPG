@@ -88,15 +88,37 @@ namespace DotRPG.Example
                         {
                             if (xa.Name.LocalName.ToString() == "_usePrefab")
                             {
-                                String loadPath = Path.Combine(Owner.Content.RootDirectory, xa.Value.ToString());
-
+                                String loadPath = Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xa.Value.ToString()));
+                                x = XMLSceneLoader.GetObjectPrototype(xe.Name.LocalName, loadPath, resourceLoad);
+                                // Override prefab's attributes with specified attributes' values
+                                foreach (XAttribute xx in xe.Attributes())
+                                {
+                                    x.SetAttributeValue(xx.Name, xx.Value);
+                                }
+                                break;
                             }
                         }
+                        objectPrototypes.Add(x);
                         break;
                 }
             }
 
             return this;
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Initialize()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UnloadContent()
+        {
+            throw new NotImplementedException();
         }
     }
 }
