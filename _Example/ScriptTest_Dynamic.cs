@@ -56,6 +56,33 @@ namespace DotRPG.Example
                         break;
                 }
             }
+            foreach (XElement xe in objectPrototypes)
+            {
+                switch (xe.Name.LocalName.ToLower())
+                {
+                    case "player":
+                        #region Parameters definition
+                        Point startPos = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("startPos")).Value).ToPoint();
+                        Point colliderSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("colliderSize")).Value).ToPoint();
+                        Point interactFieldSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("interactFieldSize")).Value).ToPoint();
+                        Single mass = Single.Parse(xe.Attribute(XName.Get("interactFieldSize")).Value);
+                        player = new PlayerObject(startPos, colliderSize, mass, interactFieldSize);
+                        #endregion
+                        foreach (XElement xe2 in xe.Elements())
+                        {
+                            switch (xe2.Name.LocalName.ToLower())
+                            {
+                                case "sprite":
+                                    player.Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    break;
+                            }
+                        }
+                        break;
+                    case "prop":
+                        
+                        break;
+                }
+            }
             throw new NotImplementedException();
         }
 

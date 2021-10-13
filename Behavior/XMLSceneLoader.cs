@@ -5,6 +5,8 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.IO;
 using DotRPG.Objects;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DotRPG.Behavior
 {
@@ -125,6 +127,126 @@ namespace DotRPG.Behavior
                 }
             }
             throw new SerializationException("No data found for following tag: " + elementName + ".");
+        }
+
+        public static Vector2 ResolveVector2(String intake)
+        {
+            String a = "";
+            foreach (Char x in intake)
+            {
+                if (x != ' ')
+                {
+                    a += x;
+                }
+            }
+            String[] dims = a.Split(',');
+            if (dims.Length < 2)
+            {
+                throw new SerializationException(String.Format("Unable to load Vector2 from {0}-dimensional string vector.", dims.Length));
+            }
+            return new Vector2(Single.Parse(dims[0]), Single.Parse(dims[1]));
+        }
+
+        public static Vector3 ResolveVector3(String intake)
+        {
+            String a = "";
+            foreach (Char x in intake)
+            {
+                if (x != ' ')
+                {
+                    a += x;
+                }
+            }
+            String[] dims = a.Split(',');
+            if (dims.Length < 3)
+            {
+                throw new SerializationException(String.Format("Unable to load Vector3 from {0}-dimensional string vector.", dims.Length));
+            }
+            return new Vector3(Single.Parse(dims[0]), Single.Parse(dims[1]), Single.Parse(dims[2]));
+        }
+
+        public static Vector4 ResolveVector4(String intake)
+        {
+            String a = "";
+            foreach (Char x in intake)
+            {
+                if (x != ' ')
+                {
+                    a += x;
+                }
+            }
+            String[] dims = a.Split(',');
+            if (dims.Length < 4)
+            {
+                throw new SerializationException(String.Format("Unable to load Vector4 from {0}-dimensional string vector.", dims.Length));
+            }
+            return new Vector4(Single.Parse(dims[0]), Single.Parse(dims[1]), Single.Parse(dims[2]), Single.Parse(dims[3]));
+        }
+
+        public static SpriteController LoadSpriteController(XElement xe2, ResourceHeap FrameResources)
+        {
+            SpriteController sc = null;
+            Single frameTime = 1000.0f / Single.Parse(xe2.Attribute(XName.Get("startPos")).Value);
+            foreach (XElement xe3 in xe2.Elements())
+            {
+                switch (xe3.Name.LocalName.ToLower())
+                {
+                    case "defaultanimationsequence":
+                    {
+                        Texture2D defAnim = null;
+                        UInt16 frameAmount = 1;
+                        foreach (XAttribute xa in xe3.Attributes())
+                        {
+                            switch (xa.Name.LocalName)
+                            {
+                                case "local":
+                                    defAnim = FrameResources.Textures[xa.Value];
+                                    break;
+                                case "global":
+                                    defAnim = FrameResources.Global.Textures[xa.Value];
+                                    break;
+                                case "frameAmount":
+                                    frameAmount = UInt16.Parse(xa.Value);
+                                    break;
+                            }
+                        }
+                        if (defAnim == null)
+                        {
+                            throw new SerializationException("Unable to load animation sequence data for: default.");
+                        }
+                        sc = new SpriteController(frameTime, defAnim, frameAmount);
+                        break;
+                    }
+                    case "animation":
+                    {
+                        String ID = xe3.Attribute(XName.Get("startPos")).Value;
+                        Texture2D Anim = null;
+                        UInt16 frameAmount = 1;
+                        foreach (XAttribute xa in xe3.Attributes())
+                        {
+                            switch (xa.Name.LocalName)
+                            {
+                                case "local":
+                                    Anim = FrameResources.Textures[xa.Value];
+                                    break;
+                                case "global":
+                                    Anim = FrameResources.Global.Textures[xa.Value];
+                                    break;
+                                case "frameAmount":
+                                    frameAmount = UInt16.Parse(xa.Value);
+                                    break;
+                            }
+                        }
+                        if (Anim == null)
+                        {
+                            throw new SerializationException("Unable to load animation sequence data for: default.");
+                        }
+                        sc.AddAnimationSequence(ID, Anim, frameAmount);
+                        break;
+                    }
+                }
+            }
+            return sc;
         }
     }
 }
