@@ -30,9 +30,8 @@ namespace DotRPG.Behavior
                         
                         foreach (Object x in attrs)
                         {
-                            if (x is SceneBuilderAttribute)
+                            if (x is SceneBuilderAttribute y)
                             {
-                                SceneBuilderAttribute y = (SceneBuilderAttribute)x;
                                 if (y.BehaviorType == behaviorType && !y.SelfBuilt)
                                 {
                                     builder = type;
@@ -66,9 +65,7 @@ namespace DotRPG.Behavior
             }
             literalName = rt.Attribute(XName.Get("id")).Value;
             String behaviorType = rt.Attribute(XName.Get("behaviorType")).Value;
-            Boolean selfBuilt = false;
-            Type t;
-            IXMLSceneBuilder ixsb = FetchSceneBuilder(lookIn, behaviorType, out selfBuilt, out t);
+            IXMLSceneBuilder ixsb = FetchSceneBuilder(lookIn, behaviorType, out bool selfBuilt, out Type t);
 
             if (ixsb == null && selfBuilt)
             {
@@ -82,27 +79,20 @@ namespace DotRPG.Behavior
         {
             foreach (XElement xe2 in loadRoot.Elements())
             {
-                ResourceLoadTask rlt = new ResourceLoadTask();
-                switch (xe2.Name.LocalName.ToString().ToLower())
+                ResourceLoadTask rlt = new ResourceLoadTask
                 {
-                    case "texture2d":
-                        rlt.Resource = ResourceType.Texture2D;
-                        break;
-                    case "soundeffect":
-                        rlt.Resource = ResourceType.SoundEffect;
-                        break;
-                    case "spritefont":
-                        rlt.Resource = ResourceType.SpriteFont;
-                        break;
-                    case "song":
-                        rlt.Resource = ResourceType.Song;
-                        break;
-                    default:
-                        throw new SerializationException("No such resource type: " + xe2.Name.ToString());
-                }
-                rlt.ResourceID = xe2.Attribute(XName.Get("id")).Value;
-                rlt.ResourcePath = xe2.Attribute(XName.Get("location")).Value;
-                rlt.LoadFrom = ResourceLocation.ContentFolder;
+                    Resource = xe2.Name.LocalName.ToString().ToLower() switch
+                    {
+                        "texture2d" => ResourceType.Texture2D,
+                        "soundeffect" => ResourceType.SoundEffect,
+                        "spritefont" => ResourceType.SpriteFont,
+                        "song" => ResourceType.Song,
+                        _ => throw new SerializationException("No such resource type: " + xe2.Name.ToString()),
+                    },
+                    ResourceID = xe2.Attribute(XName.Get("id")).Value,
+                    ResourcePath = xe2.Attribute(XName.Get("location")).Value,
+                    LoadFrom = ResourceLocation.ContentFolder
+                };
                 yield return rlt;
             }
         }

@@ -18,7 +18,7 @@ namespace DotRPG.Example
     {
         PlayerObject player;
         Int32 _id;
-        List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
+        readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<XElement> objectPrototypes = new List<XElement>();
 
         Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
