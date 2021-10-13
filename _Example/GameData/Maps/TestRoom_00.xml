@@ -14,7 +14,6 @@
     <Prop id="whiterect" startPos="128,128" _usePrefab="Prefabs/whiterect.xml" />
 
     <Script location="Scripts/dialog.lua" hasDefaultAction="false"/>
-
     <TextBox relativeSize="1.0,0.2" location="0.0,0.8" textColor="255,255,255,255" backgroundColor="0,0,0,255">
         <Font global="vcr-large"/>
     </TextBox>

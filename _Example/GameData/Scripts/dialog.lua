@@ -1,6 +1,6 @@
 import ('DotRPG.Scripting', 'DotRPG.Objects')
 
-event_counts = {7}
+event_counts = {"whiterecttalk":7}
 
 function loop(objID, eventID, frameTime, totalTime)
     if objID == 0 then
