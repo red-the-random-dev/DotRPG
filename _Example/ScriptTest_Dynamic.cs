@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework;
 using DotRPG.Objects.Dynamics;
 using System.Runtime.Serialization;
 using System.IO;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace DotRPG.Example
 {
@@ -23,6 +26,33 @@ namespace DotRPG.Example
             get
             {
                 return _id;
+            }
+        }
+
+        public override void SetPlayerPosition(object sender, EventArgs e, GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void LoadContent()
+        {
+            foreach (ResourceLoadTask rlt in resourceLoad)
+            {
+                switch (rlt.Resource)
+                {
+                    case ResourceType.Texture2D:
+                        FrameResources.Textures.Add(rlt.ResourceID, Owner.Content.Load<Texture2D>(rlt.ResourcePath));
+                        break;
+                    case ResourceType.SoundEffect:
+                        FrameResources.Sounds.Add(rlt.ResourceID, Owner.Content.Load<SoundEffect>(rlt.ResourcePath));
+                        break;
+                    case ResourceType.SpriteFont:
+                        FrameResources.Fonts.Add(rlt.ResourceID, Owner.Content.Load<SpriteFont>(rlt.ResourcePath));
+                        break;
+                    case ResourceType.Song:
+                        FrameResources.Music.Add(rlt.ResourceID, Owner.Content.Load<Song>(rlt.ResourcePath));
+                        break;
+                }
             }
         }
 
