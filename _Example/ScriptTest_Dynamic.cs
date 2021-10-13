@@ -16,6 +16,7 @@ namespace DotRPG.Example
     [SceneBuilder("example/topdown", true)]
     public class ScriptTest_Dynamic : Frame, IXMLSceneBuilder
     {
+        CameraFrameObject cam = new CameraFrameObject();
         PlayerObject player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -38,6 +39,8 @@ namespace DotRPG.Example
 
         public override void LoadContent()
         {
+            cam.CameraVelocity = 300.0f;
+            cam.DefaultHeight = 540;
             foreach (ResourceLoadTask rlt in resourceLoad)
             {
                 switch (rlt.Resource)
@@ -61,11 +64,12 @@ namespace DotRPG.Example
                 switch (xe.Name.LocalName.ToLower())
                 {
                     case "player":
+                    {
                         #region Parameters definition
                         Point startPos = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("startPos")).Value).ToPoint();
                         Point colliderSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("colliderSize")).Value).ToPoint();
                         Point interactFieldSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("interactFieldSize")).Value).ToPoint();
-                        Single mass = Single.Parse(xe.Attribute(XName.Get("interactFieldSize")).Value);
+                        Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
                         player = new PlayerObject(startPos, colliderSize, mass, interactFieldSize);
                         #endregion
                         foreach (XElement xe2 in xe.Elements())
@@ -75,12 +79,48 @@ namespace DotRPG.Example
                                 case "sprite":
                                     player.Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
                                     break;
+                                case "motion":
+                                    player.Motion.MovementSpeed = Single.Parse(xe2.Attribute(XName.Get("movementSpeed")).Value);
+                                    foreach (XElement xe3 in xe2.Elements())
+                                    {
+                                        switch (xe3.Name.LocalName.ToLower())
+                                        {
+                                            case "idleanimation":
+                                                player.Motion.IdleAnimation = xe3.Attribute(XName.Get("id")).Value;
+                                                break;
+                                            case "walkinganimation":
+                                                player.Motion.WalkingAnimation = xe3.Attribute(XName.Get("id")).Value;
+                                                break;
+                                        }
+                                    }
+                                    break;
+
                             }
                         }
                         break;
+                    }
                     case "prop":
-                        
+                    {
+                        #region Parameters definition
+                        String ID = xe.Attribute(XName.Get("id")).Value;
+                        Point startPos = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("startPos")).Value).ToPoint();
+                        Point colliderSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("colliderSize")).Value).ToPoint();
+                        Boolean isStatic = Boolean.Parse(xe.Attribute(XName.Get("static")).Value);
+                        Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
+                        props.Add(ID, new DynamicRectObject(startPos, colliderSize, mass, isStatic));
+
+                        #endregion
+                        foreach (XElement xe2 in xe.Elements())
+                        {
+                            switch (xe2.Name.LocalName.ToLower())
+                            {
+                                case "sprite":
+                                    props[ID].Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    break;
+                            }
+                        }
                         break;
+                    }
                 }
             }
             throw new NotImplementedException();

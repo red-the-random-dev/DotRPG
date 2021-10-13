@@ -12,6 +12,7 @@ namespace DotRPG._Example
 {
     class DynamicsTestFrame : Frame
     {
+        readonly CameraFrameObject cam = new CameraFrameObject();
         DynamicRectObject Player;
         DynamicRectObject Obstacle1;
         DynamicRectObject Obstacle2;
