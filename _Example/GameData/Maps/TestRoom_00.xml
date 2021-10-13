@@ -5,32 +5,13 @@
     <!-- Used to pre-load resources -->
     <Require>
         <Texture2D id="backdrop" location="Texture2D/backdrop"/>
-        <Texture2D id="red.idle.down" location="Texture2D/red.idle.down"/>
-        <Texture2D id="red.idle.up" location="Texture2D/red.idle.up"/>
-        <Texture2D id="red.idle.left" location="Texture2D/red.idle.left"/>
-        <Texture2D id="red.idle.right" location="Texture2D/red.idle.right"/>
-        <Texture2D id="cube-o" location="Texture2D/cube-o"/>
         <SoundEffect id="pixelText" location="Sounds/text-scroll"/>
     </Require>
 
     <Backdrop local="backdrop"/>
 
-    <Player startPos="32,64" colliderSize="32,32" interactFieldSize="64,64" mass="20.0f">
-        <Sprite frameRate="60" frameAmount="12">
-            <DefaultAnimationSequence local="red.idle.down"/>
-            <Animation id="red.idle.down" local="red.idle.down"/>
-            <Animation id="red.idle.up" local="red.idle.up"/>
-            <Animation id="red.idle.left" local="red.idle.left"/>
-            <Animation id="red.idle.right" local="red.idle.right"/>
-        </Srpite>
-    </Player>
-
-    <Prop id="whiterect" startPos="128,128" colliderSize="32,32" static="true">
-        <Sprite frameRate="60" frameAmount="1">
-            <DefaultAnimationSequence local="cube-o"/>
-        </Sprite>
-        <Interactable interactAction="whiterect-talk"/>
-    </Prop>
+    <Player startPos="32,64" _usePrefab="Prefabs/red.xml" />
+    <Prop id="whiterect" startPos="128,128" _usePrefab="Prefabs/whiterect.xml" />
 
     <Script location="Scripts/dialog.lua" hasDefaultAction="false"/>
 
