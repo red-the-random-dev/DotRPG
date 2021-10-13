@@ -12,7 +12,7 @@ namespace DotRPG.Scripting
         public Lua Runtime;
         public Boolean IsUp = true;
         public readonly LuaTable EventAmounts;
-        public LuaTable EventIDs;
+        public Dictionary<String, Int64> EventIDs = new Dictionary<string, long>();
         public Boolean HasDefaultAction = false;
 
         public LuaModule(String initFile, LuaTable eventAmounts)
@@ -21,10 +21,9 @@ namespace DotRPG.Scripting
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile);
             EventAmounts = eventAmounts;
-            EventIDs = new LuaTable(0, Runtime);
-            foreach (Object i in EventAmounts.Keys)
+            foreach (String i in EventAmounts.Keys)
             {
-                EventIDs[i] = 0;
+                EventIDs.Add(i, 0);
             }
         }
         public LuaModule(String initFile)
@@ -33,21 +32,20 @@ namespace DotRPG.Scripting
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile);
             EventAmounts = (LuaTable) Runtime["event_counts"];
-            EventIDs = new LuaTable(0, Runtime);
-            foreach (Object i in EventAmounts.Keys)
+            foreach (String i in EventAmounts.Keys)
             {
-                EventIDs[i] = 0;
+                EventIDs.Add(i, 0);
             }
         }
 
-        public void Update(Object ObjectID, Single elapsedTime, Single totalTime)
+        public void Update(String EventSetID, Single elapsedTime, Single totalTime)
         {
             LuaFunction loopFunction = Runtime["loop"] as LuaFunction;
-            loopFunction.Call(ObjectID, EventIDs[ObjectID], elapsedTime, totalTime);
-            EventIDs[ObjectID] = (Int64)EventIDs[ObjectID] + 1;
-            if ((Int64)EventIDs[ObjectID] >= (Int64)EventAmounts[ObjectID])
+            loopFunction.Call(EventSetID, EventIDs[EventSetID], elapsedTime, totalTime);
+            EventIDs[EventSetID] = (Int64)EventIDs[EventSetID] + 1;
+            if (EventIDs[EventSetID] >= (Int64)EventAmounts[EventSetID])
             {
-                EventIDs[ObjectID] = 0;
+                EventIDs[EventSetID] = 0;
             }
         }
     }
