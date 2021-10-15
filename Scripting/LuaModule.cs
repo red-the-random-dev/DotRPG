@@ -12,7 +12,8 @@ namespace DotRPG.Scripting
         public Lua Runtime;
         public Boolean IsUp = true;
         public readonly LuaTable EventAmounts;
-        public Int32[] EventIDs;
+        public Dictionary<String, Int64> EventIDs = new Dictionary<string, long>();
+        public Boolean HasDefaultAction = false;
 
         public LuaModule(String initFile, LuaTable eventAmounts)
         {
@@ -20,6 +21,10 @@ namespace DotRPG.Scripting
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile);
             EventAmounts = eventAmounts;
+            foreach (String i in EventAmounts.Keys)
+            {
+                EventIDs.Add(i, 0);
+            }
         }
         public LuaModule(String initFile)
         {
@@ -27,17 +32,28 @@ namespace DotRPG.Scripting
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile);
             EventAmounts = (LuaTable) Runtime["event_counts"];
-            EventIDs = new int[EventAmounts.Values.Count];
+            foreach (String i in EventAmounts.Keys)
+            {
+                EventIDs.Add(i, 0);
+            }
         }
 
-        public void Update(Int32 ObjectID, Single elapsedTime, Single totalTime)
+        public void Update(String EventSetID, Single elapsedTime, Single totalTime)
         {
-            LuaFunction loopFunction = Runtime["loop"] as LuaFunction;
-            loopFunction.Call(ObjectID, EventIDs[ObjectID], elapsedTime, totalTime);
-            EventIDs[ObjectID]++;
-            if (EventIDs[ObjectID] >= (Int64)EventAmounts[ObjectID+1])
+            // Event will be ignored if its ID is not referenced in file's eventAmounts table
+            foreach (String x in EventAmounts.Keys)
             {
-                EventIDs[ObjectID] = 0;
+                if (EventSetID == x)
+                {
+                    LuaFunction loopFunction = Runtime["loop"] as LuaFunction;
+                    loopFunction.Call(EventSetID, EventIDs[EventSetID], elapsedTime, totalTime);
+                    EventIDs[EventSetID] = (Int64)EventIDs[EventSetID] + 1;
+                    if (EventIDs[EventSetID] >= (Int64)EventAmounts[EventSetID])
+                    {
+                        EventIDs[EventSetID] = 0;
+                    }
+                    break;
+                }
             }
         }
     }

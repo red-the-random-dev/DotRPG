@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE dotrpg-frame>
+
+<Scene id="Testroom 00" behaviorType="example/topdown" index="1">
+    <!-- Used to pre-load resources -->
+    <Require>
+        <Texture2D id="backdrop" location="Texture2D/backdrop"/>
+        <SoundEffect id="pixelText" location="Sounds/text-scroll"/>
+    </Require>
+
+    <Backdrop local="backdrop"/>
+
+    <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
+    <Prop id="whiterect" startPos="128,160" static="true" _usePrefab="Prefabs/whiterect.xml">
+        <Interactable interactAction="whiterect-talk"/>
+    </Prop>
+    <Prop id="whiterect2" startPos="256,128" _usePrefab="Prefabs/whiterect.xml"/>
+
+    <Prop id="barrier_t" startPos="480,48" colliderSize="1000,96" mass="1000" static="true"/>
+    <Prop id="barrier_b" startPos="480,588" colliderSize="1000,96" mass="1000" static="true"/>
+    <Prop id="barrier_l" startPos="-48,270" colliderSize="96,600" mass="1000" static="true"/>
+    <Prop id="barrier_r" startPos="1008,270" colliderSize="96,600" mass="1000" static="true"/>
+
+    <Script location="Scripts/dialog.lua"/>
+    <!--
+    <TextBox relativeSize="1.0,0.2" location="0.0,0.8" textColor="255,255,255,255" backgroundColor="0,0,0,255">
+        <Font global="vcr-large"/>
+    </TextBox>
+    -->
+</Scene>

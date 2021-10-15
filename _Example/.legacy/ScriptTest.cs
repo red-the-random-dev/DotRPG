@@ -7,6 +7,7 @@ using DotRPG.Objects.Dynamics;
 using DotRPG.Scripting;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using DotRPG.Behavior;
 
 namespace DotRPG._Example
 {
@@ -55,7 +56,7 @@ namespace DotRPG._Example
                 DialogForm.Draw(spriteBatch, Owner.Window);
             }
 #if DEBUG
-            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], String.Format("Sight: {0}, Direction: {1}, AnimFrame: {2}", Player.SightArea, Player.SightDirection.ToString().ToLower(), Player.Sprite.SpriteIndex), new Vector2(0, 12), Color.White);
+            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], String.Format("Sight: {0}, Direction: {1}, AnimFrame: {2}", Player.SightArea, Player.SightDirection.ToString().ToLower(), Player.Sprite.SpriteIndex), new Vector2(0, 24), Color.White);
 #endif
         }
 
@@ -105,7 +106,7 @@ namespace DotRPG._Example
                     SceneSwitches.AutoScroll = false;
                     SceneSwitches.ExitDialog = false;
                     ShowingText = true;
-                    DialogTest1.Update(0, (float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
+                    DialogTest1.Update("whiterecttalk", (float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
                     DialogForm.ResetToStart();
                 }
                 else if (DialogForm.ReachedEnd)
@@ -118,7 +119,7 @@ namespace DotRPG._Example
                     {
                         SceneSwitches.AutoScroll = false;
                         SceneSwitches.ExitDialog = false;
-                        DialogTest1.Update(0, (float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
+                        DialogTest1.Update("whiterecttalk", (float)gameTime.ElapsedGameTime.TotalMilliseconds, (float)gameTime.TotalGameTime.TotalMilliseconds);
                         DialogForm.ResetToStart();
                     }
                 }

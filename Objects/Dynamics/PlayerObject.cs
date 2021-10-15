@@ -13,7 +13,8 @@ namespace DotRPG.Objects.Dynamics
     public class PlayerObject : DynamicRectObject
     {
         protected Point SightAreaSize;
-        public Direction SightDirection; 
+        public Direction SightDirection;
+        public MotionParameters Motion = new MotionParameters();
 
         public virtual Rectangle SightArea
         {

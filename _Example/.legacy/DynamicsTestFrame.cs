@@ -6,20 +6,21 @@ using DotRPG.Objects.Dynamics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using DotRPG.Behavior;
 
 namespace DotRPG._Example
 {
     class DynamicsTestFrame : Frame
     {
+        readonly CameraFrameObject cam = new CameraFrameObject();
         DynamicRectObject Player;
         DynamicRectObject Obstacle1;
         DynamicRectObject Obstacle2;
         SoundEffectInstance Sliding;
-
-        DynamicRectObject WallTop = new DynamicRectObject(new Point(480, -60), new Point(960, 120), 100.0f, true);
-        DynamicRectObject WallBottom = new DynamicRectObject(new Point(480, 600), new Point(960, 120), 100.0f, true);
-        DynamicRectObject WallLeft = new DynamicRectObject(new Point(-60, 270), new Point(120, 540), 100.0f, true);
-        DynamicRectObject WallRight = new DynamicRectObject(new Point(1020, 270), new Point(120, 540), 100.0f, true);
+        readonly DynamicRectObject WallTop = new DynamicRectObject(new Point(480, -60), new Point(960, 120), 100.0f, true);
+        readonly DynamicRectObject WallBottom = new DynamicRectObject(new Point(480, 600), new Point(960, 120), 100.0f, true);
+        readonly DynamicRectObject WallLeft = new DynamicRectObject(new Point(-60, 270), new Point(120, 540), 100.0f, true);
+        readonly DynamicRectObject WallRight = new DynamicRectObject(new Point(1020, 270), new Point(120, 540), 100.0f, true);
 
         public override int FrameID
         {

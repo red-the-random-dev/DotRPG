@@ -5,6 +5,7 @@ using DotRPG.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using DotRPG.Behavior;
 
 namespace DotRPG._Example
 {

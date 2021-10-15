@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE dotrpg-prefab>
+
+<ObjectPrefab id="whiterect" useWith="example/topdown">
+    <Require>
+        <Texture2D id="cube-o" location="Texture2D/cube-o"/>
+    </Require>
+    <Prop colliderSize="32,32" static="false" mass="15">
+        <Sprite frameRate="60" frameAmount="1">
+            <DefaultAnimationSequence local="cube-o"/>
+        </Sprite>
+    </Prop>
+</ObjectPrefab>

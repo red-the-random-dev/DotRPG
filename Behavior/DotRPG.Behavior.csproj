@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>1.2.3</Version>
     <Authors>red-the-random-dev</Authors>
     <Product>DotRPG</Product>
     <AssemblyVersion>1.3.6.0</AssemblyVersion>
@@ -10,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotRPG.Objects.csproj" />
+    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
   </ItemGroup>
 
 </Project>

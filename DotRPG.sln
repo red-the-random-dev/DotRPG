@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Objects.Complexity",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Objects.Dynamics", "Objects\Dynamics\DotRPG.Objects.Dynamics.csproj", "{35012066-AC4B-4144-90C9-7F42681652C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.Scripting.Pipeline", "Scripting\Pipeline\DotRPG.Scripting.Pipeline.csproj", "{4B3EB206-0C31-4504-807C-14E346EB155D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Scripting.Pipeline", "Scripting\Pipeline\DotRPG.Scripting.Pipeline.csproj", "{4B3EB206-0C31-4504-807C-14E346EB155D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.Scripting", "Scripting\DotRPG.Scripting.csproj", "{610FDEAE-E1EB-475C-A095-2F337FBB5A2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Scripting", "Scripting\DotRPG.Scripting.csproj", "{610FDEAE-E1EB-475C-A095-2F337FBB5A2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.Behavior", "Behavior\DotRPG.Behavior.csproj", "{7D48C09E-EDCF-4D41-9687-F32BC4F8DFC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{610FDEAE-E1EB-475C-A095-2F337FBB5A2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{610FDEAE-E1EB-475C-A095-2F337FBB5A2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{610FDEAE-E1EB-475C-A095-2F337FBB5A2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D48C09E-EDCF-4D41-9687-F32BC4F8DFC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D48C09E-EDCF-4D41-9687-F32BC4F8DFC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D48C09E-EDCF-4D41-9687-F32BC4F8DFC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D48C09E-EDCF-4D41-9687-F32BC4F8DFC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

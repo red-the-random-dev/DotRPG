@@ -8,13 +8,18 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <AssemblyVersion>1.2.3.0</AssemblyVersion>
-    <FileVersion>1.2.3.0</FileVersion>
+    <AssemblyVersion>1.3.6.0</AssemblyVersion>
+    <FileVersion>1.3.6.0</FileVersion>
     <Version>1.2.3</Version>
     <Authors>red-the-random-dev</Authors>
     <Product>DotRPG</Product>
     <PackageId>DotRPG Example Application</PackageId>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove=".legacy\**" />
+    <EmbeddedResource Remove=".legacy\**" />
+    <None Remove=".legacy\**" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="GameData\DotRPG.Example_data.mgcb" />
     <None Remove="Icon.ico" />
@@ -35,6 +40,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj" />
     <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
     <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
     <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
