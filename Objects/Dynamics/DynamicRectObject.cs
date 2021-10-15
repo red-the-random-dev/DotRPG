@@ -169,6 +169,10 @@ namespace DotRPG.Objects.Dynamics
 
         public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Single ZIndex = 0.0f)
         {
+            if (Sprite == null)
+            {
+                return;
+            }
             Single sizeMorph = 1.0f * scrollSize.Y / VirtualVSize;
             Vector2 location = new Vector2
             (

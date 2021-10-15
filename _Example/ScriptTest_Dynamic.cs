@@ -23,6 +23,7 @@ namespace DotRPG.Example
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<XElement> objectPrototypes = new List<XElement>();
         List<LuaModule> Scripts = new List<LuaModule>();
+        List<Backdrop> backdrops = new List<Backdrop>();
 
         Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
         Dictionary<String, DynamicRectObject> interactable = new Dictionary<string, DynamicRectObject>();
@@ -161,8 +162,34 @@ namespace DotRPG.Example
                         // TODO: Add CLR references
                         break;
                     }
+                    case "backdrop":
+                    {
+                        Texture2D t = null;
+                        Vector2 p = Vector2.Zero;
+                        foreach (XAttribute xa in xe.Attributes())
+                        {
+                            switch (xa.Name.LocalName)
+                            {
+                                case "local":
+                                    t = FrameResources.Textures[xa.Value];
+                                    break;
+                                case "global":
+                                    t = FrameResources.Global.Textures[xa.Value];
+                                    break;
+                                case "offset":
+                                    p = XMLSceneLoader.ResolveVector2(xa.Value);
+                                    break;
+                            }
+                        }
+                        if (t != null)
+                        {
+                            backdrops.Add(new Backdrop(t, p));
+                        }
+                        break;
+                    }
                 }
             }
+            cam.Focus = player.Location.ToPoint();
         }
 
         public Frame BuildFromXML(XDocument Document, Object[] parameters)
@@ -274,6 +301,10 @@ namespace DotRPG.Example
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
+            foreach (Backdrop b in backdrops)
+            {
+                b.Draw(spriteBatch, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), drawZone.Height / 540);
+            }
             foreach (String i in props.Keys)
             {
                 props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (props[i].Location.Y / 540))));
@@ -293,6 +324,7 @@ namespace DotRPG.Example
             interactable.Clear();
             player = null;
             Scripts.Clear();
+            backdrops.Clear();
         }
     }
 }
