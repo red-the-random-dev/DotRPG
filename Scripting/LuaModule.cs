@@ -40,12 +40,20 @@ namespace DotRPG.Scripting
 
         public void Update(String EventSetID, Single elapsedTime, Single totalTime)
         {
-            LuaFunction loopFunction = Runtime["loop"] as LuaFunction;
-            loopFunction.Call(EventSetID, EventIDs[EventSetID], elapsedTime, totalTime);
-            EventIDs[EventSetID] = (Int64)EventIDs[EventSetID] + 1;
-            if (EventIDs[EventSetID] >= (Int64)EventAmounts[EventSetID])
+            // Event will be ignored if its ID is not referenced in file's eventAmounts table
+            foreach (String x in EventAmounts.Keys)
             {
-                EventIDs[EventSetID] = 0;
+                if (EventSetID == x)
+                {
+                    LuaFunction loopFunction = Runtime["loop"] as LuaFunction;
+                    loopFunction.Call(EventSetID, EventIDs[EventSetID], elapsedTime, totalTime);
+                    EventIDs[EventSetID] = (Int64)EventIDs[EventSetID] + 1;
+                    if (EventIDs[EventSetID] >= (Int64)EventAmounts[EventSetID])
+                    {
+                        EventIDs[EventSetID] = 0;
+                    }
+                    break;
+                }
             }
         }
     }

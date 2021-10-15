@@ -11,10 +11,15 @@
     <Backdrop local="backdrop"/>
 
     <Player startPos="32,64" _usePrefab="Prefabs/red.xml" />
-    <Prop id="whiterect" startPos="128,128" _usePrefab="Prefabs/whiterect.xml" />
+    <Prop id="whiterect" startPos="128,128" static="true" _usePrefab="Prefabs/whiterect.xml">
+        <Interactable interactAction="whiterect-talk"/>
+    </Prop>
+    <Prop id="whiterect2" startPos="256,128" _usePrefab="Prefabs/whiterect.xml"/>
 
-    <Script location="Scripts/dialog.lua" hasDefaultAction="false"/>
+    <Script location="Scripts/dialog.lua"/>
+    <!--
     <TextBox relativeSize="1.0,0.2" location="0.0,0.8" textColor="255,255,255,255" backgroundColor="0,0,0,255">
         <Font global="vcr-large"/>
     </TextBox>
+    -->
 </Scene>

@@ -89,7 +89,7 @@ namespace DotRPG._Example
 
         private void StartScroll(Object sender, EventArgs e, GameTime gameTime)
         {
-            ActiveFrame = Frames[2];
+            ActiveFrame = Frames[3];
             ActiveFrame.LoadContent();
         }
 
@@ -109,8 +109,8 @@ namespace DotRPG._Example
             Frames[1].Initialize();
             Frames.Add(new ScriptTest(this, ResourceHGlobal, LogicEventSet));
             Frames[2].Initialize();
-            // String dummy;
-            // Frames.Add(XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(Path.Combine(Content.RootDirectory, "Maps/TestRoom_00.xml"))), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet}, out dummy));
+            String dummy;
+            Frames.Add(XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(Path.Combine(Content.RootDirectory, "Maps/TestRoom_00.xml"))), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet }, out dummy));
             base.Initialize();
         }
 

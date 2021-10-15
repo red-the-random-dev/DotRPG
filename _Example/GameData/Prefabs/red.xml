@@ -8,7 +8,7 @@
         <Texture2D id="red.idle.left" location="Texture2D/red.idle.left"/>
         <Texture2D id="red.idle.right" location="Texture2D/red.idle.right"/>
     </Require>
-    <Player colliderSize="32,32" interactFieldSize="64,64" mass="20.0f">
+    <Player colliderSize="32,32" interactFieldSize="64,64" mass="20">
         <Sprite frameRate="6">
             <DefaultAnimationSequence local="red.idle.down" frameAmount="12"/>
             <Animation id="red.idle.down" local="red.idle.down" frameAmount="12"/>
@@ -16,7 +16,7 @@
             <Animation id="red.idle.left" local="red.idle.left" frameAmount="12"/>
             <Animation id="red.idle.right" local="red.idle.right" frameAmount="12"/>
         </Sprite>
-        <Motion movementSpeed="256.0f">
+        <Motion movementSpeed="256">
             <IdleAnimation id="red.idle.{0}"/>
             <WalkingAnimation id="red.idle.{0}"/>
         </Motion>

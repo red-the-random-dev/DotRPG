@@ -186,7 +186,7 @@ namespace DotRPG.Behavior
         public static SpriteController LoadSpriteController(XElement xe2, ResourceHeap FrameResources)
         {
             SpriteController sc = null;
-            Single frameTime = 1000.0f / Single.Parse(xe2.Attribute(XName.Get("startPos")).Value);
+            Single frameTime = 1000.0f / Single.Parse(xe2.Attribute(XName.Get("frameRate")).Value);
             foreach (XElement xe3 in xe2.Elements())
             {
                 switch (xe3.Name.LocalName.ToLower())
@@ -219,7 +219,7 @@ namespace DotRPG.Behavior
                     }
                     case "animation":
                     {
-                        String ID = xe3.Attribute(XName.Get("startPos")).Value;
+                        String ID = xe3.Attribute(XName.Get("id")).Value;
                         Texture2D Anim = null;
                         UInt16 frameAmount = 1;
                         foreach (XAttribute xa in xe3.Attributes())

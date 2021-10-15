@@ -2,6 +2,11 @@ import ('DotRPG.Scripting', 'DotRPG.Objects')
 
 event_counts = {whiterecttalk=7}
 
+_manifest = {
+    id="testDialog",
+    useWith = "example/topdown",
+}
+
 function loop(objID, eventID, frameTime, totalTime)
     if objID == "whiterecttalk" then
         if eventID == 0 then

@@ -5,10 +5,9 @@
     <Require>
         <Texture2D id="cube-o" location="Texture2D/cube-o"/>
     </Require>
-    <Prop colliderSize="32,32" static="true">
+    <Prop colliderSize="32,32" static="false" mass="15">
         <Sprite frameRate="60" frameAmount="1">
             <DefaultAnimationSequence local="cube-o"/>
         </Sprite>
-        <Interactable interactAction="whiterect-talk"/>
     </Prop>
 </ObjectPrefab>
