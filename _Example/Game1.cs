@@ -10,6 +10,7 @@ using DotRPG.Behavior;
 using System.Xml.Linq;
 using System.IO;
 using System.Reflection;
+using DotRPG.Behavior.Routines;
 
 namespace DotRPG._Example
 {
@@ -166,10 +167,29 @@ namespace DotRPG._Example
             }
             if (ActiveFrame != null)
             {
-                if (ActiveFrame.FrameID == -128 && stageSelect.SelectedOption != -1)
+                if (ActiveFrame is LoadingScreen l)
                 {
-                    ActiveFrame = Frames[stageSelect.SelectedOption];
-                    ActiveFrame.LoadContent();
+                    if (l.LoadedFrame.Loaded)
+                    {
+                        ActiveFrame = l.LoadedFrame as Frame;
+                    }
+                    if (ActiveFrame == null)
+                    {
+                        ActiveFrame = stageSelect;
+                    }
+                }
+                else if (ActiveFrame.FrameID == -128 && stageSelect.SelectedOption != -1)
+                {
+                    Frame toLoad = Frames[stageSelect.SelectedOption];
+                    if (toLoad is ILoadable load)
+                    {
+                        ActiveFrame = new LoadingScreen(load, this, ResourceHGlobal, LogicEventSet);
+                    }
+                    else
+                    {
+                        ActiveFrame = toLoad;
+                        ActiveFrame.LoadContent();
+                    }
                 }
                 else if (ActiveFrame.FrameID != -128 && Keyboard.GetState().IsKeyDown(Keys.F2))
                 {

@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Routines\**" />
+    <EmbeddedResource Remove="Routines\**" />
+    <None Remove="Routines\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
   </ItemGroup>
 
