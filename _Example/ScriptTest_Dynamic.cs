@@ -317,7 +317,7 @@ namespace DotRPG.Example
 
         public override void Initialize()
         {
-            throw new NotImplementedException();
+            
         }
 
         public override void UnloadContent()

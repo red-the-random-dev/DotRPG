@@ -15,7 +15,9 @@ namespace DotRPG._Example
 {
     public class Game1 : Game
     {
+        private StageSelectFrame stageSelect;
         private ResourceHeap ResourceHGlobal = new ResourceHeap();
+        private List<String> FrameNames = new List<string>();
         private List<Frame> Frames = new List<Frame>();
         private Frame ActiveFrame;
         private TextObject PressStart;
@@ -89,8 +91,7 @@ namespace DotRPG._Example
 
         private void StartScroll(Object sender, EventArgs e, GameTime gameTime)
         {
-            ActiveFrame = Frames[0];
-            ActiveFrame.LoadContent();
+            ActiveFrame = stageSelect;
         }
 
         public Game1()
@@ -103,9 +104,14 @@ namespace DotRPG._Example
         protected override void Initialize()
         {
             ResetAspectRatio();
-            String dummy;
-            Frames.Add(XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(Path.Combine(Content.RootDirectory, "Maps/TestRoom_00.xml"))), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet }, out dummy));
-            Frames[0].Initialize();
+            foreach (String i in Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "Maps/")))
+            {
+                Frame f = XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(i)), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
+                FrameNames.Add(Name);
+                Frames.Add(f);
+                f.Initialize();
+            }
+            
             base.Initialize();
         }
 
@@ -128,12 +134,13 @@ namespace DotRPG._Example
 
         protected override void LoadContent()
         {
+            
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             ResourceHGlobal.Fonts.Add("vcr", Content.Load<SpriteFont>("Fonts/MainFont"));
             ResourceHGlobal.Fonts.Add("vcr_large", Content.Load<SpriteFont>("Fonts/MainFont_Large"));
             _spriteFontLarge = ResourceHGlobal.Fonts["vcr_large"];
             _spriteFont = ResourceHGlobal.Fonts["vcr"];
-
+            stageSelect = new StageSelectFrame("Please select the map to continue.\n[UP/DOWN] Scroll\n[Z] Select\n[F2] Quit to stage select", FrameNames.ToArray(), _spriteFont, this, ResourceHGlobal, LogicEventSet);
             PressStart = new TextObject(_spriteFontLarge, "[Press START or ENTER]", 0.5f, 0.5f, Color.White, AlignMode.Center, (WideScreen ? 1080 : 960));
             ResetAspectRatio();
 
@@ -156,6 +163,20 @@ namespace DotRPG._Example
             else
             {
                 EscapeTimer = 0.0f;
+            }
+            if (ActiveFrame != null)
+            {
+                if (ActiveFrame.FrameID == -128 && stageSelect.SelectedOption != -1)
+                {
+                    ActiveFrame = Frames[stageSelect.SelectedOption];
+                    ActiveFrame.LoadContent();
+                }
+                else if (ActiveFrame.FrameID != -128 && Keyboard.GetState().IsKeyDown(Keys.F2))
+                {
+                    ActiveFrame.UnloadContent();
+                    stageSelect.SelectedOption = -1;
+                    ActiveFrame = stageSelect;
+                }
             }
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter)) && !GameStarted)
             {

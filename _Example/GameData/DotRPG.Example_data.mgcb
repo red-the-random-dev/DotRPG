@@ -30,6 +30,12 @@
 #begin Maps/TestRoom_00.xml
 /copy:Maps/TestRoom_00.xml
 
+#begin Maps/void.xml
+/copy:Maps/void.xml
+
+#begin Maps/xyz.xml
+/copy:Maps/xyz.xml
+
 #begin Prefabs/red.xml
 /copy:Prefabs/red.xml
 
