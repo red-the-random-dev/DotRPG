@@ -89,7 +89,7 @@ namespace DotRPG._Example
 
         private void StartScroll(Object sender, EventArgs e, GameTime gameTime)
         {
-            ActiveFrame = Frames[3];
+            ActiveFrame = Frames[0];
             ActiveFrame.LoadContent();
         }
 
@@ -103,14 +103,9 @@ namespace DotRPG._Example
         protected override void Initialize()
         {
             ResetAspectRatio();
-            Frames.Add(new DemoFrame(this, ResourceHGlobal, LogicEventSet));
-            Frames[0].Initialize();
-            Frames.Add(new DynamicsTestFrame(this, ResourceHGlobal, LogicEventSet));
-            Frames[1].Initialize();
-            Frames.Add(new ScriptTest(this, ResourceHGlobal, LogicEventSet));
-            Frames[2].Initialize();
             String dummy;
             Frames.Add(XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(Path.Combine(Content.RootDirectory, "Maps/TestRoom_00.xml"))), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet }, out dummy));
+            Frames[0].Initialize();
             base.Initialize();
         }
 

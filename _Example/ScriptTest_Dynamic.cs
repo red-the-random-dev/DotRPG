@@ -159,7 +159,6 @@ namespace DotRPG.Example
                     {
                         String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value));
                         Scripts.Add(new LuaModule(scriptContent));
-                        // TODO: Add CLR references
                         break;
                     }
                     case "backdrop":
@@ -190,6 +189,10 @@ namespace DotRPG.Example
                 }
             }
             cam.Focus = player.Location.ToPoint();
+            foreach (LuaModule x in Scripts)
+            {
+                x.Runtime["obj"] = props;
+            }
         }
 
         public Frame BuildFromXML(XDocument Document, Object[] parameters)
