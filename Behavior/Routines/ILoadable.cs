@@ -4,6 +4,8 @@ namespace DotRPG.Behavior.Routines
 {
     public interface ILoadable
     {
+        public Boolean ReadyForLoad { get; }
+        public Boolean Loaded { get; }
         public Int32 ContentTasks_Total { get; }
         public Int32 ObjectTasks_Total { get; }
         public Int32 ContentTasks_Done { get; }

@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Scripting", "Scripti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Behavior", "Behavior\DotRPG.Behavior.csproj", "{7D48C09E-EDCF-4D41-9687-F32BC4F8DFC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.Behavior.Rountines", "Behavior\Routines\DotRPG.Behavior.Rountines.csproj", "{67A8F31C-34A8-4DEC-9AB6-57F5A41018C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.Behavior.Routines", "Behavior\Routines\DotRPG.Behavior.Routines.csproj", "{67A8F31C-34A8-4DEC-9AB6-57F5A41018C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

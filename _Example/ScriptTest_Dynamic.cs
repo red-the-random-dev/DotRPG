@@ -29,9 +29,12 @@ namespace DotRPG.Example
         Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
         Dictionary<String, DynamicRectObject> interactable = new Dictionary<string, DynamicRectObject>();
 
+
+        #region ILoadable implementation
         Int32 content = 0;
         Int32 objects = 0;
-
+        Boolean ready = false;
+        Boolean loaded = false;
         public Int32 ContentTasks_Total
         {
             get
@@ -60,6 +63,20 @@ namespace DotRPG.Example
                 return objects;
             }
         }
+        public Boolean ReadyForLoad
+        {
+            get
+            {
+                return ready;
+            }
+        }
+        public Boolean Loaded
+        {
+            get
+            {
+                return loaded;
+            }
+        }
 
         public void PerformContentTask()
         {
@@ -76,20 +93,42 @@ namespace DotRPG.Example
             {
                 ResourceLoadTask rlt = resourceLoad[i];
                 LoadResource(rlt);
-                content = i;
+                content = i+1;
             }
         }
         public void PerformObjectTasks(Int32 step)
         {
-            Int32 x = content;
-            for (int i = content; i < Math.Min(x + step, objectPrototypes.Count); i++)
+            Int32 x = objects;
+            for (int i = objects; i < Math.Min(x + step, objectPrototypes.Count); i++)
             {
                 XElement xe = objectPrototypes[i];
                 LoadObject(xe);
-                content = i;
+                objects = i+1;
             }
         }
-
+        public void PreloadTask()
+        {
+            cam.CameraVelocity = 300.0f;
+            cam.DefaultHeight = 540;
+            ready = true;
+        }
+        public void PostLoadTask()
+        {
+            cam.Focus = player.Location.ToPoint();
+            foreach (LuaModule x in Scripts)
+            {
+                x.Runtime["obj"] = props;
+            }
+            loaded = true;
+        }
+        public Boolean SupportsMultiLoading
+        {
+            get
+            {
+                return true;
+            }
+        }
+        #endregion
         public override int FrameID
         {
             get
@@ -263,26 +302,8 @@ namespace DotRPG.Example
                 LoadObject(xe);
             }
             PostLoadTask();
-        }
-        public void PreloadTask()
-        {
-            cam.CameraVelocity = 300.0f;
-            cam.DefaultHeight = 540;
-        }
-        public void PostLoadTask()
-        {
-            cam.Focus = player.Location.ToPoint();
-            foreach (LuaModule x in Scripts)
-            {
-                x.Runtime["obj"] = props;
-            }
-        }
-        public Boolean SupportsMultiLoading
-        {
-            get
-            {
-                return true;
-            }
+            objects = objectPrototypes.Count;
+            content = resourceLoad.Count;
         }
 
         public Frame BuildFromXML(XDocument Document, Object[] parameters)
@@ -418,6 +439,10 @@ namespace DotRPG.Example
             player = null;
             Scripts.Clear();
             backdrops.Clear();
+            content = 0;
+            objects = 0;
+            ready = false;
+            loaded = false;
         }
     }
 }
