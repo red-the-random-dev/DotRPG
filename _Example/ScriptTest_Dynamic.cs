@@ -11,11 +11,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using DotRPG.Scripting;
+using DotRPG.Behavior.Routines;
 
 namespace DotRPG.Example
 {
     [SceneBuilder("example/topdown", true)]
-    public class ScriptTest_Dynamic : Frame, IXMLSceneBuilder
+    public class ScriptTest_Dynamic : Frame, IXMLSceneBuilder, ILoadable
     {
         CameraFrameObject cam = new CameraFrameObject();
         PlayerObject player;
@@ -28,6 +29,67 @@ namespace DotRPG.Example
         Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
         Dictionary<String, DynamicRectObject> interactable = new Dictionary<string, DynamicRectObject>();
 
+        Int32 content = 0;
+        Int32 objects = 0;
+
+        public Int32 ContentTasks_Total
+        {
+            get
+            {
+                return resourceLoad.Count;
+            }
+        }
+        public Int32 ObjectTasks_Total
+        {
+            get
+            {
+                return objectPrototypes.Count;
+            }
+        }
+        public Int32 ContentTasks_Done
+        {
+            get
+            {
+                return content;
+            }
+        }
+        public Int32 ObjectTasks_Done
+        {
+            get
+            {
+                return objects;
+            }
+        }
+
+        public void PerformContentTask()
+        {
+            PerformContentTasks(1);
+        }
+        public void PerformObjectTask()
+        {
+            PerformObjectTasks(1);
+        }
+        public void PerformContentTasks(Int32 step)
+        {
+            Int32 x = content;
+            for (int i = content; i < Math.Min(x+step, resourceLoad.Count); i++)
+            {
+                ResourceLoadTask rlt = resourceLoad[i];
+                LoadResource(rlt);
+                content = i;
+            }
+        }
+        public void PerformObjectTasks(Int32 step)
+        {
+            Int32 x = content;
+            for (int i = content; i < Math.Min(x + step, objectPrototypes.Count); i++)
+            {
+                XElement xe = objectPrototypes[i];
+                LoadObject(xe);
+                content = i;
+            }
+        }
+
         public override int FrameID
         {
             get
@@ -35,67 +97,68 @@ namespace DotRPG.Example
                 return _id;
             }
         }
-
         public override void SetPlayerPosition(object sender, EventArgs e, GameTime gameTime)
         {
-            throw new NotImplementedException();
-        }
-        #region Loader
-        public override void LoadContent()
-        {
-            cam.CameraVelocity = 300.0f;
-            cam.DefaultHeight = 540;
-            foreach (ResourceLoadTask rlt in resourceLoad)
+            if (e is FrameShiftEventArgs fs)
             {
-                switch (rlt.Resource)
+                if (fs.IncludesPlayerLocation && player != null)
                 {
-                    case ResourceType.Texture2D:
-                        foreach (String x in FrameResources.Textures.Keys)
-                        {
-                            if (x == rlt.ResourceID)
-                            {
-                                goto end_t;
-                            }
-                        }
-                        FrameResources.Textures.Add(rlt.ResourceID, Owner.Content.Load<Texture2D>(rlt.ResourcePath));
-                        end_t: break;
-                    case ResourceType.SoundEffect:
-                        foreach (String x in FrameResources.Sounds.Keys)
-                        {
-                            if (x == rlt.ResourceID)
-                            {
-                                goto end_s;
-                            }
-                        }
-                        FrameResources.Sounds.Add(rlt.ResourceID, Owner.Content.Load<SoundEffect>(rlt.ResourcePath));
-                        end_s: break;
-                    case ResourceType.SpriteFont:
-                        foreach (String x in FrameResources.Textures.Keys)
-                        {
-                            if (x == rlt.ResourceID)
-                            {
-                                goto end_f;
-                            }
-                        }
-                        FrameResources.Fonts.Add(rlt.ResourceID, Owner.Content.Load<SpriteFont>(rlt.ResourcePath));
-                        end_f: break;
-                    case ResourceType.Song:
-                        foreach (String x in FrameResources.Textures.Keys)
-                        {
-                            if (x == rlt.ResourceID)
-                            {
-                                goto end_m;
-                            }
-                        }
-                        FrameResources.Music.Add(rlt.ResourceID, Owner.Content.Load<Song>(rlt.ResourcePath));
-                        end_m: break;
+                    player.Location = fs.PlayerLocation.ToVector2();
                 }
             }
-            foreach (XElement xe in objectPrototypes)
+        }
+        #region Loader
+        void LoadResource(ResourceLoadTask rlt)
+        {
+            switch (rlt.Resource)
             {
-                switch (xe.Name.LocalName.ToLower())
-                {
-                    case "player":
+                case ResourceType.Texture2D:
+                    foreach (String x in FrameResources.Textures.Keys)
+                    {
+                        if (x == rlt.ResourceID)
+                        {
+                            goto end_t;
+                        }
+                    }
+                    FrameResources.Textures.Add(rlt.ResourceID, Owner.Content.Load<Texture2D>(rlt.ResourcePath));
+                    end_t: break;
+                case ResourceType.SoundEffect:
+                    foreach (String x in FrameResources.Sounds.Keys)
+                    {
+                        if (x == rlt.ResourceID)
+                        {
+                            goto end_s;
+                        }
+                    }
+                    FrameResources.Sounds.Add(rlt.ResourceID, Owner.Content.Load<SoundEffect>(rlt.ResourcePath));
+                    end_s: break;
+                case ResourceType.SpriteFont:
+                    foreach (String x in FrameResources.Textures.Keys)
+                    {
+                        if (x == rlt.ResourceID)
+                        {
+                            goto end_f;
+                        }
+                    }
+                    FrameResources.Fonts.Add(rlt.ResourceID, Owner.Content.Load<SpriteFont>(rlt.ResourcePath));
+                    end_f: break;
+                case ResourceType.Song:
+                    foreach (String x in FrameResources.Textures.Keys)
+                    {
+                        if (x == rlt.ResourceID)
+                        {
+                            goto end_m;
+                        }
+                    }
+                    FrameResources.Music.Add(rlt.ResourceID, Owner.Content.Load<Song>(rlt.ResourcePath));
+                    end_m: break;
+            }
+        }
+        void LoadObject(XElement xe)
+        {
+            switch (xe.Name.LocalName.ToLower())
+            {
+                case "player":
                     {
                         #region Parameters definition
                         Point startPos = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("startPos")).Value).ToPoint();
@@ -131,7 +194,7 @@ namespace DotRPG.Example
                         }
                         break;
                     }
-                    case "prop":
+                case "prop":
                     {
                         #region Parameters definition
                         String ID = xe.Attribute(XName.Get("id")).Value;
@@ -155,13 +218,13 @@ namespace DotRPG.Example
                         }
                         break;
                     }
-                    case "script":
+                case "script":
                     {
                         String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value));
                         Scripts.Add(new LuaModule(scriptContent));
                         break;
                     }
-                    case "backdrop":
+                case "backdrop":
                     {
                         Texture2D t = null;
                         Vector2 p = Vector2.Zero;
@@ -186,12 +249,39 @@ namespace DotRPG.Example
                         }
                         break;
                     }
-                }
             }
+        }
+        public override void LoadContent()
+        {
+            PreloadTask();
+            foreach (ResourceLoadTask rlt in resourceLoad)
+            {
+                LoadResource(rlt);
+            }
+            foreach (XElement xe in objectPrototypes)
+            {
+                LoadObject(xe);
+            }
+            PostLoadTask();
+        }
+        public void PreloadTask()
+        {
+            cam.CameraVelocity = 300.0f;
+            cam.DefaultHeight = 540;
+        }
+        public void PostLoadTask()
+        {
             cam.Focus = player.Location.ToPoint();
             foreach (LuaModule x in Scripts)
             {
                 x.Runtime["obj"] = props;
+            }
+        }
+        public Boolean SupportsMultiLoading
+        {
+            get
+            {
+                return true;
             }
         }
 

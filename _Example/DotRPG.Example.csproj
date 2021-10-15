@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj" />
+    <ProjectReference Include="..\Behavior\Routines\DotRPG.Behavior.Rountines.csproj" />
     <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
     <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
     <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
