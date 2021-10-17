@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE dotrpg-frame>
 
-<Scene id="bananas" behaviorType="example/topdown" index="2">
+<Scene id="bananas" behaviorType="default/topdown" index="2">
     <Require>
         <Texture2D id="bananas" location="Texture2D/Banana" />
     </Require>

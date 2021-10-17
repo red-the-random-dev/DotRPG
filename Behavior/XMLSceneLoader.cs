@@ -12,17 +12,22 @@ namespace DotRPG.Behavior
 {
     public static class XMLSceneLoader
     {
+        public static IXMLSceneBuilder FetchSceneBuilder(Assembly assembly, String behaviorType, out Boolean selfBuilt, out Type builder)
+        {
+            return FetchSceneBuilder(assembly.GetTypes(), behaviorType, out selfBuilt, out builder);
+        }
+
         /// <summary>
         /// Gets IXMLSceneBuilder instance appropriate for building scene of specified behavior.
         /// </summary>
-        /// <param name="assembly">Assembly to search scene builder in.</param>
+        /// <param name="types">List of types to look for appropriate builder in.</param>
         /// <param name="behaviorType">Behavior type.</param>
         /// <param name="selfBuilt">Set to True if corresponding builder is declared as self-built frame.</param>
         /// <param name="builder">Builder type. Used for later instantiation of frame with given parameters.</param>
         /// <returns>IXMLSceneBuilder instance. If scene builder is declared as self-built frame, a NULL value is returned.</returns>
-        public static IXMLSceneBuilder FetchSceneBuilder(Assembly assembly, String behaviorType, out Boolean selfBuilt, out Type builder)
+        public static IXMLSceneBuilder FetchSceneBuilder(Type[] types, String behaviorType, out Boolean selfBuilt, out Type builder)
         {
-            foreach (Type type in assembly.GetTypes())
+            foreach (Type type in types)
             {
                 if (Attribute.IsDefined(type, typeof(SceneBuilderAttribute)))
                 {
@@ -52,6 +57,53 @@ namespace DotRPG.Behavior
                 }
             }
             throw new InvalidOperationException("Unable to fetch appropriate scene builder instance for behavior type \""+behaviorType+"\" among registered types.");
+        }
+
+        public static Frame LoadFrame(XDocument Document, Assembly[] lookIn, object[] buildData, out String literalName)
+        {
+            foreach (Assembly a in lookIn)
+            {
+                try
+                {
+                    return LoadFrame(Document, a, buildData, out literalName);
+                }
+                catch (InvalidOperationException)
+                {
+                    Console.Error.WriteLine("Unable to find reference in " + a.FullName);
+                }
+                catch (SerializationException e)
+                {
+                    throw e;
+                }
+            }
+            throw new InvalidOperationException("Unable to fetch appropriate scene builder instance for referenced document.");
+        }
+
+        public static Frame LoadFrame(XDocument Document, Object[] buildData, out String literalName)
+        {
+            return LoadFrame(Document, SceneBuilderAttribute.SceneBuilderRegistry.ToArray(), buildData, out literalName);
+        }
+        public static Frame LoadFrame(XDocument Document, Type[] typeSet, Object[] buildData, out String literalName)
+        {
+            if (Document.DocumentType.Name != "dotrpg-frame")
+            {
+                throw new System.Runtime.Serialization.SerializationException("Unable to load data from document of following type: " + Document.DocumentType.Name + " (type \"dotrpg-frame\" expected).");
+            }
+            XElement rt = Document.Root;
+            if (rt.Name.LocalName.ToString().ToLower() != "scene")
+            {
+                throw new System.Runtime.Serialization.SerializationException("Unable to load data from root tag of following type: <" + rt.Name + "> (type <Scene> expected).");
+            }
+            literalName = rt.Attribute(XName.Get("id")).Value;
+            String behaviorType = rt.Attribute(XName.Get("behaviorType")).Value;
+            IXMLSceneBuilder ixsb = FetchSceneBuilder(typeSet, behaviorType, out bool selfBuilt, out Type t);
+
+            if (ixsb == null && selfBuilt)
+            {
+                ixsb = (IXMLSceneBuilder)Activator.CreateInstance(t, buildData);
+            }
+
+            return ixsb.BuildFromXML(Document, buildData);
         }
 
         public static Frame LoadFrame(XDocument Document, Assembly lookIn, Object[] buildData, out String literalName)

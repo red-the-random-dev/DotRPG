@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 using DotRPG.Objects;
-using DotRPG.Behavior;
 using Microsoft.Xna.Framework;
 using DotRPG.Objects.Dynamics;
 using System.Runtime.Serialization;
@@ -13,10 +12,10 @@ using Microsoft.Xna.Framework.Media;
 using DotRPG.Scripting;
 using DotRPG.Behavior.Routines;
 
-namespace DotRPG.Example
+namespace DotRPG.Behavior.Defaults
 {
-    [SceneBuilder("example/topdown", true)]
-    public class ScriptTest_Dynamic : Frame, IXMLSceneBuilder, ILoadable
+    [SceneBuilder("default/topdown", typeof(TopDownFrame), true)]
+    public class TopDownFrame : Frame, IXMLSceneBuilder, ILoadable
     {
         CameraFrameObject cam = new CameraFrameObject();
         PlayerObject player;
@@ -309,7 +308,7 @@ namespace DotRPG.Example
         public Frame BuildFromXML(XDocument Document, Object[] parameters)
         {
             XElement root = Document.Root;
-            if (root.Name.LocalName.ToString() != "Scene" || root.Attribute(XName.Get("behaviorType")).Value != "example/topdown")
+            if (root.Name.LocalName.ToString() != "Scene" || root.Attribute(XName.Get("behaviorType")).Value != "default/topdown")
             {
                 throw new SerializationException("Attempted to load scene with mismatching behavior.");
             }
@@ -354,7 +353,7 @@ namespace DotRPG.Example
             return this;
         }
         #endregion
-        public ScriptTest_Dynamic(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
+        public TopDownFrame(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
         {
 
         }

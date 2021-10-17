@@ -9,8 +9,9 @@ using DotRPG.Objects;
 using DotRPG.Behavior;
 using System.Xml.Linq;
 using System.IO;
-using System.Reflection;
 using DotRPG.Behavior.Routines;
+using DotRPG.Behavior.Defaults;
+using System.Reflection;
 
 namespace DotRPG._Example
 {
@@ -107,7 +108,7 @@ namespace DotRPG._Example
             ResetAspectRatio();
             foreach (String i in Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "Maps/")))
             {
-                Frame f = XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(i)), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
+                Frame f = XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(i)), new Type[] {typeof(TopDownFrame)}, new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
                 FrameNames.Add(Name);
                 Frames.Add(f);
                 f.Initialize();
