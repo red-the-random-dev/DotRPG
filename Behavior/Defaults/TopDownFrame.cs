@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Media;
 using DotRPG.Scripting;
 using DotRPG.Behavior.Routines;
 using Microsoft.Xna.Framework.Input;
+using DotRPG.UI;
 
 namespace DotRPG.Behavior.Defaults
 {

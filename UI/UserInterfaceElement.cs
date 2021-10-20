@@ -9,7 +9,7 @@ namespace DotRPG.UI
     public abstract class UserInterfaceElement
     {
         public readonly HashSet<UserInterfaceElement> Subnodes = new HashSet<UserInterfaceElement>();
-        Single Rotation { get; set; } = 0.0f;
+        public Single Rotation { get; set; } = 0.0f;
         public Int32 DefaultDrawAreaHeight { get; set; }
         public Vector2 RelativeSize { get; set; }
         public Vector2 RelativePosition { get; set; }

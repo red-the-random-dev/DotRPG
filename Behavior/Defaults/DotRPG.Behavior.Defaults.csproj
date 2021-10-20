@@ -12,6 +12,7 @@
     <ProjectReference Include="..\..\Objects\DotRPG.Objects.csproj" />
     <ProjectReference Include="..\..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
     <ProjectReference Include="..\..\Scripting\DotRPG.Scripting.csproj" />
+    <ProjectReference Include="..\..\UI\DotRPG.UI.csproj" />
     <ProjectReference Include="..\DotRPG.Behavior.csproj" />
     <ProjectReference Include="..\Routines\DotRPG.Behavior.Routines.csproj" />
   </ItemGroup>
