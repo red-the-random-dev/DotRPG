@@ -41,15 +41,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Behavior\Defaults\DotRPG.Behavior.Defaults.csproj" />
-    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Behavior\Routines\DotRPG.Behavior.Routines.csproj" />
-    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
-    <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
-    <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
-    <ProjectReference Include="..\UI\DotRPG.UI.csproj" />
+    <ProjectReference Include="..\DotRPG.Engine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="app.config">

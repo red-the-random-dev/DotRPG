@@ -1,0 +1,78 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Product>DotRPG</Product>
+    <Version>1.4.4.0</Version>
+    <Authors>red-the-random-dev</Authors>
+    <Company>red-the-random-dev</Company>
+    <RootNamespace>DotRPG</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Behavior\bin\**" />
+    <Compile Remove="Behavior\Defaults\bin\**" />
+    <Compile Remove="Behavior\Defaults\obj\**" />
+    <Compile Remove="Behavior\obj\**" />
+    <Compile Remove="Behavior\Routines\bin\**" />
+    <Compile Remove="Behavior\Routines\obj\**" />
+    <Compile Remove="Objects\bin\**" />
+    <Compile Remove="Objects\Complexity\**" />
+    <Compile Remove="Objects\Dynamics\bin\**" />
+    <Compile Remove="Objects\Dynamics\obj\**" />
+    <Compile Remove="Objects\obj\**" />
+    <Compile Remove="Scripting\bin\**" />
+    <Compile Remove="Scripting\obj\**" />
+    <Compile Remove="Scripting\Pipeline\**" />
+    <Compile Remove="UI\bin\**" />
+    <Compile Remove="UI\obj\**" />
+    <Compile Remove="_Example\**" />
+    <EmbeddedResource Remove="Behavior\bin\**" />
+    <EmbeddedResource Remove="Behavior\Defaults\bin\**" />
+    <EmbeddedResource Remove="Behavior\Defaults\obj\**" />
+    <EmbeddedResource Remove="Behavior\obj\**" />
+    <EmbeddedResource Remove="Behavior\Routines\bin\**" />
+    <EmbeddedResource Remove="Behavior\Routines\obj\**" />
+    <EmbeddedResource Remove="Objects\bin\**" />
+    <EmbeddedResource Remove="Objects\Complexity\**" />
+    <EmbeddedResource Remove="Objects\Dynamics\bin\**" />
+    <EmbeddedResource Remove="Objects\Dynamics\obj\**" />
+    <EmbeddedResource Remove="Objects\obj\**" />
+    <EmbeddedResource Remove="Scripting\bin\**" />
+    <EmbeddedResource Remove="Scripting\obj\**" />
+    <EmbeddedResource Remove="Scripting\Pipeline\**" />
+    <EmbeddedResource Remove="UI\bin\**" />
+    <EmbeddedResource Remove="UI\obj\**" />
+    <EmbeddedResource Remove="_Example\**" />
+    <None Remove="Behavior\bin\**" />
+    <None Remove="Behavior\Defaults\bin\**" />
+    <None Remove="Behavior\Defaults\obj\**" />
+    <None Remove="Behavior\obj\**" />
+    <None Remove="Behavior\Routines\bin\**" />
+    <None Remove="Behavior\Routines\obj\**" />
+    <None Remove="Objects\bin\**" />
+    <None Remove="Objects\Complexity\**" />
+    <None Remove="Objects\Dynamics\bin\**" />
+    <None Remove="Objects\Dynamics\obj\**" />
+    <None Remove="Objects\obj\**" />
+    <None Remove="Scripting\bin\**" />
+    <None Remove="Scripting\obj\**" />
+    <None Remove="Scripting\Pipeline\**" />
+    <None Remove="UI\bin\**" />
+    <None Remove="UI\obj\**" />
+    <None Remove="_Example\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+    <None Remove="LICENSE.md" />
+    <None Remove="README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
+    <PackageReference Include="NLua" Version="1.5.11" />
+  </ItemGroup>
+
+</Project>
