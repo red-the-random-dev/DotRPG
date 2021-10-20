@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>1.4.4.0</Version>
+    <Authors>red-the-random-dev</Authors>
+    <Product>DotRPG</Product>
   </PropertyGroup>
 
   <ItemGroup>
