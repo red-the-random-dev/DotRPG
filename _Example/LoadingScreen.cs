@@ -14,6 +14,10 @@ namespace DotRPG._Example
     {
         public FrameLoader Loader;
         TextObject percentage;
+        ProgressBar progress;
+        ColorBox cb;
+        Single timeCountdown;
+        
         public ILoadable LoadedFrame
         {
             get
@@ -35,7 +39,13 @@ namespace DotRPG._Example
         public LoadingScreen(ILoadable il, Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
         {
             Loader = new FrameLoader(il);
-            percentage = new TextObject(globalGameResources.Fonts["vcr_large"], "00.0%", 0.5f, 0.35f, Color.White, AlignMode.BottomCenter, 1080);
+            percentage = new TextObject(globalGameResources.Fonts["vcr_large"], "0%", 0.5f, 0.35f, Color.White, AlignMode.BottomCenter, 540);
+            progress = new ProgressBar(Color.Gray, Color.Black, new Vector2(0.75f, 0.05f), new Vector2(0.5f, 0.55f));
+            progress.RotationOrigin = new Vector2(0.5f, 0.0f);
+            cb = new ColorBox(new Color(0, 0, 75), new Vector2(0.75f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
+            cb.SubnodePadding = new Vector4(4.0f);
+            cb.Subnodes.Add(percentage);
+            cb.Subnodes.Add(progress);
         }
         public override void SetPlayerPosition(object sender, EventArgs e, GameTime gameTime)
         {
@@ -43,34 +53,19 @@ namespace DotRPG._Example
         }
         public override void Update(GameTime gameTime, bool[] controls)
         {
-            Loader.Update();
+            timeCountdown += (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            cb.RelativeSize = new Vector2(0.75f, Math.Max(0.01f, Math.Min(0.5f, timeCountdown*4)));
+            if (timeCountdown > 0.125f)
+            {
+                Loader.Update();
+            }
+            progress.Progress_Percentage = Loader.LoadPercentage;
             percentage.Text = Loader.LoadPercentage.ToString() + "%";
             base.Update(gameTime, controls);
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
-            Vector2 v = new Vector2(drawZone.X + (drawZone.Width / 8), drawZone.Y + (drawZone.Height / 2));
-            Texture2D t1 = new Texture2D(spriteBatch.GraphicsDevice, drawZone.Width * 3 / 4, drawZone.Height / 20);
-            Texture2D t2 = new Texture2D(spriteBatch.GraphicsDevice, Math.Max(drawZone.Width * 3 / 4 * (Loader.Loaded.ContentTasks_Done / Loader.Loaded.ContentTasks_Total), 1), drawZone.Height / 20);
-            Texture2D t3 = new Texture2D(spriteBatch.GraphicsDevice, Math.Max(drawZone.Width * 3 / 4 * (Int32)Loader.LoadPercentage/100, 1), drawZone.Height / 20);
-
-            Color[] d1 = new Color[drawZone.Width * 3 / 4 * drawZone.Height / 20];
-            Color[] d2 = new Color[Math.Max(drawZone.Width * 3 / 4 * (Loader.Loaded.ContentTasks_Done / Loader.Loaded.ContentTasks_Total), 1) * drawZone.Height / 20];
-            Color[] d3 = new Color[Math.Max(drawZone.Width * 3 / 4 * (Int32)Loader.LoadPercentage / 100, 1) * drawZone.Height / 20];
-
-            for (int i = 0; i < d1.Length; i++) d1[i] = new Color(75, 75, 75);
-            for (int i = 0; i < d2.Length; i++) d2[i] = Color.Gray;
-            for (int i = 0; i < d3.Length; i++) d3[i] = Color.White;
-
-            t1.SetData(d1);
-            t2.SetData(d2);
-            t3.SetData(d3);
-
-            spriteBatch.Draw(t1, v, Color.White);
-            spriteBatch.Draw(t2, v, Color.White);
-            spriteBatch.Draw(t3, v, Color.White);
-
-            percentage.Draw(gameTime, spriteBatch, drawZone);
+            cb.Draw(gameTime, spriteBatch, drawZone);
         }
         public override void Initialize()
         {

@@ -70,6 +70,15 @@ namespace DotRPG.UI
             );
         }
 
+        public static Rectangle ApplyPadding(Rectangle source, Vector4 padding, Single sizeMorph)
+        {
+            return new Rectangle(
+                source.X + (Int32)(padding.X * sizeMorph),
+                source.Y + (Int32)(padding.Y * sizeMorph),
+                source.Width - (Int32)(padding.X * sizeMorph) - (Int32)(padding.Z * sizeMorph),
+                source.Height - (Int32)(padding.Y * sizeMorph) - (Int32)(padding.W * sizeMorph)
+            );
+        }
         public static Vector2 FindTextAlignment(SpriteFont sf, String line, Rectangle scr, Single AlignX, Single AlignY, Vector2 InitialFieldOffset, AlignMode anchor = AlignMode.Center, Single rescale = 1.0f)
         {
             Vector2 str = sf.MeasureString(line) * rescale;
