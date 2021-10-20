@@ -39,12 +39,12 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+    <PackageReference Include="nulastudio.NetCoreBeauty" Version="1.2.9.2" />
+    <PackageReference Include="PrettyBin" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Behavior\Defaults\DotRPG.Behavior.Defaults.csproj" />
-    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj" />
     <ProjectReference Include="..\Behavior\Routines\DotRPG.Behavior.Routines.csproj" />
     <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
     <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
