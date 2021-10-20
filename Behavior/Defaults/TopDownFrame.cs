@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using DotRPG.Scripting;
 using DotRPG.Behavior.Routines;
+using Microsoft.Xna.Framework.Input;
 
 namespace DotRPG.Behavior.Defaults
 {
@@ -27,6 +28,10 @@ namespace DotRPG.Behavior.Defaults
 
         Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
         Dictionary<String, DynamicRectObject> interactable = new Dictionary<string, DynamicRectObject>();
+
+        Int32 LastMWheelValue = 0;
+
+        Boolean AllowManualZoom = false;
 
 
         #region ILoadable implementation
@@ -119,6 +124,7 @@ namespace DotRPG.Behavior.Defaults
                 x.Runtime["obj"] = props;
             }
             loaded = true;
+            LastMWheelValue = Mouse.GetState().ScrollWheelValue;
         }
         public Boolean SupportsMultiLoading
         {
@@ -287,6 +293,20 @@ namespace DotRPG.Behavior.Defaults
                         }
                         break;
                     }
+                case "ruleset":
+                    {
+                        foreach (XAttribute xa in xe.Attributes())
+                        {
+                            switch (xa.Name.LocalName)
+                            {
+                                case "allowManualZoom":
+                                    AllowManualZoom = Boolean.Parse(xa.Value);
+                                    break;
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
         public override void LoadContent()
@@ -409,20 +429,30 @@ namespace DotRPG.Behavior.Defaults
             }
             cam.TrackTarget = player.Location.ToPoint();
             cam.Update(gameTime);
+            if (AllowManualZoom)
+            {
+                Int32 mwheel = Mouse.GetState().ScrollWheelValue - LastMWheelValue;
+                if (mwheel != 0)
+                {
+                    cam.Zoom = Math.Max(0.3f, Math.Min(2.5f, cam.Zoom + (0.1f * mwheel / 120)));
+                }
+            }
             base.Update(gameTime, controls);
+            LastMWheelValue = Mouse.GetState().ScrollWheelValue;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
+            Rectangle dynDrawZone = cam.GetDrawArea(drawZone);
             foreach (Backdrop b in backdrops)
             {
-                b.Draw(spriteBatch, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), drawZone.Height / 540);
+                b.Draw(spriteBatch, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height));
             }
             foreach (String i in props.Keys)
             {
-                props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (props[i].Location.Y / 540))));
+                props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (props[i].Location.Y / 540))));
             }
-            player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(drawZone.Width, drawZone.Height), (0.3f - (0.1f * (player.Location.Y / 540))));
+            player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (player.Location.Y / 540))));
         }
 
         public override void Initialize()

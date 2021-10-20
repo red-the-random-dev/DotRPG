@@ -11,10 +11,32 @@ namespace DotRPG.Objects
         public Point TrackTarget;
         public Single CameraVelocity;
         public Int32 DefaultHeight;
+        public Single Zoom
+        {
+            get
+            {
+                return _z;
+            }
+            set
+            {
+                _z = Math.Max(value, 0.1f);
+            }
+        }
+        Single _z = 1.0f;
 
         public Point GetTopLeftAngle(Point screenSize)
         {
-            return new Point(Focus.X * (screenSize.Y / DefaultHeight) - screenSize.X/2, Focus.Y * (screenSize.Y / DefaultHeight) - screenSize.Y/2);
+            return new Vector2(Focus.X * Zoom * (screenSize.Y / DefaultHeight) - (Int32)(screenSize.X/2), Focus.Y * Zoom * (screenSize.Y / DefaultHeight) - (Int32)(screenSize.Y/2)).ToPoint();
+        }
+        public Rectangle GetDrawArea(Rectangle drawArea)
+        {
+            Int32 newWidth = (Int32)(drawArea.Width * Zoom);
+            Int32 newHeight = (Int32)(drawArea.Height * Zoom);
+
+            Int32 offsetX = drawArea.X - newWidth / 2;
+            Int32 offsetY = drawArea.Y - newHeight / 2;
+
+            return new Rectangle(offsetX, offsetY, newWidth, newHeight);
         }
         public void Update(GameTime gameTime)
         {

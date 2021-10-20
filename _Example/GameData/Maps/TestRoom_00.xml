@@ -8,7 +8,9 @@
         <SoundEffect id="pixelText" location="Sounds/text-scroll"/>
     </Require>
 
-    <Backdrop local="backdrop"/>
+    <Backdrop local="backdrop" offset="480,270" />
+
+    <RuleSet allowManualZoom="true" />
 
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
     <Prop id="whiterect" startPos="128,160" static="true" _usePrefab="Prefabs/whiterect.xml">
