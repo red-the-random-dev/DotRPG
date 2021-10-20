@@ -10,12 +10,13 @@ namespace DotRPG.UI
     {
         public Color DrawColor;
 
-        public ColorBox(Color color, Vector2 relativeSize, Vector2 relativePos, Vector2 origin)
+        public ColorBox(Color color, Vector2 relativeSize, Vector2 relativePos, Vector2 origin, Int32 defaultScreenHeight = 540)
         {
             DrawColor = color;
             RelativeSize = relativeSize;
             RelativePosition = relativePos;
             RotationOrigin = origin;
+            DefaultDrawAreaHeight = defaultScreenHeight;
         }
         protected override void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, float turn)
         {
