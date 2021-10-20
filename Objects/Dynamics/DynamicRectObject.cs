@@ -176,10 +176,10 @@ namespace DotRPG.Objects.Dynamics
             Single sizeMorph = 1.0f * scrollSize.Y / VirtualVSize;
             Vector2 location = new Vector2
             (
-                Location.X * sizeMorph - (Sprite.SpriteSize.X * sizeMorph / 2) - scrollOffset.X,
-                Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - (Sprite.SpriteSize.Y * sizeMorph) - scrollOffset.Y
+                Location.X * sizeMorph - scrollOffset.X,
+                Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - scrollOffset.Y
             );
-            Sprite.Draw(_sb, location, gameTime, sizeMorph, ZIndex);
+            Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), sizeMorph, ZIndex);
         }
 
         public Boolean TryCollideWith(DynamicRectObject another, Boolean splitVector = false)

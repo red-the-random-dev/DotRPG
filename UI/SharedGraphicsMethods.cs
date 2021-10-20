@@ -27,6 +27,33 @@ namespace DotRPG.UI
             return FindTextAlignment(sf, line, scr, AlignX, AlignY, Vector2.Zero, anchor, rescale);
         }
 
+        public static Vector2 FindRelativeOrigin(AlignMode alignMode)
+        {
+            Single x = 0.5f;
+            Single y = 0.5f;
+            Int32 IntegerAnchorValue = (int)alignMode;
+
+            switch (IntegerAnchorValue / 3)
+            {
+                case 1:
+                    x = 0.0f;
+                    break;
+                case 2:
+                    x = 1.0f;
+                    break;
+            }
+            switch (IntegerAnchorValue % 3)
+            {
+                case 1:
+                    y = 0.0f;
+                    break;
+                case 2:
+                    y = 1.0f;
+                    break;
+            }
+            return new Vector2(x, y);
+        }
+
         public static Rectangle FindEmbedDrawArea(Rectangle drawArea, Vector2 offset, Vector2 resize)
         {
             Int32 newWidth = (Int32)Math.Ceiling(drawArea.Width * resize.X);

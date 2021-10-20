@@ -14,7 +14,19 @@ namespace DotRPG.UI
     {
         public String Text;
         public Color TextColor;
-        public AlignMode AlignAnchor;
+        AlignMode anc;
+        public AlignMode AlignAnchor
+        {
+            get
+            {
+                return anc;
+            }
+            set
+            {
+                RotationOrigin = SharedGraphicsMethods.FindRelativeOrigin(value);
+                anc = value;
+            }
+        }
         public SpriteFont Font;
         public Single Rotation;
         public Single ScrollDelay;
@@ -64,11 +76,11 @@ namespace DotRPG.UI
                 ScrollingSound.Play();
             }
             Single rescale = 1.0f * drawArea.Height / DefaultDrawAreaHeight;
-            Vector2 str = Font.MeasureString(ScrollPerTick > 0 ? WrittenString : Text) * rescale;
+            Vector2 str = Font.MeasureString(ScrollPerTick > 0 ? WrittenString : Text);
             Vector2 AbsoluteRotationOrigin = new Vector2(str.X * RotationOrigin.X, str.Y * RotationOrigin.Y);
             // Alighning text according to set anchor position and client bounds
-            Vector2 position = SharedGraphicsMethods.FindTextAlignment(Font, (ScrollPerTick > 0 ? WrittenString : Text), drawArea, RelativePosition.X, RelativePosition.Y, AlignAnchor, rescale) + new Vector2(drawArea.X, drawArea.Y);
-            spriteBatch.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position+AbsoluteRotationOrigin, TextColor, Rotation, AbsoluteRotationOrigin, rescale, SpriteEffects.None, Depth);
+            Vector2 position = new Vector2(drawArea.Width * RelativePosition.X, drawArea.Height * RelativePosition.Y) + new Vector2(drawArea.X, drawArea.Y);
+            spriteBatch.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation, AbsoluteRotationOrigin, rescale, SpriteEffects.None, Depth);
             LastDrawnText = DrawnText;
         }
         public void ResetToStart()

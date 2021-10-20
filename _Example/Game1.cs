@@ -198,6 +198,7 @@ namespace DotRPG._Example
                     ActiveFrame.UnloadContent();
                     stageSelect.SelectedOption = -1;
                     ActiveFrame = stageSelect;
+                    GC.Collect();
                 }
             }
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter)) && !GameStarted)
