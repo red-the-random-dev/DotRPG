@@ -4,6 +4,7 @@ using System.Text;
 using DotRPG.Behavior;
 using DotRPG.Behavior.Routines;
 using DotRPG.Objects;
+using DotRPG.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -69,7 +70,7 @@ namespace DotRPG._Example
             spriteBatch.Draw(t2, v, Color.White);
             spriteBatch.Draw(t3, v, Color.White);
 
-            percentage.Draw(spriteBatch, Owner.Window);
+            percentage.Draw(gameTime, spriteBatch, drawZone);
         }
         public override void Initialize()
         {

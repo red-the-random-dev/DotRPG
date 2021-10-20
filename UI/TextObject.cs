@@ -10,15 +10,12 @@ namespace DotRPG.UI
     /// <summary>
     /// Instance of drawable object that represents scrollable text.
     /// </summary>
-    public class TextObject
+    public class TextObject : UserInterfaceElement
     {
         public String Text;
         public Color TextColor;
-        public Single RelativeAlignmentX;
-        public Single RelativeAlignmentY;
         public AlignMode AlignAnchor;
         public SpriteFont Font;
-        protected Int32 DefaultScreenScale;
         public Single Rotation;
         public Single ScrollDelay;
         protected Double ScrollTimer;
@@ -47,10 +44,9 @@ namespace DotRPG.UI
             TextColor = color;
             Font = sf;
             Text = StartText;
-            RelativeAlignmentX = PosX;
-            RelativeAlignmentY = PosY;
+            RelativePosition = new Vector2(PosX, PosY);
             AlignAnchor = anchor;
-            DefaultScreenScale = absoluteScreenScale;
+            DefaultDrawAreaHeight = absoluteScreenScale;
             ScrollPerTick = scrollPerTick;
             ScrollDelay = scrollDelay;
             Rotation = initialRotation;
@@ -61,15 +57,18 @@ namespace DotRPG.UI
         /// </summary>
         /// <param name="_sb">SpriteBatch object used for rendering.</param>
         /// <param name="w">Game window. Used for aligning.</param>
-        public void Draw(SpriteBatch _sb, GameWindow w)
+        protected override void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Single turn)
         {
             if (LastDrawnText < DrawnText && WrittenString[DrawnText-1] != ' ' && WrittenString[DrawnText - 1] != '*' && WrittenString[DrawnText-1] != '\n' && WrittenString[DrawnText - 1] != '-' && WrittenString[DrawnText - 1] != '>' && ScrollingSound != null)
             {
                 ScrollingSound.Play();
             }
+            Single rescale = 1.0f * drawArea.Height / DefaultDrawAreaHeight;
+            Vector2 str = Font.MeasureString(ScrollPerTick > 0 ? WrittenString : Text) * rescale;
+            Vector2 AbsoluteRotationOrigin = new Vector2(str.X * RotationOrigin.X, str.Y * RotationOrigin.Y);
             // Alighning text according to set anchor position and client bounds
-            Vector2 position = SharedGraphicsMethods.FindTextAlignment(Font, (ScrollPerTick > 0 ? WrittenString : Text), w.ClientBounds, RelativeAlignmentX, RelativeAlignmentY, AlignAnchor, w.ClientBounds.Height / DefaultScreenScale);
-            _sb.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation, new Vector2(0.0f), 1.0f*w.ClientBounds.Height/DefaultScreenScale, SpriteEffects.None, Depth);
+            Vector2 position = SharedGraphicsMethods.FindTextAlignment(Font, (ScrollPerTick > 0 ? WrittenString : Text), drawArea, RelativePosition.X, RelativePosition.Y, AlignAnchor, rescale) + new Vector2(drawArea.X, drawArea.Y);
+            spriteBatch.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position+AbsoluteRotationOrigin, TextColor, Rotation, AbsoluteRotationOrigin, rescale, SpriteEffects.None, Depth);
             LastDrawnText = DrawnText;
         }
         public void ResetToStart()
@@ -97,7 +96,7 @@ namespace DotRPG.UI
         /// Prepare a line of text according to elapsed gametime.
         /// </summary>
         /// <param name="gameTime">Gametime retrieved via game's Update() method parameter.</param>
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             LastDrawnText = DrawnText;
             WrittenString = "";

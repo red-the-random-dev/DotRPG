@@ -27,28 +27,44 @@ namespace DotRPG.UI
             return FindTextAlignment(sf, line, scr, AlignX, AlignY, Vector2.Zero, anchor, rescale);
         }
 
+        public static Rectangle FindEmbedDrawArea(Rectangle drawArea, Vector2 offset, Vector2 resize)
+        {
+            Int32 newWidth = (Int32)Math.Ceiling(drawArea.Width * resize.X);
+            Int32 newHeight = (Int32)Math.Ceiling(drawArea.Height * resize.Y);
+
+            Int32 shrinkWidth = drawArea.Width - newWidth;
+            Int32 shrinkHeight = drawArea.Height - newHeight;
+
+            return new Rectangle
+            (
+                drawArea.X + (Int32)Math.Ceiling(shrinkWidth * offset.X),
+                drawArea.Y + (Int32)Math.Ceiling(shrinkHeight * offset.Y),
+                newWidth, newHeight
+            );
+        }
+
         public static Vector2 FindTextAlignment(SpriteFont sf, String line, Rectangle scr, Single AlignX, Single AlignY, Vector2 InitialFieldOffset, AlignMode anchor = AlignMode.Center, Single rescale = 1.0f)
         {
-            Vector2 str = sf.MeasureString(line);
+            Vector2 str = sf.MeasureString(line) * rescale;
             Int32 IntegerAnchorValue = (int)anchor;
-            Single x = InitialFieldOffset.X + scr.Width * AlignX;
-            Single y = InitialFieldOffset.Y + scr.Height * AlignY;
+            Single x = InitialFieldOffset.X + (scr.Width * AlignX);
+            Single y = InitialFieldOffset.Y + (scr.Height * AlignY);
             switch (IntegerAnchorValue / 3)
             {
                 case 0:
-                    x -= (str.X / 2) * rescale;
+                    x -= (str.X / 2);
                     break;
                 case 2:
-                    x += (str.X / 2) * rescale;
+                    x += (str.X / 2);
                     break;
             }
             switch (IntegerAnchorValue % 3)
             {
                 case 0:
-                    y -= (str.Y / 2) * rescale;
+                    y -= (str.Y / 2);
                     break;
                 case 2:
-                    y += (str.Y / 2) * rescale;
+                    y += (str.Y / 2);
                     break;
             }
             return new Vector2(x, y);

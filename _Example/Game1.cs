@@ -248,12 +248,14 @@ namespace DotRPG._Example
             {
                 TimeSinceError += gameTime.ElapsedGameTime.TotalSeconds;
             }
+            PressStart.Rotation = (Single)Math.Sin(gameTime.TotalGameTime.TotalSeconds * Math.PI / 2) / 8;
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             ResetAspectRatio();
+            Rectangle win = new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
             Double FrameRate = Math.Round(1000 / gameTime.ElapsedGameTime.TotalMilliseconds);
             if (GameStarted && gameTime.TotalGameTime.TotalMilliseconds - GameStartMark < 1000.0)
             {
@@ -275,20 +277,17 @@ namespace DotRPG._Example
             }
             if (!GameStarted)
             {
-                if (Math.Floor(gameTime.TotalGameTime.TotalSeconds) % 2 == 1)
-                {
-                    // Replaced with scalable method
-                    // PressStart.TextColor = Color.White;
-                    // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.White, 0.0f, new Vector2(0.0f), (FullScreen&&WideScreen?2.0f:1.0f), SpriteEffects.None, 0.0f);
-                    PressStart.Draw(_spriteBatch, Window);
-                }
+                // Replaced with scalable method
+                // PressStart.TextColor = Color.White;
+                // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.White, 0.0f, new Vector2(0.0f), (FullScreen&&WideScreen?2.0f:1.0f), SpriteEffects.None, 0.0f);
+                PressStart.Draw(gameTime, _spriteBatch, win);
             }
             else if (gameTime.TotalGameTime.TotalMilliseconds - GameStartMark < 1000.0)
             {
                 if (Math.Floor(gameTime.TotalGameTime.TotalMilliseconds) % 40 > 20)
                 {
                     PressStart.TextColor = Color.Yellow;
-                    PressStart.Draw(_spriteBatch, Window);
+                    PressStart.Draw(gameTime, _spriteBatch, win);
                     // Replaced with scalable method
                     // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.Yellow, 0.0f, new Vector2(0.0f), (FullScreen && WideScreen ? 2.0f : 1.0f), SpriteEffects.None, 0.0f);
                 }
