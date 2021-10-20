@@ -9,8 +9,10 @@ using DotRPG.Objects;
 using DotRPG.Behavior;
 using System.Xml.Linq;
 using System.IO;
-using System.Reflection;
 using DotRPG.Behavior.Routines;
+using DotRPG.Behavior.Defaults;
+using DotRPG.UI;
+using System.Reflection;
 
 namespace DotRPG._Example
 {
@@ -107,7 +109,7 @@ namespace DotRPG._Example
             ResetAspectRatio();
             foreach (String i in Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "Maps/")))
             {
-                Frame f = XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(i)), Assembly.GetExecutingAssembly(), new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
+                Frame f = XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(i)), new Type[] {typeof(TopDownFrame)}, new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
                 FrameNames.Add(Name);
                 Frames.Add(f);
                 f.Initialize();
@@ -196,6 +198,7 @@ namespace DotRPG._Example
                     ActiveFrame.UnloadContent();
                     stageSelect.SelectedOption = -1;
                     ActiveFrame = stageSelect;
+                    GC.Collect();
                 }
             }
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter)) && !GameStarted)
@@ -246,12 +249,14 @@ namespace DotRPG._Example
             {
                 TimeSinceError += gameTime.ElapsedGameTime.TotalSeconds;
             }
+            PressStart.Rotation = (Single)Math.Sin(gameTime.TotalGameTime.TotalSeconds * Math.PI / 2) / 8;
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             ResetAspectRatio();
+            Rectangle win = new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height);
             Double FrameRate = Math.Round(1000 / gameTime.ElapsedGameTime.TotalMilliseconds);
             if (GameStarted && gameTime.TotalGameTime.TotalMilliseconds - GameStartMark < 1000.0)
             {
@@ -265,28 +270,25 @@ namespace DotRPG._Example
             
             if (ContinuityError)
             {
-                _spriteBatch.DrawString(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", SharedMethodSet.FindTextAlignment(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", Window.ClientBounds, 0.5f, 0.5f), Color.Red);
-                _spriteBatch.DrawString(_spriteFont, "This is not an easter egg. Something is wrong with the game.", SharedMethodSet.FindTextAlignment(_spriteFont, "This is not an easter egg. Something is wrong with the game.", Window.ClientBounds, 0.5f, 0.6f, AlignMode.TopCenter), new Color(new Vector4(Math.Min((Single)TimeSinceError*0.02f, 255.0f))));
+                _spriteBatch.DrawString(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", SharedGraphicsMethods.FindTextAlignment(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", Window.ClientBounds, 0.5f, 0.5f), Color.Red);
+                _spriteBatch.DrawString(_spriteFont, "This is not an easter egg. Something is wrong with the game.", SharedGraphicsMethods.FindTextAlignment(_spriteFont, "This is not an easter egg. Something is wrong with the game.", Window.ClientBounds, 0.5f, 0.6f, AlignMode.TopCenter), new Color(new Vector4(Math.Min((Single)TimeSinceError*0.02f, 255.0f))));
                 _spriteBatch.End();
                 base.Draw(gameTime);
                 return;
             }
             if (!GameStarted)
             {
-                if (Math.Floor(gameTime.TotalGameTime.TotalSeconds) % 2 == 1)
-                {
-                    // Replaced with scalable method
-                    // PressStart.TextColor = Color.White;
-                    // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.White, 0.0f, new Vector2(0.0f), (FullScreen&&WideScreen?2.0f:1.0f), SpriteEffects.None, 0.0f);
-                    PressStart.Draw(_spriteBatch, Window);
-                }
+                // Replaced with scalable method
+                // PressStart.TextColor = Color.White;
+                // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.White, 0.0f, new Vector2(0.0f), (FullScreen&&WideScreen?2.0f:1.0f), SpriteEffects.None, 0.0f);
+                PressStart.Draw(gameTime, _spriteBatch, win);
             }
             else if (gameTime.TotalGameTime.TotalMilliseconds - GameStartMark < 1000.0)
             {
                 if (Math.Floor(gameTime.TotalGameTime.TotalMilliseconds) % 40 > 20)
                 {
                     PressStart.TextColor = Color.Yellow;
-                    PressStart.Draw(_spriteBatch, Window);
+                    PressStart.Draw(gameTime, _spriteBatch, win);
                     // Replaced with scalable method
                     // _spriteBatch.DrawString(_spriteFont, "[Press START or ENTER]", SharedMethodSet.FindTextAlignment(_spriteFont, "[Press START or ENTER]", Window.ClientBounds), Color.Yellow, 0.0f, new Vector2(0.0f), (FullScreen && WideScreen ? 2.0f : 1.0f), SpriteEffects.None, 0.0f);
                 }

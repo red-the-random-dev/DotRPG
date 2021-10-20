@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE dotrpg-prefab>
 
-<ObjectPrefab id="red" useWith="example/topdown">
+<ObjectPrefab id="red" useWith="default/topdown">
     <Require>
         <Texture2D id="red.idle.down" location="Texture2D/red.idle.down"/>
         <Texture2D id="red.idle.up" location="Texture2D/red.idle.up"/>

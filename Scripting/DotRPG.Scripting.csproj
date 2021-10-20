@@ -4,8 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>red-the-random-dev</Authors>
     <Product>DotPRG</Product>
-    <Version>1.2.3</Version>
-    <AssemblyVersion>1.3.6.0</AssemblyVersion>
+    <Version>1.4.4.0</Version>
+    <AssemblyVersion>1.4.4.0</AssemblyVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Fractured_Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

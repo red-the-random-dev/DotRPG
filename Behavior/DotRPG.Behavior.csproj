@@ -4,13 +4,19 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>red-the-random-dev</Authors>
     <Product>DotRPG</Product>
-    <AssemblyVersion>1.3.6.0</AssemblyVersion>
-    <FileVersion>1.3.6.0</FileVersion>
+    <AssemblyVersion>1.4.4.0</AssemblyVersion>
+    <FileVersion>1.4.4.0</FileVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Version>1.4.4.0</Version>
+    <Configurations>Debug;Release;Fractured_Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Defaults\**" />
     <Compile Remove="Routines\**" />
+    <EmbeddedResource Remove="Defaults\**" />
     <EmbeddedResource Remove="Routines\**" />
+    <None Remove="Defaults\**" />
     <None Remove="Routines\**" />
   </ItemGroup>
 

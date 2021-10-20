@@ -7,6 +7,8 @@
     <AssemblyVersion>0.0.1.0</AssemblyVersion>
     <FileVersion>1.2.3.0</FileVersion>
     <Version>0.0.1</Version>
+    <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Fractured_Debug;Fractured_Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

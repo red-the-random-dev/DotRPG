@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using DotRPG.Behavior;
 using DotRPG.Behavior.Routines;
-using DotRPG.Behavior.Routines;
 using DotRPG.Objects;
+using DotRPG.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -51,21 +51,26 @@ namespace DotRPG._Example
         {
             Vector2 v = new Vector2(drawZone.X + (drawZone.Width / 8), drawZone.Y + (drawZone.Height / 2));
             Texture2D t1 = new Texture2D(spriteBatch.GraphicsDevice, drawZone.Width * 3 / 4, drawZone.Height / 20);
-            Texture2D t2 = new Texture2D(spriteBatch.GraphicsDevice, Math.Max(drawZone.Width * 3 / 4 * (Int32)Loader.LoadPercentage/100, 1), drawZone.Height / 20);
+            Texture2D t2 = new Texture2D(spriteBatch.GraphicsDevice, Math.Max(drawZone.Width * 3 / 4 * (Loader.Loaded.ContentTasks_Done / Loader.Loaded.ContentTasks_Total), 1), drawZone.Height / 20);
+            Texture2D t3 = new Texture2D(spriteBatch.GraphicsDevice, Math.Max(drawZone.Width * 3 / 4 * (Int32)Loader.LoadPercentage/100, 1), drawZone.Height / 20);
 
             Color[] d1 = new Color[drawZone.Width * 3 / 4 * drawZone.Height / 20];
-            Color[] d2 = new Color[Math.Max(drawZone.Width * 3 / 4 * (Int32)Loader.LoadPercentage / 100, 1) * drawZone.Height / 20];
+            Color[] d2 = new Color[Math.Max(drawZone.Width * 3 / 4 * (Loader.Loaded.ContentTasks_Done / Loader.Loaded.ContentTasks_Total), 1) * drawZone.Height / 20];
+            Color[] d3 = new Color[Math.Max(drawZone.Width * 3 / 4 * (Int32)Loader.LoadPercentage / 100, 1) * drawZone.Height / 20];
 
-            for (int i = 0; i < d1.Length; i++) d1[i] = Color.Gray;
-            for (int i = 0; i < d2.Length; i++) d2[i] = Color.White;
+            for (int i = 0; i < d1.Length; i++) d1[i] = new Color(75, 75, 75);
+            for (int i = 0; i < d2.Length; i++) d2[i] = Color.Gray;
+            for (int i = 0; i < d3.Length; i++) d3[i] = Color.White;
 
             t1.SetData(d1);
             t2.SetData(d2);
+            t3.SetData(d3);
 
             spriteBatch.Draw(t1, v, Color.White);
             spriteBatch.Draw(t2, v, Color.White);
+            spriteBatch.Draw(t3, v, Color.White);
 
-            percentage.Draw(spriteBatch, Owner.Window);
+            percentage.Draw(gameTime, spriteBatch, drawZone);
         }
         public override void Initialize()
         {

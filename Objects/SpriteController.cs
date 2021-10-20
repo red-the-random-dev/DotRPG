@@ -63,8 +63,10 @@ namespace DotRPG.Objects
             }
         }
 
-        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Single drawSize = 1.0f, Single ZIndex = 0.0f)
+        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Vector2? Origin, Single drawSize = 1.0f, Single ZIndex = 0.0f)
         {
+            Vector2 origin = Origin ?? Vector2.Zero;
+            
             Single addFrames = 0.0f;
             if (PlaybackSpeed > 0.0f)
             {
@@ -88,6 +90,7 @@ namespace DotRPG.Objects
                 (int)widthPerFrame,
                 toDraw.Height
             );
+            Vector2 a_origin = new Vector2(origin.X * lololol.Width, origin.Y * lololol.Height);
             _sb.Draw
             (
                 toDraw, drawLocation,
@@ -95,7 +98,7 @@ namespace DotRPG.Objects
                 // null,
                 Color.White,
                 0,
-                Vector2.Zero,
+                a_origin,
                 drawSize,
                 SpriteEffects.None,
                 ZIndex

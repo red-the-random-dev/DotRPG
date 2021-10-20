@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE dotrpg-frame>
 
-<Scene id="V O I D" behaviorType="example/topdown" index="1">
+<Scene id="V O I D" behaviorType="default/topdown" index="1">
+    <RuleSet allowManualZoom="true" />
+    
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
 </Scene>
