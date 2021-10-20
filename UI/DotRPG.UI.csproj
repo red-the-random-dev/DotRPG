@@ -5,6 +5,7 @@
     <Version>1.4.4.0</Version>
     <Authors>red-the-random-dev</Authors>
     <Product>DotRPG</Product>
+    <Configurations>Debug;Release;Fractured_Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

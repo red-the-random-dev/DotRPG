@@ -5,6 +5,7 @@
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
     <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Fractured_Debug;Fractured_Release</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -40,8 +41,29 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
     <ProjectReference Include="..\DotRPG.Engine.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
+    <ProjectReference Include="..\DotRPG.Engine.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Fractured_Debug'">
+    <ProjectReference Include="..\Behavior\Defaults\DotRPG.Behavior.Defaults.csproj" />
+    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj" />
+    <ProjectReference Include="..\Behavior\Routines\DotRPG.Behavior.Routines.csproj" />
+    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
+    <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
+    <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
+    <ProjectReference Include="..\UI\DotRPG.UI.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Fractured_Release'">
+    <ProjectReference Include="..\Behavior\Defaults\DotRPG.Behavior.Defaults.csproj" />
+    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj" />
+    <ProjectReference Include="..\Behavior\Routines\DotRPG.Behavior.Routines.csproj" />
+    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
+    <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
+    <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
+    <ProjectReference Include="..\UI\DotRPG.UI.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="app.config">

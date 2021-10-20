@@ -6,6 +6,7 @@
     <Authors>red-the-random-dev</Authors>
     <Product>DotRPG</Product>
     <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;Fractured_Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

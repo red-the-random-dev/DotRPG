@@ -8,6 +8,7 @@
     <FileVersion>1.4.4.0</FileVersion>
     <Platforms>AnyCPU;x64</Platforms>
     <Version>1.4.4.0</Version>
+    <Configurations>Debug;Release;Fractured_Debug</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
