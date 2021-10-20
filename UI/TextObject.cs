@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 
-namespace DotRPG.Objects
+namespace DotRPG.UI
 {
     /// <summary>
     /// Instance of drawable object that represents scrollable text.
@@ -68,7 +68,7 @@ namespace DotRPG.Objects
                 ScrollingSound.Play();
             }
             // Alighning text according to set anchor position and client bounds
-            Vector2 position = SharedMethodSet.FindTextAlignment(Font, (ScrollPerTick > 0 ? WrittenString : Text), w.ClientBounds, RelativeAlignmentX, RelativeAlignmentY, AlignAnchor, w.ClientBounds.Height / DefaultScreenScale);
+            Vector2 position = SharedGraphicsMethods.FindTextAlignment(Font, (ScrollPerTick > 0 ? WrittenString : Text), w.ClientBounds, RelativeAlignmentX, RelativeAlignmentY, AlignAnchor, w.ClientBounds.Height / DefaultScreenScale);
             _sb.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation, new Vector2(0.0f), 1.0f*w.ClientBounds.Height/DefaultScreenScale, SpriteEffects.None, Depth);
             LastDrawnText = DrawnText;
         }

@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Behavior", "Behavior
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Behavior.Routines", "Behavior\Routines\DotRPG.Behavior.Routines.csproj", "{67A8F31C-34A8-4DEC-9AB6-57F5A41018C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.Behavior.Defaults", "Behavior\Defaults\DotRPG.Behavior.Defaults.csproj", "{6932CE8F-6469-41D9-A4C1-9CBBF177FBF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Behavior.Defaults", "Behavior\Defaults\DotRPG.Behavior.Defaults.csproj", "{6932CE8F-6469-41D9-A4C1-9CBBF177FBF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.UI", "UI\DotRPG.UI.csproj", "{A867B462-F21D-4F83-83C3-CD1F64053378}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,14 @@ Global
 		{6932CE8F-6469-41D9-A4C1-9CBBF177FBF0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6932CE8F-6469-41D9-A4C1-9CBBF177FBF0}.Release|x64.ActiveCfg = Release|x64
 		{6932CE8F-6469-41D9-A4C1-9CBBF177FBF0}.Release|x64.Build.0 = Release|x64
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Debug|x64.Build.0 = Debug|Any CPU
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Release|x64.ActiveCfg = Release|Any CPU
+		{A867B462-F21D-4F83-83C3-CD1F64053378}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

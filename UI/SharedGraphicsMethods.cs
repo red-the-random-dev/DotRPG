@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace DotRPG.Objects
+namespace DotRPG.UI
 {
     public enum AlignMode
     {
@@ -20,7 +20,7 @@ namespace DotRPG.Objects
         TopRight = 7,
         BottomRight = 8,
     }
-    public static class SharedMethodSet
+    public static class SharedGraphicsMethods
     {
         public static Vector2 FindTextAlignment(SpriteFont sf, String line, Rectangle scr, Single AlignX = 0.5f, Single AlignY = 0.5f, AlignMode anchor = AlignMode.Center, Single rescale = 1.0f)
         {
