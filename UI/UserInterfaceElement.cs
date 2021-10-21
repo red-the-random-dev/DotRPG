@@ -36,8 +36,8 @@ namespace DotRPG.UI
                 pos = new Vector2(pos.X, pos.Y + Rotation + turn);
                 pos = SharedGraphicsMethods.FromLengthAngle(pos);
                 Single newAngle = turn + Rotation;
-                pos -= (pos * (Single)((RelativeSize.Y / RelativeSize.X) * Math.Abs(Math.Sin(newAngle))));
                 // Doing some fucking vector magic over here
+                pos -= (pos * (Single)((RelativeSize.Y / RelativeSize.X) * Math.Abs(Math.Sin(newAngle))));
                 Vector2 vector = pos + positionOverride - ogPos;
                 ui.Draw(gameTime, spriteBatch, newDrawRect, vector, newAngle);
             }
