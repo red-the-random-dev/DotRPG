@@ -105,5 +105,26 @@ namespace DotRPG.UI
             }
             return new Vector2(x, y);
         }
+
+        public static Vector2 ToLengthAngle(Vector2 src)
+        {
+            Single len = src.Length();
+            if (len == 0.0f)
+            {
+                return Vector2.Zero;
+            }
+            Vector2 i = src / len;
+            Single Angle = (Single)Math.Acos(i.X);
+            if (i.Y < 0.0f)
+            {
+               Angle = MathHelper.TwoPi - Angle;
+            }
+            return new Vector2(src.Length(), Angle);
+        }
+
+        public static Vector2 FromLengthAngle(Vector2 src)
+        {
+            return new Vector2(src.X * (Single)Math.Cos(src.Y), src.X * (Single)Math.Sin(src.Y));
+        }
     }
 }
