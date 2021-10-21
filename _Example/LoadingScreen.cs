@@ -1,4 +1,5 @@
-﻿using System;
+﻿// #define SPEEN
+using System;
 using System.Collections.Generic;
 using System.Text;
 using DotRPG.Behavior;
