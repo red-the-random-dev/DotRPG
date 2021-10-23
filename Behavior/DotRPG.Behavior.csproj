@@ -13,10 +13,13 @@
 
   <ItemGroup>
     <Compile Remove="Defaults\**" />
+    <Compile Remove="Management\**" />
     <Compile Remove="Routines\**" />
     <EmbeddedResource Remove="Defaults\**" />
+    <EmbeddedResource Remove="Management\**" />
     <EmbeddedResource Remove="Routines\**" />
     <None Remove="Defaults\**" />
+    <None Remove="Management\**" />
     <None Remove="Routines\**" />
   </ItemGroup>
 
