@@ -13,6 +13,7 @@ using DotRPG.Scripting;
 using DotRPG.Behavior.Routines;
 using Microsoft.Xna.Framework.Input;
 using DotRPG.UI;
+using DotRPG.Behavior.Management;
 
 namespace DotRPG.Behavior.Defaults
 {
@@ -20,6 +21,8 @@ namespace DotRPG.Behavior.Defaults
     public class TopDownFrame : Frame, IXMLSceneBuilder, ILoadable
     {
         CameraFrameObject cam = new CameraFrameObject();
+        CameraManager cameraManager;
+        ObjectHeapManager obj;
         PlayerObject player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -114,6 +117,7 @@ namespace DotRPG.Behavior.Defaults
         public void PreloadTask()
         {
             cam.CameraVelocity = 300.0f;
+            cam.OffsetVelocity = 450.0f;
             cam.DefaultHeight = 540;
             ready = true;
         }
@@ -122,10 +126,14 @@ namespace DotRPG.Behavior.Defaults
             cam.Focus = player.Location.ToPoint();
             foreach (LuaModule x in Scripts)
             {
-                x.Runtime["obj"] = props;
+                x.Runtime["obj"] = obj;
+                x.Runtime["camera"] = cameraManager;
             }
             loaded = true;
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
+            cameraManager.Player = player;
+            cameraManager.TrackToPlayer();
+            obj.Player = player;
         }
         public Boolean SupportsMultiLoading
         {
@@ -376,7 +384,8 @@ namespace DotRPG.Behavior.Defaults
         #endregion
         public TopDownFrame(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
         {
-
+            cameraManager = new CameraManager(cam, props);
+            obj = new ObjectHeapManager(props);
         }
 
         public override void Update(GameTime gameTime, bool[] controls)
@@ -428,8 +437,14 @@ namespace DotRPG.Behavior.Defaults
                     }
                 }
             }
-            cam.TrackTarget = player.Location.ToPoint();
+            cameraManager.Update(gameTime);
+            cam.TrackTarget = cameraManager.TrackPoint;
+            cam.OffsetTarget = cameraManager.Offset;
             cam.Update(gameTime);
+            foreach (LuaModule x in Scripts)
+            {
+                x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
+            }
             if (AllowManualZoom)
             {
                 Int32 mwheel = Mouse.GetState().ScrollWheelValue - LastMWheelValue;
@@ -466,6 +481,8 @@ namespace DotRPG.Behavior.Defaults
             FrameResources.Dispose();
             props.Clear();
             interactable.Clear();
+            cameraManager.Player = null;
+            obj.Player = null;
             player = null;
             Scripts.Clear();
             backdrops.Clear();
