@@ -77,9 +77,9 @@ namespace DotRPG._Example
             {
                 if (i == Index)
                 {
-                    spriteBatch.Draw(t, ListOffset + (Measure_v * i), Color.Blue);
+                    spriteBatch.Draw(t, ListOffset + (Measure_v * i), new Rectangle(0, 0, t.Width, t.Height), Color.Blue, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.1f);
                 }
-                spriteBatch.DrawString(Font, OptionsList[i], ListOffset + (Measure_v * i) + (Measure_h * 2), i == Index ? Color.Yellow : Color.White);
+                spriteBatch.DrawString(Font, OptionsList[i], ListOffset + (Measure_v * i) + (Measure_h * 2), i == Index ? Color.Yellow : Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             }
         }
 

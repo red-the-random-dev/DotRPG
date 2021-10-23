@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE dotrpg-prefab>
+
+<ObjectPrefab id="tree" useWith="default/topdown">
+    <Require>
+        <Texture2D id="tree" location="Texture2D/tree"/>
+    </Require>
+    <Prop colliderSize="19,8" static="true" mass="150">
+        <Sprite frameRate="60" frameAmount="1">
+            <DefaultAnimationSequence local="tree"/>
+        </Sprite>
+    </Prop>
+</ObjectPrefab>
