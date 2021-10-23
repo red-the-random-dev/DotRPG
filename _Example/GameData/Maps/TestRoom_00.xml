@@ -13,10 +13,10 @@
     <RuleSet allowManualZoom="true" />
 
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
-    <Prop id="whiterect" startPos="128,160" static="true" _usePrefab="Prefabs/whiterect.xml">
-        <Interactable interactAction="whiterect-talk"/>
+    <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
+        <Interactable interactAction="tree-talk"/>
     </Prop>
-    <Prop id="whiterect2" startPos="256,128" _usePrefab="Prefabs/whiterect.xml"/>
+    <Prop id="whiterect" startPos="256,128" _usePrefab="Prefabs/whiterect.xml"/>
 
     <Prop id="barrier_t" startPos="480,48" colliderSize="1000,96" mass="1000" static="true"/>
     <Prop id="barrier_b" startPos="480,588" colliderSize="1000,96" mass="1000" static="true"/>

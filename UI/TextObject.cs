@@ -69,7 +69,7 @@ namespace DotRPG.UI
         /// </summary>
         /// <param name="_sb">SpriteBatch object used for rendering.</param>
         /// <param name="w">Game window. Used for aligning.</param>
-        protected override void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Single turn)
+        protected override void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 offset, Single turn)
         {
             if (LastDrawnText < DrawnText && WrittenString[DrawnText-1] != ' ' && WrittenString[DrawnText - 1] != '*' && WrittenString[DrawnText-1] != '\n' && WrittenString[DrawnText - 1] != '-' && WrittenString[DrawnText - 1] != '>' && ScrollingSound != null)
             {
@@ -79,8 +79,8 @@ namespace DotRPG.UI
             Vector2 str = Font.MeasureString(ScrollPerTick > 0 ? WrittenString : Text);
             Vector2 AbsoluteRotationOrigin = new Vector2(str.X * RotationOrigin.X, str.Y * RotationOrigin.Y);
             // Alighning text according to set anchor position and client bounds
-            Vector2 position = new Vector2(drawArea.Width * RelativePosition.X, drawArea.Height * RelativePosition.Y) + new Vector2(drawArea.X, drawArea.Y);
-            spriteBatch.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation, AbsoluteRotationOrigin, rescale, SpriteEffects.None, Depth);
+            Vector2 position = new Vector2(drawArea.Width * (RelativePosition.X + offset.X), drawArea.Height * (RelativePosition.Y + offset.Y)) + new Vector2(drawArea.X, drawArea.Y);
+            spriteBatch.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation+turn, AbsoluteRotationOrigin, rescale, SpriteEffects.None, Depth);
             LastDrawnText = DrawnText;
         }
         public void ResetToStart()

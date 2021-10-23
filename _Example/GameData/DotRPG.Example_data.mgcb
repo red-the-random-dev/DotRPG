@@ -39,6 +39,9 @@
 #begin Prefabs/red.xml
 /copy:Prefabs/red.xml
 
+#begin Prefabs/tree.xml
+/copy:Prefabs/tree.xml
+
 #begin Prefabs/whiterect.xml
 /copy:Prefabs/whiterect.xml
 
@@ -194,4 +197,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture2D/ScrollMarker.png
+
+#begin Texture2D/tree.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=NoChange
+/build:Texture2D/tree.png
 

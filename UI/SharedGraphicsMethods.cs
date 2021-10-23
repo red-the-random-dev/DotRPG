@@ -70,6 +70,15 @@ namespace DotRPG.UI
             );
         }
 
+        public static Rectangle ApplyPadding(Rectangle source, Vector4 padding, Single sizeMorph)
+        {
+            return new Rectangle(
+                source.X + (Int32)(padding.X * sizeMorph),
+                source.Y + (Int32)(padding.Y * sizeMorph),
+                source.Width - (Int32)(padding.X * sizeMorph) - (Int32)(padding.Z * sizeMorph),
+                source.Height - (Int32)(padding.Y * sizeMorph) - (Int32)(padding.W * sizeMorph)
+            );
+        }
         public static Vector2 FindTextAlignment(SpriteFont sf, String line, Rectangle scr, Single AlignX, Single AlignY, Vector2 InitialFieldOffset, AlignMode anchor = AlignMode.Center, Single rescale = 1.0f)
         {
             Vector2 str = sf.MeasureString(line) * rescale;
@@ -95,6 +104,27 @@ namespace DotRPG.UI
                     break;
             }
             return new Vector2(x, y);
+        }
+
+        public static Vector2 ToLengthAngle(Vector2 src)
+        {
+            Single len = src.Length();
+            if (len == 0.0f)
+            {
+                return Vector2.Zero;
+            }
+            Vector2 i = src / len;
+            Single Angle = (Single)Math.Acos(i.X);
+            if (i.Y < 0.0f)
+            {
+               Angle = MathHelper.TwoPi - Angle;
+            }
+            return new Vector2(src.Length(), Angle);
+        }
+
+        public static Vector2 FromLengthAngle(Vector2 src)
+        {
+            return new Vector2(src.X * (Single)Math.Cos(src.Y), src.X * (Single)Math.Sin(src.Y));
         }
     }
 }

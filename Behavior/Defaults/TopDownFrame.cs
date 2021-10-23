@@ -13,6 +13,7 @@ using DotRPG.Scripting;
 using DotRPG.Behavior.Routines;
 using Microsoft.Xna.Framework.Input;
 using DotRPG.UI;
+using DotRPG.Behavior.Management;
 
 namespace DotRPG.Behavior.Defaults
 {
@@ -20,6 +21,8 @@ namespace DotRPG.Behavior.Defaults
     public class TopDownFrame : Frame, IXMLSceneBuilder, ILoadable
     {
         CameraFrameObject cam = new CameraFrameObject();
+        CameraManager cameraManager;
+        ObjectHeapManager obj;
         PlayerObject player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -114,6 +117,7 @@ namespace DotRPG.Behavior.Defaults
         public void PreloadTask()
         {
             cam.CameraVelocity = 300.0f;
+            cam.OffsetVelocity = 450.0f;
             cam.DefaultHeight = 540;
             ready = true;
         }
@@ -122,10 +126,14 @@ namespace DotRPG.Behavior.Defaults
             cam.Focus = player.Location.ToPoint();
             foreach (LuaModule x in Scripts)
             {
-                x.Runtime["obj"] = props;
+                x.Runtime["obj"] = obj;
+                x.Runtime["camera"] = cameraManager;
             }
             loaded = true;
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
+            cameraManager.Player = player;
+            cameraManager.TrackToPlayer();
+            obj.Player = player;
         }
         public Boolean SupportsMultiLoading
         {
@@ -266,7 +274,7 @@ namespace DotRPG.Behavior.Defaults
                 case "script":
                     {
                         String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value));
-                        Scripts.Add(new LuaModule(scriptContent));
+                        Scripts.Add(new LuaModule(scriptContent, xe.Attribute(XName.Get("location")).Value));
                         break;
                     }
                 case "backdrop":
@@ -376,7 +384,8 @@ namespace DotRPG.Behavior.Defaults
         #endregion
         public TopDownFrame(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
         {
-
+            cameraManager = new CameraManager(cam, props);
+            obj = new ObjectHeapManager(props);
         }
 
         public override void Update(GameTime gameTime, bool[] controls)
@@ -428,8 +437,14 @@ namespace DotRPG.Behavior.Defaults
                     }
                 }
             }
-            cam.TrackTarget = player.Location.ToPoint();
+            cameraManager.Update(gameTime);
+            cam.TrackTarget = cameraManager.TrackPoint;
+            cam.OffsetTarget = cameraManager.Offset;
             cam.Update(gameTime);
+            foreach (LuaModule x in Scripts)
+            {
+                x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
+            }
             if (AllowManualZoom)
             {
                 Int32 mwheel = Mouse.GetState().ScrollWheelValue - LastMWheelValue;
@@ -454,6 +469,19 @@ namespace DotRPG.Behavior.Defaults
                 props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (props[i].Location.Y / 540))));
             }
             player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (player.Location.Y / 540))));
+
+#if DEBUG
+            Single y = 48.0f;
+            Int32 c = Scripts.Count;
+            for (int i = 0; i < c; i++)
+            {
+                if (Scripts[i].LastError != "")
+                {
+                    spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], i + ": " + Scripts[i].LastError, new Vector2(0, y), Color.Yellow);
+                    y += 12;
+                }
+            }
+#endif
         }
 
         public override void Initialize()
@@ -466,6 +494,8 @@ namespace DotRPG.Behavior.Defaults
             FrameResources.Dispose();
             props.Clear();
             interactable.Clear();
+            cameraManager.Player = null;
+            obj.Player = null;
             player = null;
             Scripts.Clear();
             backdrops.Clear();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLua;
+using NLua.Exceptions;
 
 namespace DotRPG.Scripting
 {
@@ -14,23 +15,25 @@ namespace DotRPG.Scripting
         public readonly LuaTable EventAmounts;
         public Dictionary<String, Int64> EventIDs = new Dictionary<string, long>();
         public Boolean HasDefaultAction = false;
+        public String LastError = "";
+        public Exception LastErrorDetails;
 
-        public LuaModule(String initFile, LuaTable eventAmounts)
+        public LuaModule(String initFile, LuaTable eventAmounts, String initName = "dotrpgmodule")
         {
             Runtime = new Lua();
             Runtime.LoadCLRPackage();
-            Runtime.DoString(initFile);
+            Runtime.DoString(initFile, initName);
             EventAmounts = eventAmounts;
             foreach (String i in EventAmounts.Keys)
             {
                 EventIDs.Add(i, 0);
             }
         }
-        public LuaModule(String initFile)
+        public LuaModule(String initFile, String initName = "dotrpgmodule")
         {
             Runtime = new Lua();
             Runtime.LoadCLRPackage();
-            Runtime.DoString(initFile);
+            Runtime.DoString(initFile, initName);
             EventAmounts = (LuaTable) Runtime["event_counts"];
             foreach (String i in EventAmounts.Keys)
             {
@@ -45,12 +48,31 @@ namespace DotRPG.Scripting
             {
                 if (EventSetID == x)
                 {
-                    LuaFunction loopFunction = Runtime["loop"] as LuaFunction;
-                    loopFunction.Call(EventSetID, EventIDs[EventSetID], elapsedTime, totalTime);
-                    EventIDs[EventSetID] = (Int64)EventIDs[EventSetID] + 1;
-                    if (EventIDs[EventSetID] >= (Int64)EventAmounts[EventSetID])
+                    try
                     {
-                        EventIDs[EventSetID] = 0;
+                        LuaFunction loopFunction = Runtime["update"] as LuaFunction;
+                        loopFunction.Call(EventSetID, EventIDs[EventSetID], elapsedTime, totalTime);
+                        
+                        LastError = "";
+                        LastErrorDetails = null;
+                    }
+                    catch (LuaException e)
+                    {
+                        LastError = e.Message;
+                        LastErrorDetails = e;
+                    }
+                    catch (Exception e)
+                    {
+                        LastError = "Something is creating script errors";
+                        LastErrorDetails = e;
+                    }
+                    finally
+                    {
+                        EventIDs[EventSetID] = (Int64)EventIDs[EventSetID] + 1;
+                        if (EventIDs[EventSetID] >= (Int64)EventAmounts[EventSetID])
+                        {
+                            EventIDs[EventSetID] = 0;
+                        }
                     }
                     break;
                 }

@@ -10,15 +10,19 @@ namespace DotRPG._Example
         [STAThread]
         static void Main()
         {
+#if !DEBUG
             try
             {
+#endif
                 using (var game = new Game1())
                     game.Run();
-            }
+#if !DEBUG
+        }
             catch (Exception e)
             {
                 File.WriteAllText("error-" + DateTime.Now + ".txt", e.Message);
             }
+#endif
         }
     }
 }

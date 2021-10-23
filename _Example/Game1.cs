@@ -23,6 +23,7 @@ namespace DotRPG._Example
         private List<String> FrameNames = new List<string>();
         private List<Frame> Frames = new List<Frame>();
         private Frame ActiveFrame;
+        private Frame ActiveSubframe;
         private TextObject PressStart;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -169,11 +170,12 @@ namespace DotRPG._Example
             }
             if (ActiveFrame != null)
             {
-                if (ActiveFrame is LoadingScreen l)
+                if (ActiveSubframe is LoadingScreen l)
                 {
                     if (l.LoadedFrame.Loaded)
                     {
                         ActiveFrame = l.LoadedFrame as Frame;
+                        ActiveSubframe = null;
                     }
                     if (ActiveFrame == null)
                     {
@@ -185,7 +187,7 @@ namespace DotRPG._Example
                     Frame toLoad = Frames[stageSelect.SelectedOption];
                     if (toLoad is ILoadable load)
                     {
-                        ActiveFrame = new LoadingScreen(load, this, ResourceHGlobal, LogicEventSet);
+                        ActiveSubframe = new LoadingScreen(load, this, ResourceHGlobal, LogicEventSet);
                     }
                     else
                     {
@@ -241,7 +243,11 @@ namespace DotRPG._Example
 
                 }
             }
-            if (ActiveFrame != null)
+            if (ActiveSubframe != null)
+            {
+                ActiveSubframe.Update(gameTime, IsCtrlKeyDown);
+            }
+            else if (ActiveFrame != null)
             {
                 ActiveFrame.Update(gameTime, IsCtrlKeyDown);
             }
@@ -265,8 +271,14 @@ namespace DotRPG._Example
             }
             else
                 GraphicsDevice.Clear(Color.Black);
-
-            _spriteBatch.Begin();
+            if (FrameRate < 24)
+            {
+                _spriteBatch.Begin();
+            }
+            else
+            {
+                _spriteBatch.Begin(SpriteSortMode.BackToFront);
+            }
             
             if (ContinuityError)
             {
@@ -300,6 +312,10 @@ namespace DotRPG._Example
             if (ActiveFrame != null)
             {
                 ActiveFrame.Draw(gameTime, _spriteBatch);
+            }
+            if (ActiveSubframe != null)
+            {
+                ActiveSubframe.Draw(gameTime, _spriteBatch);
             }
 #if DEBUG
             _spriteBatch.DrawString(_spriteFont, "FPS: " + FrameRate.ToString() + " || Fullscreen: " + FullScreen.ToString() + String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: " + (ActiveFrame != null ? ActiveFrame.FrameID.ToString() : "-1") + " || Update rate: " + Math.Round(1000 / LastRegisteredEventTime), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));

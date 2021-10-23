@@ -14,6 +14,7 @@
     <Compile Remove="Behavior\bin\**" />
     <Compile Remove="Behavior\Defaults\bin\**" />
     <Compile Remove="Behavior\Defaults\obj\**" />
+    <Compile Remove="Behavior\Management\obj\**" />
     <Compile Remove="Behavior\obj\**" />
     <Compile Remove="Behavior\Routines\bin\**" />
     <Compile Remove="Behavior\Routines\obj\**" />
@@ -31,6 +32,7 @@
     <EmbeddedResource Remove="Behavior\bin\**" />
     <EmbeddedResource Remove="Behavior\Defaults\bin\**" />
     <EmbeddedResource Remove="Behavior\Defaults\obj\**" />
+    <EmbeddedResource Remove="Behavior\Management\obj\**" />
     <EmbeddedResource Remove="Behavior\obj\**" />
     <EmbeddedResource Remove="Behavior\Routines\bin\**" />
     <EmbeddedResource Remove="Behavior\Routines\obj\**" />
@@ -48,6 +50,7 @@
     <None Remove="Behavior\bin\**" />
     <None Remove="Behavior\Defaults\bin\**" />
     <None Remove="Behavior\Defaults\obj\**" />
+    <None Remove="Behavior\Management\obj\**" />
     <None Remove="Behavior\obj\**" />
     <None Remove="Behavior\Routines\bin\**" />
     <None Remove="Behavior\Routines\obj\**" />
