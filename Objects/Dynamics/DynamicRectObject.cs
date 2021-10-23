@@ -29,8 +29,11 @@ namespace DotRPG.Objects.Dynamics
         /// Vector value which describes how much body will travel (pts/s)
         /// </summary>
         public Vector2 Velocity;
+        protected Single LastScalarVelocity = 0.0f;
         public Single Mass;
         public Vector2 AppliedForce = Vector2.Zero;
+
+        public Single VelocityDerivative { get; protected set; }
 
         public Single KineticEnergy
         {
@@ -204,6 +207,9 @@ namespace DotRPG.Objects.Dynamics
             Velocity += AppliedForce * ((Single)gameTime.ElapsedGameTime.TotalSeconds * this.Mass);
             Location += Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
             AppliedForce = Vector2.Zero;
+            Single v = Velocity.Length();
+            VelocityDerivative = (v - LastScalarVelocity) / (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            LastScalarVelocity = v;
         }
 
         public void FullStop()

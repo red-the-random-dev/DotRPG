@@ -7,10 +7,24 @@ namespace DotRPG.Objects
 {
     public class CameraFrameObject
     {
-        public Point Focus;
+        public Point Focus
+        {
+            get
+            {
+                return FocusRaw + Offset;
+            }
+            set
+            {
+                FocusRaw = value;
+            }
+        }
+        public Point FocusRaw;
         public Point TrackTarget;
         public Single CameraVelocity;
         public Int32 DefaultHeight;
+        public Point Offset = Point.Zero;
+        public Point OffsetTarget = Point.Zero;
+        public Single OffsetVelocity;
         public Single Zoom
         {
             get
@@ -23,6 +37,21 @@ namespace DotRPG.Objects
             }
         }
         Single _z = 1.0f;
+
+        public static void Move(ref Point pos, Point trackTarget, Single velocity, GameTime gameTime)
+        {
+            Vector2 Movement = (pos - trackTarget).ToVector2();
+            Vector2 MovementDirection = Movement / Movement.Length();
+            Vector2 MovementNew = MovementDirection * velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+            if (MovementNew.Length() <= Movement.Length())
+            {
+                pos -= MovementNew.ToPoint();
+            }
+            else
+            {
+                pos -= Movement.ToPoint();
+            }
+        }
 
         public Point GetTopLeftAngle(Point screenSize)
         {
@@ -40,17 +69,8 @@ namespace DotRPG.Objects
         }
         public void Update(GameTime gameTime)
         {
-            Vector2 cameraMovement = (Focus - TrackTarget).ToVector2();
-            Vector2 cameraMovementDirection = cameraMovement / cameraMovement.Length();
-            Vector2 cameraMovementNew = cameraMovementDirection * CameraVelocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
-            if (cameraMovementNew.Length() <= cameraMovement.Length())
-            {
-                Focus -= cameraMovementNew.ToPoint();
-            }
-            else
-            {
-                Focus -= cameraMovement.ToPoint();
-            }
+            Move(ref FocusRaw, TrackTarget, CameraVelocity, gameTime);
+            Move(ref Offset, OffsetTarget, OffsetVelocity, gameTime);
         }
     }
 }

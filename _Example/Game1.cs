@@ -271,8 +271,14 @@ namespace DotRPG._Example
             }
             else
                 GraphicsDevice.Clear(Color.Black);
-
-            _spriteBatch.Begin();
+            if (FrameRate < 24)
+            {
+                _spriteBatch.Begin();
+            }
+            else
+            {
+                _spriteBatch.Begin(SpriteSortMode.BackToFront);
+            }
             
             if (ContinuityError)
             {

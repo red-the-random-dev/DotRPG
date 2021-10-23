@@ -1,4 +1,5 @@
-﻿using System;
+﻿// #define SPEEN
+using System;
 using System.Collections.Generic;
 using System.Text;
 using DotRPG.Behavior;
@@ -40,8 +41,8 @@ namespace DotRPG._Example
         {
             Loader = new FrameLoader(il);
             percentage = new TextObject(globalGameResources.Fonts["vcr_large"], "0%", 0.5f, 0.35f, Color.White, AlignMode.BottomCenter, 540);
-            progress = new ProgressBar(Color.Gray, Color.Black, new Vector2(0.75f, 0.05f), new Vector2(0.5f, 0.55f));
-            progress.RotationOrigin = new Vector2(0.5f, 0.0f);
+            progress = new ProgressBar(Color.Gray, Color.Black, new Vector2(0.75f, 0.1f), new Vector2(0.5f, 1.0f));
+            progress.RotationOrigin = new Vector2(0.5f, 1.0f);
             cb = new ColorBox(new Color(0, 0, 75), new Vector2(0.75f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f));
             cb.SubnodePadding = new Vector4(4.0f);
             cb.Subnodes.Add(percentage);
@@ -55,6 +56,9 @@ namespace DotRPG._Example
         {
             timeCountdown += (Single)gameTime.ElapsedGameTime.TotalSeconds;
             cb.RelativeSize = new Vector2(0.75f, Math.Max(0.01f, Math.Min(0.5f, timeCountdown*4)));
+#if SPEEN
+            cb.Rotation = (Single)gameTime.TotalGameTime.TotalSeconds * MathHelper.TwoPi;
+#endif
             if (timeCountdown > 0.125f)
             {
                 Loader.Update();
