@@ -16,6 +16,7 @@
     <Authors>red-the-random-dev</Authors>
     <Product>DotRPG</Product>
     <PackageId>DotRPG Example Application</PackageId>
+    <AssemblyName>dotrpg-example</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove=".legacy\**" />

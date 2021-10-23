@@ -75,7 +75,7 @@
 #begin Sounds/wallcling.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
-/processorParam:Quality=Best
+/processorParam:Quality=Low
 /build:Sounds/wallcling.wav
 
 #begin Texture2D/backdrop.png

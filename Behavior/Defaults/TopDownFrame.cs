@@ -23,6 +23,7 @@ namespace DotRPG.Behavior.Defaults
         CameraFrameObject cam = new CameraFrameObject();
         CameraManager cameraManager;
         ObjectHeapManager obj;
+        SoundManager audio;
         PlayerObject player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -128,6 +129,8 @@ namespace DotRPG.Behavior.Defaults
             {
                 x.Runtime["obj"] = obj;
                 x.Runtime["camera"] = cameraManager;
+                x.Runtime["audio"] = audio;
+                x.Start();
             }
             loaded = true;
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
@@ -386,6 +389,7 @@ namespace DotRPG.Behavior.Defaults
         {
             cameraManager = new CameraManager(cam, props);
             obj = new ObjectHeapManager(props);
+            audio = new SoundManager(FrameResources);
         }
 
         public override void Update(GameTime gameTime, bool[] controls)
@@ -491,6 +495,7 @@ namespace DotRPG.Behavior.Defaults
 
         public override void UnloadContent()
         {
+            audio.Dispose();
             FrameResources.Dispose();
             props.Clear();
             interactable.Clear();

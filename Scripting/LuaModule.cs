@@ -41,6 +41,30 @@ namespace DotRPG.Scripting
             }
         }
 
+        public void Start()
+        {
+            if (Runtime["start"] != null)
+            {
+                LuaFunction startFunction = Runtime["start"] as LuaFunction;
+                try
+                {
+                    startFunction.Call();
+                    LastError = "";
+                    LastErrorDetails = null;
+                }
+                catch (LuaException e)
+                {
+                    LastError = e.Message;
+                    LastErrorDetails = e;
+                }
+                catch (Exception e)
+                {
+                    LastError = "Something is creating script errors";
+                    LastErrorDetails = e;
+                }
+            }
+        }
+
         public void Update(String EventSetID, Single elapsedTime, Single totalTime)
         {
             // Event will be ignored if its ID is not referenced in file's eventAmounts table

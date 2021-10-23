@@ -11,9 +11,9 @@ namespace DotRPG.Behavior.Management
         protected Dictionary<String, DynamicRectObject> ObjectHeap;
         public PlayerObject Player;
 
-        public Vector2 GetScalarVelocity(String name)
+        public Single GetScalarVelocity(String name)
         {
-            return ObjectHeap[name].Velocity;
+            return ObjectHeap[name].Velocity.Length();
         }
 
         public Single GetDistance(String one, String other)
@@ -54,6 +54,13 @@ namespace DotRPG.Behavior.Management
         public ObjectHeapManager(Dictionary<String, DynamicRectObject> objects)
         {
             ObjectHeap = objects;
+        }
+
+        public Single GetSoundPanning(String target)
+        {
+            Vector2 v = ObjectHeap[target].Location - Player.Location;
+            v /= v.Length();
+            return v.X;
         }
     }
 }
