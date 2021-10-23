@@ -9,10 +9,11 @@ _manifest = {
 
 shake_count = 0
 
-function loop(objID, eventID, frameTime, totalTime)
+function update(objID, eventID, frameTime, totalTime)
     if objID == "default" then
         if obj:GetVelocityDerivative("whiterect") < -32 then
             camera:Shake(10 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"), 50 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"))
         end
+        --error("Something is creating script errors")
     end
 end

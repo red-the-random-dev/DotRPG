@@ -274,7 +274,7 @@ namespace DotRPG.Behavior.Defaults
                 case "script":
                     {
                         String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value));
-                        Scripts.Add(new LuaModule(scriptContent));
+                        Scripts.Add(new LuaModule(scriptContent, xe.Attribute(XName.Get("location")).Value));
                         break;
                     }
                 case "backdrop":
@@ -469,6 +469,19 @@ namespace DotRPG.Behavior.Defaults
                 props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (props[i].Location.Y / 540))));
             }
             player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (player.Location.Y / 540))));
+
+#if DEBUG
+            Single y = 48.0f;
+            Int32 c = Scripts.Count;
+            for (int i = 0; i < c; i++)
+            {
+                if (Scripts[i].LastError != "")
+                {
+                    spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], i + ": " + Scripts[i].LastError, new Vector2(0, y), Color.Yellow);
+                    y += 12;
+                }
+            }
+#endif
         }
 
         public override void Initialize()
