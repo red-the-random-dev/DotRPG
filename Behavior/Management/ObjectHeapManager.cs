@@ -31,6 +31,26 @@ namespace DotRPG.Behavior.Management
             return ObjectHeap[name].VelocityDerivative;
         }
 
+        public Single Player_X()
+        {
+            return Player.Location.X;
+        }
+
+        public Single Player_Y()
+        {
+            return Player.Location.Y;
+        }
+
+        public Single Pos_X(String name)
+        {
+            return ObjectHeap[name].Location.X;
+        }
+
+        public Single Pos_Y(String name)
+        {
+            return ObjectHeap[name].Location.Y;
+        }
+
         public ObjectHeapManager(Dictionary<String, DynamicRectObject> objects)
         {
             ObjectHeap = objects;
