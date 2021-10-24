@@ -15,6 +15,7 @@ namespace DotRPG.Objects.Dynamics
         protected Point SightAreaSize;
         public Direction SightDirection;
         public MotionParameters Motion = new MotionParameters();
+        public Boolean Controlled = true;
 
         public virtual Rectangle SightArea
         {

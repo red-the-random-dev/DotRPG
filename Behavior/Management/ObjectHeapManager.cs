@@ -123,5 +123,65 @@ namespace DotRPG.Behavior.Management
             // deltaf = (deltaV/c) * f0, where deltaV is approach velocity, c is sonic speed and f0 equals 1
             return Math.Max(Math.Min(GetApproachScalarVelocityFromPlayer(target) / sonicSpeed, 1.0f), -1.0f);
         }
+
+        public void SetAnimationSequence(String name, String sequence, UInt16 continueFrom = 0)
+        {
+            ObjectHeap[name].Sprite.SetAnimationSequence(sequence, continueFrom);
+        }
+
+        public String GetCurrentAnimationSequence(String name)
+        {
+            return ObjectHeap[name].Sprite.CurrentAnimationSequence;
+        }
+
+        public UInt16 GetFramePlayed(String name)
+        {
+            return ObjectHeap[name].Sprite.SpriteIndex;
+        }
+
+        public void SetPlayerAnimationSequence(String sequence, UInt16 continueFrom = 0)
+        {
+            Player.Sprite.SetAnimationSequence(sequence, continueFrom);
+        }
+
+        public String GetCurrentPlayerAnimationSequence()
+        {
+            return Player.Sprite.CurrentAnimationSequence;
+        }
+
+        public UInt16 GetPlayerFramePlayed(String name)
+        {
+            return Player.Sprite.SpriteIndex;
+        }
+
+        public void EnablePlayerControls()
+        {
+            Player.Controlled = true;
+        }
+
+        public void DisablePlayerControls()
+        {
+            Player.Controlled = false;
+        }
+
+        public void SetActive(String name, Boolean active)
+        {
+            ObjectHeap[name].Active = active;
+        }
+
+        public void SetCollidable(String name, Boolean collidable)
+        {
+            ObjectHeap[name].Collidable = collidable;
+        }
+
+        public void SetVisible(String name, Boolean visible)
+        {
+            ObjectHeap[name].Visible = visible;
+        }
+
+        public void SetPlayerVisible(Boolean visible)
+        {
+            Player.Visible = visible;
+        }
     }
 }

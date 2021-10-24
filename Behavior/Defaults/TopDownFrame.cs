@@ -24,6 +24,7 @@ namespace DotRPG.Behavior.Defaults
         CameraManager cameraManager;
         ObjectHeapManager obj;
         SoundManager audio;
+        ScriptEventManager timer;
         PlayerObject player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -131,6 +132,7 @@ namespace DotRPG.Behavior.Defaults
                 x.Runtime["obj"] = obj;
                 x.Runtime["camera"] = cameraManager;
                 x.Runtime["audio"] = audio;
+                x.Runtime["timer"] = timer;
                 x.SuppressExceptions = SuppressScriptExceptions;
                 x.Start();
             }
@@ -395,37 +397,53 @@ namespace DotRPG.Behavior.Defaults
             cameraManager = new CameraManager(cam, props);
             obj = new ObjectHeapManager(props);
             audio = new SoundManager(FrameResources);
+            timer = new ScriptEventManager(Execute);
+        }
+
+        public void Execute(Object sender, String e, GameTime g)
+        {
+            foreach (LuaModule lm in Scripts)
+            {
+                lm.Update(e, (Single)g.ElapsedGameTime.TotalMilliseconds, (Single)g.TotalGameTime.TotalMilliseconds);
+            }
         }
 
         public override void Update(GameTime gameTime, bool[] controls)
         {
             Single loco_x = 0.0f; Single loco_y = 0.0f;
-            if (controls[0]) { loco_y -= 1.0f; }
-            if (controls[1]) { loco_y += 1.0f; }
-            if (controls[2]) { loco_x -= 1.0f; }
-            if (controls[3]) { loco_x += 1.0f; }
+            if (player.Controlled)
+            {
+                if (controls[0]) { loco_y -= 1.0f; }
+                if (controls[1]) { loco_y += 1.0f; }
+                if (controls[2]) { loco_x -= 1.0f; }
+                if (controls[3]) { loco_x += 1.0f; }
+            }
             Vector2 Locomotion = new Vector2(loco_x, loco_y);
-            if (controls[0] && !(controls[1] || controls[2] || controls[3]))
+            if (player.Controlled)
             {
-                player.SightDirection = Direction.Up;
+                if (controls[0] && !(controls[1] || controls[2] || controls[3]))
+                {
+                    player.SightDirection = Direction.Up;
+                }
+                if (controls[1] && !(controls[0] || controls[2] || controls[3]))
+                {
+                    player.SightDirection = Direction.Down;
+                }
+                if (controls[2] && !(controls[1] || controls[0] || controls[3]))
+                {
+                    player.SightDirection = Direction.Left;
+                }
+                if (controls[3] && !(controls[1] || controls[0] || controls[2]))
+                {
+                    player.SightDirection = Direction.Right;
+                }
+                String newAnimSequence = player.Motion.FetchAnimationSequenceID(Locomotion.Length(), player.SightDirection);
+                if (player.Sprite.CurrentAnimationSequence != newAnimSequence)
+                {
+                    player.Sprite.SetAnimationSequence(newAnimSequence);
+                }
             }
-            if (controls[1] && !(controls[0] || controls[2] || controls[3]))
-            {
-                player.SightDirection = Direction.Down;
-            }
-            if (controls[2] && !(controls[1] || controls[0] || controls[3]))
-            {
-                player.SightDirection = Direction.Left;
-            }
-            if (controls[3] && !(controls[1] || controls[0] || controls[2]))
-            {
-                player.SightDirection = Direction.Right;
-            }
-            String newAnimSequence = player.Motion.FetchAnimationSequenceID(Locomotion.Length(), player.SightDirection);
-            if (player.Sprite.CurrentAnimationSequence != newAnimSequence)
-            {
-                player.Sprite.SetAnimationSequence(newAnimSequence);
-            }
+            
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
             Locomotion *= player.Motion.MovementSpeed;
             player.Velocity = Locomotion;
@@ -446,11 +464,11 @@ namespace DotRPG.Behavior.Defaults
                     }
                 }
             }
-            if (controls[4] && !lastInput[4])
+            if (controls[4] && !lastInput[4] && player.Controlled)
             {
                 foreach (String i in interactable.Keys)
                 {
-                    if (player.SightArea.Intersects(interactable[i].Collider))
+                    if (player.SightArea.Intersects(interactable[i].Collider) && interactable[i].Active)
                     {
                         foreach (LuaModule lm in Scripts)
                         {
@@ -464,6 +482,7 @@ namespace DotRPG.Behavior.Defaults
             cam.TrackTarget = cameraManager.TrackPoint;
             cam.OffsetTarget = cameraManager.Offset;
             cam.Update(gameTime);
+            timer.Update(gameTime);
             foreach (LuaModule x in Scripts)
             {
                 x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);

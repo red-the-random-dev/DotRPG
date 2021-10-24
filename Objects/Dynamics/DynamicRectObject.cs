@@ -12,6 +12,9 @@ namespace DotRPG.Objects.Dynamics
         public Vector2 Location;
         protected Point BodySize;
         public SpriteController Sprite;
+        public Boolean Collidable = true;
+        public Boolean Active = true;
+        public Boolean Visible = true;
         public Rectangle Collider
         {
             get
@@ -172,7 +175,7 @@ namespace DotRPG.Objects.Dynamics
 
         public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Single ZIndex = 0.0f)
         {
-            if (Sprite == null)
+            if (Sprite == null || !Active  || !Visible)
             {
                 return;
             }
@@ -187,6 +190,10 @@ namespace DotRPG.Objects.Dynamics
 
         public Boolean TryCollideWith(DynamicRectObject another, Boolean splitVector = false)
         {
+            if (!this.Collidable || !another.Collidable || !this.Active || !another.Active)
+            {
+                return false;
+            }
             if (this.Collider.Intersects(another.Collider))
             {
                 if (1.0 * Math.Abs(this.Location.X - another.Location.X) / (this.BodySize.X / 2 + another.BodySize.X / 2) >= 1.0 * Math.Abs(this.Location.Y - another.Location.Y) / (this.BodySize.Y / 2 + another.BodySize.Y / 2))
