@@ -36,6 +36,23 @@ namespace DotRPG.Behavior.Defaults
             }
         }
 
+        public abstract void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime);
+
+        public override void Update(string EventID, float ElapsedGameTime, float TotalGameTime)
+        {
+            try
+            {
+                UpdateInternal(EventID, ElapsedGameTime, TotalGameTime);
+                LastError = "";
+                LastErrorDetails = null;
+            }
+            catch (Exception e)
+            {
+                LastError = e.Message;
+                LastErrorDetails = e;
+            }
+        }
+
         public override void Start()
         {
             

@@ -311,6 +311,11 @@ namespace DotRPG.Behavior.Defaults
                         */
                         break;
                     }
+                case "prebuiltscript":
+                    {
+                        Scripts.Add(ClassBuilder.GetPrebuiltScript(xe.Attribute(XName.Get("name")).Value));
+                        break;
+                    }
                 case "backdrop":
                     {
                         Texture2D t = null;

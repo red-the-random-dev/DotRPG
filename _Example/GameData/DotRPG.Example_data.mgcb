@@ -48,9 +48,6 @@
 #begin Scripts/dialog.lua
 /copy:Scripts/dialog.lua
 
-#begin Scripts/DialogComp.cs
-/copy:Scripts/DialogComp.cs
-
 #begin Scripts/kickable.lua
 /copy:Scripts/kickable.lua
 
