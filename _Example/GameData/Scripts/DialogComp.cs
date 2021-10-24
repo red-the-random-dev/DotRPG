@@ -8,7 +8,7 @@ namespace DotRPG._Example
     [BuiltScript("tree")]
     public class DialogScript : TopDownFrameScript
     {
-        public override void Update(String EventID, Single ElapsedGameTime, Single TotalGameTime)
+        public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
             Single PunchCount = 0.0f;
             switch (EventID)
