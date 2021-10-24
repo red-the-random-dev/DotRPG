@@ -21,7 +21,7 @@ function update(objID, eventID, frameTime, totalTime)
             audio:PlayLocal("hit", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), 1, obj:GetSoundPanning("whiterect"))
         end
         if obj:GetScalarVelocity("whiterect") > 128 then
-            audio:SetParameters("slide", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), 1, obj:GetSoundPanning("whiterect"))
+            audio:SetParameters("slide", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), obj:GetDopplerShift("whiterect", 1216), obj:GetSoundPanning("whiterect"))
             audio:Play("slide")
         else
             audio:Stop("slide")

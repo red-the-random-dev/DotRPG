@@ -17,6 +17,7 @@ namespace DotRPG.Scripting
         public Boolean HasDefaultAction = false;
         public String LastError = "";
         public Exception LastErrorDetails;
+        public Boolean SuppressExceptions = false;
 
         public LuaModule(String initFile, LuaTable eventAmounts, String initName = "dotrpgmodule")
         {
@@ -56,11 +57,19 @@ namespace DotRPG.Scripting
                 {
                     LastError = e.Message;
                     LastErrorDetails = e;
+                    if (!SuppressExceptions)
+                    {
+                        throw e;
+                    }
                 }
                 catch (Exception e)
                 {
                     LastError = "Something is creating script errors";
                     LastErrorDetails = e;
+                    if (!SuppressExceptions)
+                    {
+                        throw e;
+                    }
                 }
             }
         }
@@ -84,11 +93,19 @@ namespace DotRPG.Scripting
                     {
                         LastError = e.Message;
                         LastErrorDetails = e;
+                        if (!SuppressExceptions)
+                        {
+                            throw e;
+                        }
                     }
                     catch (Exception e)
                     {
                         LastError = "Something is creating script errors";
                         LastErrorDetails = e;
+                        if (!SuppressExceptions)
+                        {
+                            throw e;
+                        }
                     }
                     finally
                     {

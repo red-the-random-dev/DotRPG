@@ -110,8 +110,8 @@ namespace DotRPG.Behavior.Management
         /// <returns></returns>
         public Single GetDopplerShift(String target, Single sonicSpeed = 12160.0f)
         {
-            // f = (1 + deltaV/c) * f0, where deltaV is approach velocity, c is sonic speed and f0 equals 1
-            return 1.0f + (GetApproachScalarVelocityFromPlayer(target) / sonicSpeed);
+            // deltaf = (deltaV/c) * f0, where deltaV is approach velocity, c is sonic speed and f0 equals 1
+            return Math.Max(Math.Min(GetApproachScalarVelocityFromPlayer(target) / sonicSpeed, 1.0f), -1.0f);
         }
     }
 }
