@@ -77,7 +77,6 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="NLua" Version="1.5.11" />
-    <PackageReference Include="System.CodeDom" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

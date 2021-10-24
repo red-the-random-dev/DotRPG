@@ -29,7 +29,7 @@ namespace DotRPG.Behavior.Defaults
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<XElement> objectPrototypes = new List<XElement>();
-        List<IScriptModule> Scripts = new List<IScriptModule>();
+        List<LuaModule> Scripts = new List<LuaModule>();
         List<Backdrop> backdrops = new List<Backdrop>();
 
         Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
@@ -128,12 +128,12 @@ namespace DotRPG.Behavior.Defaults
         public void PostLoadTask()
         {
             cam.Focus = player.Location.ToPoint();
-            foreach (IScriptModule x in Scripts)
+            foreach (LuaModule x in Scripts)
             {
-                x.AddData("obj", obj);
-                x.AddData("camera", cameraManager);
-                x.AddData("audio", audio);
-                x.AddData("timer", timer);
+                x.Runtime["obj"] = obj;
+                x.Runtime["camera"] = cameraManager;
+                x.Runtime["audio"] = audio;
+                x.Runtime["timer"] = timer;
                 x.SuppressExceptions = SuppressScriptExceptions;
                 x.Start();
             }
@@ -411,7 +411,7 @@ namespace DotRPG.Behavior.Defaults
 
         public void Execute(Object sender, String e, GameTime g)
         {
-            foreach (IScriptModule lm in Scripts)
+            foreach (LuaModule lm in Scripts)
             {
                 lm.Update(e, (Single)g.ElapsedGameTime.TotalMilliseconds, (Single)g.TotalGameTime.TotalMilliseconds);
             }
@@ -479,7 +479,7 @@ namespace DotRPG.Behavior.Defaults
                 {
                     if (player.SightArea.Intersects(interactable[i].Collider) && interactable[i].Active)
                     {
-                        foreach (IScriptModule lm in Scripts)
+                        foreach (LuaModule lm in Scripts)
                         {
                             lm.Update(i, (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
                         }
@@ -497,7 +497,7 @@ namespace DotRPG.Behavior.Defaults
             cam.OffsetTarget = cameraManager.Offset;
             cam.Update(gameTime);
             timer.Update(gameTime);
-            foreach (IScriptModule x in Scripts)
+            foreach (LuaModule x in Scripts)
             {
                 x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
             }
