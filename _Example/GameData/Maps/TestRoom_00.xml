@@ -18,7 +18,7 @@
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
         <Interactable interactAction="tree-talk"/>
     </Prop>
-    <Prop id="whiterect" startPos="256,128" _usePrefab="Prefabs/whiterect.xml"/>
+    <Prop id="whiterect" startPos="256,128" mass="2" _usePrefab="Prefabs/whiterect.xml"/>
 
     <Prop id="barrier_t" startPos="480,48" colliderSize="1000,96" mass="1000" static="true"/>
     <Prop id="barrier_b" startPos="480,588" colliderSize="1000,96" mass="1000" static="true"/>

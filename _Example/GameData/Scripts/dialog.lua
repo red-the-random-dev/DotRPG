@@ -16,12 +16,12 @@ end
 
 function update(objID, eventID, frameTime, totalTime)
     if objID == "default" then
-        if obj:GetVelocityDerivative("whiterect") < -32 then
+        if math.abs(obj:GetVelocityDerivative("whiterect")) > 32 then
             camera:Shake(10 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"), 50 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"))
             audio:PlayLocal("hit", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), 1, obj:GetSoundPanning("whiterect"))
         end
         if obj:GetScalarVelocity("whiterect") > 128 then
-            audio:SetParameters("slide", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), obj:GetDopplerShift("whiterect", 1216), obj:GetSoundPanning("whiterect"))
+            audio:SetParameters("slide", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), obj:GetDopplerShift("whiterect"), obj:GetSoundPanning("whiterect"))
             audio:Play("slide")
         else
             audio:Stop("slide")

@@ -98,8 +98,8 @@ namespace DotRPG.Behavior.Management
         public Single GetApproachScalarVelocityFromPlayer(String other)
         {
             Vector2 SightLine = ObjectHeap[other].Location - Player.Location;
-            Single V1 = GetScalarVelocity(other) * VectorAngleCosine(ObjectHeap[other].Velocity, SightLine);
-            Single V2 = GetPlayerScalarVelocity() * VectorAngleCosine(Player.Velocity, -SightLine);
+            Single V1 = GetScalarVelocity(other) * VectorAngleCosine(ObjectHeap[other].Velocity, -SightLine);
+            Single V2 = GetPlayerScalarVelocity() * VectorAngleCosine(Player.Velocity, SightLine);
             return V1 + V2;
         }
         /// <summary>
