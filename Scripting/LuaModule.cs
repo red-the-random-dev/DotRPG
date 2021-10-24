@@ -16,8 +16,8 @@ namespace DotRPG.Scripting
         public LuaTable EventAmounts { get; private set; }
         public Dictionary<String, Int64> EventIDs = new Dictionary<string, long>();
         public Boolean HasDefaultAction = false;
-        public String LastError { get; set; } = "";
-        public Exception LastErrorDetails { get; set; }
+        public String LastError { get; protected set; } = "";
+        public Exception LastErrorDetails { get; protected set; }
         public Boolean SuppressExceptions { get; set; } = false;
 
         public LuaModule(String initFile, LuaTable eventAmounts, String initName = "dotrpgmodule")
@@ -32,11 +32,12 @@ namespace DotRPG.Scripting
             }
             Name = initName;
         }
+
         public void AddData(Dictionary<String, Object> data)
         {
-            foreach (String i in data.Keys)
+            foreach (String x in data.Keys)
             {
-                Runtime[i] = data[i];
+                AddData(x, data[x]);
             }
         }
         public void AddData(String key, Object value)
