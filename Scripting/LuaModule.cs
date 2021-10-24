@@ -12,11 +12,13 @@ namespace DotRPG.Scripting
     {
         public Lua Runtime;
         public Boolean IsUp = true;
-        public readonly LuaTable EventAmounts;
+        public readonly String Name;
+        public LuaTable EventAmounts { get; private set; }
         public Dictionary<String, Int64> EventIDs = new Dictionary<string, long>();
         public Boolean HasDefaultAction = false;
         public String LastError = "";
         public Exception LastErrorDetails;
+        public Boolean SuppressExceptions = false;
 
         public LuaModule(String initFile, LuaTable eventAmounts, String initName = "dotrpgmodule")
         {
@@ -28,6 +30,7 @@ namespace DotRPG.Scripting
             {
                 EventIDs.Add(i, 0);
             }
+            Name = initName;
         }
         public LuaModule(String initFile, String initName = "dotrpgmodule")
         {
@@ -39,6 +42,7 @@ namespace DotRPG.Scripting
             {
                 EventIDs.Add(i, 0);
             }
+            Name = initName;
         }
 
         public void Start()
@@ -51,16 +55,30 @@ namespace DotRPG.Scripting
                     startFunction.Call();
                     LastError = "";
                     LastErrorDetails = null;
+                    EventAmounts = (LuaTable)Runtime["event_counts"];
+                    EventIDs.Clear();
+                    foreach (String i in EventAmounts.Keys)
+                    {
+                        EventIDs.Add(i, 0);
+                    }
                 }
                 catch (LuaException e)
                 {
                     LastError = e.Message;
                     LastErrorDetails = e;
+                    if (!SuppressExceptions)
+                    {
+                        throw e;
+                    }
                 }
                 catch (Exception e)
                 {
                     LastError = "Something is creating script errors";
                     LastErrorDetails = e;
+                    if (!SuppressExceptions)
+                    {
+                        throw e;
+                    }
                 }
             }
         }
@@ -68,7 +86,7 @@ namespace DotRPG.Scripting
         public void Update(String EventSetID, Single elapsedTime, Single totalTime)
         {
             // Event will be ignored if its ID is not referenced in file's eventAmounts table
-            foreach (String x in EventAmounts.Keys)
+            foreach (String x in EventIDs.Keys)
             {
                 if (EventSetID == x)
                 {
@@ -84,11 +102,19 @@ namespace DotRPG.Scripting
                     {
                         LastError = e.Message;
                         LastErrorDetails = e;
+                        if (!SuppressExceptions)
+                        {
+                            throw e;
+                        }
                     }
                     catch (Exception e)
                     {
                         LastError = "Something is creating script errors";
                         LastErrorDetails = e;
+                        if (!SuppressExceptions)
+                        {
+                            throw e;
+                        }
                     }
                     finally
                     {

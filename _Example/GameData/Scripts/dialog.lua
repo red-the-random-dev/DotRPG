@@ -1,31 +1,31 @@
-import ('DotRPG.Scripting', 'DotRPG.Objects')
-
-event_counts = {default=1,treetalk=7}
+event_counts = {default=1,treetalk=1,whiterectreset=1,treegone=1}
 
 _manifest = {
     id="testDialog",
     useWith = "example/topdown",
 }
 
-shake_count = 0
-
-function start()
-    audio:BufferLocal("slide", "slide")
-    audio:SetLooped("slide", true)
-end
+punch_count = 0
 
 function update(objID, eventID, frameTime, totalTime)
     if objID == "default" then
-        if obj:GetVelocityDerivative("whiterect") < -32 then
-            camera:Shake(10 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"), 50 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"))
-            audio:PlayLocal("hit", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), 1, obj:GetSoundPanning("whiterect"))
+        punch_count = punch_count - frameTime
+        if punch_count < 0 then punch_count = 0 end
+    end
+    if objID == "treetalk" then
+        timer:Enqueue(totalTime, 1000, "kickablereset")
+        audio:PlayLocal("hit")
+        camera:Shake(10, 10)
+        punch_count = punch_count + 1000
+        if punch_count > 9000 then
+            audio:PlayLocal("kaboom")
+            obj:DisablePlayerControls()
+            obj:SetAnimationSequence("tree", "explodes")
+            timer:Enqueue(totalTime, 1000, "treegone")
         end
-        if obj:GetScalarVelocity("whiterect") > 128 then
-            audio:SetParameters("slide", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), 1, obj:GetSoundPanning("whiterect"))
-            audio:Play("slide")
-        else
-            audio:Stop("slide")
-        end
-        --error("Something is creating script errors")
+    end
+    if objID == "treegone" then
+        obj:SetActive("tree", false)
+        obj:EnablePlayerControls()
     end
 end

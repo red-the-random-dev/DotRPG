@@ -12,13 +12,16 @@
 
     <Backdrop local="backdrop" offset="480,270" />
 
-    <RuleSet allowManualZoom="true" />
+    <RuleSet allowManualZoom="true" suppressScriptExceptions="true"/>
 
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
-        <Interactable interactAction="tree-talk"/>
+        <Interactable interactAction="treetalk"/>
     </Prop>
-    <Prop id="whiterect" startPos="256,128" _usePrefab="Prefabs/whiterect.xml"/>
+    <Prop id="whiterect" startPos="512,270" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <ObjectScript location="Scripts/kickable.lua"/>
+        <Interactable interactAction="kick__whiterect"/>
+    </Prop>
 
     <Prop id="barrier_t" startPos="480,48" colliderSize="1000,96" mass="1000" static="true"/>
     <Prop id="barrier_b" startPos="480,588" colliderSize="1000,96" mass="1000" static="true"/>

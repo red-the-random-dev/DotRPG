@@ -24,6 +24,7 @@ namespace DotRPG.Behavior.Defaults
         CameraManager cameraManager;
         ObjectHeapManager obj;
         SoundManager audio;
+        ScriptEventManager timer;
         PlayerObject player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -35,15 +36,17 @@ namespace DotRPG.Behavior.Defaults
         Dictionary<String, DynamicRectObject> interactable = new Dictionary<string, DynamicRectObject>();
 
         Int32 LastMWheelValue = 0;
+        Boolean[] lastInput = new bool[8];
 
         Boolean AllowManualZoom = false;
-
+        Boolean SuppressScriptExceptions = false;
 
         #region ILoadable implementation
         Int32 content = 0;
         Int32 objects = 0;
         Boolean ready = false;
         Boolean loaded = false;
+        Boolean showHitboxes = false;
         public Int32 ContentTasks_Total
         {
             get
@@ -130,6 +133,8 @@ namespace DotRPG.Behavior.Defaults
                 x.Runtime["obj"] = obj;
                 x.Runtime["camera"] = cameraManager;
                 x.Runtime["audio"] = audio;
+                x.Runtime["timer"] = timer;
+                x.SuppressExceptions = SuppressScriptExceptions;
                 x.Start();
             }
             loaded = true;
@@ -270,6 +275,14 @@ namespace DotRPG.Behavior.Defaults
                                 case "interactable":
                                     interactable.Add(xe2.Attribute(XName.Get("interactAction")).Value, props[ID]);
                                     break;
+                                case "objectscript":
+                                {
+                                    String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe2.Attribute(XName.Get("location")).Value));
+                                    LuaModule lm = new LuaModule(scriptContent, xe2.Attribute(XName.Get("location")).Value+":"+ID);
+                                    lm.Runtime["this"] = ID;
+                                    Scripts.Add(lm);
+                                    break;
+                                }
                             }
                         }
                         break;
@@ -313,6 +326,9 @@ namespace DotRPG.Behavior.Defaults
                             {
                                 case "allowManualZoom":
                                     AllowManualZoom = Boolean.Parse(xa.Value);
+                                    break;
+                                case "suppressScriptExceptions":
+                                    SuppressScriptExceptions = Boolean.Parse(xa.Value);
                                     break;
                             }
                         }
@@ -390,37 +406,53 @@ namespace DotRPG.Behavior.Defaults
             cameraManager = new CameraManager(cam, props);
             obj = new ObjectHeapManager(props);
             audio = new SoundManager(FrameResources);
+            timer = new ScriptEventManager(Execute);
+        }
+
+        public void Execute(Object sender, String e, GameTime g)
+        {
+            foreach (LuaModule lm in Scripts)
+            {
+                lm.Update(e, (Single)g.ElapsedGameTime.TotalMilliseconds, (Single)g.TotalGameTime.TotalMilliseconds);
+            }
         }
 
         public override void Update(GameTime gameTime, bool[] controls)
         {
             Single loco_x = 0.0f; Single loco_y = 0.0f;
-            if (controls[0]) { loco_y -= 1.0f; }
-            if (controls[1]) { loco_y += 1.0f; }
-            if (controls[2]) { loco_x -= 1.0f; }
-            if (controls[3]) { loco_x += 1.0f; }
+            if (player.Controlled)
+            {
+                if (controls[0]) { loco_y -= 1.0f; }
+                if (controls[1]) { loco_y += 1.0f; }
+                if (controls[2]) { loco_x -= 1.0f; }
+                if (controls[3]) { loco_x += 1.0f; }
+            }
             Vector2 Locomotion = new Vector2(loco_x, loco_y);
-            if (controls[0] && !(controls[1] || controls[2] || controls[3]))
+            if (player.Controlled)
             {
-                player.SightDirection = Direction.Up;
+                if (controls[0] && !(controls[1] || controls[2] || controls[3]))
+                {
+                    player.SightDirection = Direction.Up;
+                }
+                if (controls[1] && !(controls[0] || controls[2] || controls[3]))
+                {
+                    player.SightDirection = Direction.Down;
+                }
+                if (controls[2] && !(controls[1] || controls[0] || controls[3]))
+                {
+                    player.SightDirection = Direction.Left;
+                }
+                if (controls[3] && !(controls[1] || controls[0] || controls[2]))
+                {
+                    player.SightDirection = Direction.Right;
+                }
+                String newAnimSequence = player.Motion.FetchAnimationSequenceID(Locomotion.Length(), player.SightDirection);
+                if (player.Sprite.CurrentAnimationSequence != newAnimSequence)
+                {
+                    player.Sprite.SetAnimationSequence(newAnimSequence);
+                }
             }
-            if (controls[1] && !(controls[0] || controls[2] || controls[3]))
-            {
-                player.SightDirection = Direction.Down;
-            }
-            if (controls[2] && !(controls[1] || controls[0] || controls[3]))
-            {
-                player.SightDirection = Direction.Left;
-            }
-            if (controls[3] && !(controls[1] || controls[0] || controls[2]))
-            {
-                player.SightDirection = Direction.Right;
-            }
-            String newAnimSequence = player.Motion.FetchAnimationSequenceID(Locomotion.Length(), player.SightDirection);
-            if (player.Sprite.CurrentAnimationSequence != newAnimSequence)
-            {
-                player.Sprite.SetAnimationSequence(newAnimSequence);
-            }
+            
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
             Locomotion *= player.Motion.MovementSpeed;
             player.Velocity = Locomotion;
@@ -441,10 +473,30 @@ namespace DotRPG.Behavior.Defaults
                     }
                 }
             }
+            if (controls[4] && !lastInput[4] && player.Controlled)
+            {
+                foreach (String i in interactable.Keys)
+                {
+                    if (player.SightArea.Intersects(interactable[i].Collider) && interactable[i].Active)
+                    {
+                        foreach (LuaModule lm in Scripts)
+                        {
+                            lm.Update(i, (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
+                        }
+                    }
+                }
+            }
+#if DEBUG
+            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            {
+                showHitboxes = true;
+            }
+#endif            
             cameraManager.Update(gameTime);
             cam.TrackTarget = cameraManager.TrackPoint;
             cam.OffsetTarget = cameraManager.Offset;
             cam.Update(gameTime);
+            timer.Update(gameTime);
             foreach (LuaModule x in Scripts)
             {
                 x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
@@ -459,22 +511,40 @@ namespace DotRPG.Behavior.Defaults
             }
             base.Update(gameTime, controls);
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
+            for (int i = 0; i < Math.Min(controls.Length, lastInput.Length); i++)
+            {
+                lastInput[i] = controls[i];
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
             Rectangle dynDrawZone = cam.GetDrawArea(drawZone);
+            Texture2D t2d = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+            t2d.SetData(new Color[] { Color.White });
             foreach (Backdrop b in backdrops)
             {
                 b.Draw(spriteBatch, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height));
             }
             foreach (String i in props.Keys)
             {
-                props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (props[i].Location.Y / 540))));
-            }
-            player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (player.Location.Y / 540))));
-
+                Single depth = (0.3f - (0.1f * (props[i].Location.Y / 540)));
+                props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), depth);
 #if DEBUG
+                if (showHitboxes)
+                {
+                    spriteBatch.Draw(t2d, props[i].Collider, interactable.ContainsValue(props[i]) ? Color.Yellow : Color.Red);
+                }
+#endif
+            }
+            Single p_depth = 0.3f - (0.1f * (player.Location.Y / 540));
+            player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), p_depth);
+#if DEBUG
+            if (showHitboxes)
+            {
+                spriteBatch.Draw(t2d, player.Collider, Color.Green);
+                spriteBatch.Draw(t2d, player.SightArea, new Color(0, 255, 0, 128));
+            }
             Single y = 48.0f;
             Int32 c = Scripts.Count;
             for (int i = 0; i < c; i++)
@@ -495,11 +565,15 @@ namespace DotRPG.Behavior.Defaults
 
         public override void UnloadContent()
         {
+            showHitboxes = false;
             audio.Dispose();
             FrameResources.Dispose();
             props.Clear();
             interactable.Clear();
             cameraManager.Player = null;
+            AllowManualZoom = false;
+            SuppressScriptExceptions = false;
+            cam.Zoom = 1.0f;
             obj.Player = null;
             player = null;
             Scripts.Clear();
