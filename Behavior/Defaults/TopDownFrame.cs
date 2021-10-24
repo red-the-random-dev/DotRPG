@@ -35,6 +35,7 @@ namespace DotRPG.Behavior.Defaults
         Dictionary<String, DynamicRectObject> interactable = new Dictionary<string, DynamicRectObject>();
 
         Int32 LastMWheelValue = 0;
+        Boolean[] lastInput = new bool[8];
 
         Boolean AllowManualZoom = false;
         Boolean SuppressScriptExceptions = false;
@@ -445,6 +446,20 @@ namespace DotRPG.Behavior.Defaults
                     }
                 }
             }
+            if (controls[4] && !lastInput[4])
+            {
+                foreach (String i in interactable.Keys)
+                {
+                    if (player.SightArea.Intersects(interactable[i].Collider))
+                    {
+                        foreach (LuaModule lm in Scripts)
+                        {
+                            lm.Update(i, (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
+                        }
+                    }
+                }
+            }
+            
             cameraManager.Update(gameTime);
             cam.TrackTarget = cameraManager.TrackPoint;
             cam.OffsetTarget = cameraManager.Offset;
@@ -463,6 +478,10 @@ namespace DotRPG.Behavior.Defaults
             }
             base.Update(gameTime, controls);
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
+            for (int i = 0; i < Math.Min(controls.Length, lastInput.Length); i++)
+            {
+                lastInput[i] = controls[i];
+            }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)

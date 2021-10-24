@@ -45,6 +45,16 @@ namespace DotRPG.Behavior.Management
             return ObjectHeap[name].VelocityDerivative;
         }
 
+        public void SetObjectPosition(String name, Single x, Single y)
+        {
+            ObjectHeap[name].Location = new Vector2(x, y);
+        }
+
+        public void SetPlayerPosition(Single x, Single y)
+        {
+            Player.Location = new Vector2(x, y);
+        }
+
         public Single Player_X()
         {
             return Player.Location.X;

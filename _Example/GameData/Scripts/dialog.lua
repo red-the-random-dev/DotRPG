@@ -27,5 +27,9 @@ function update(objID, eventID, frameTime, totalTime)
             audio:Stop("slide")
         end
         --error("Something is creating script errors")
+    elseif objID == "treetalk" then
+        obj:SetObjectPosition("whiterect", 512, 270)
+        audio:PlayLocal("hit")
+        camera:Shake(10, 10)
     end
 end
