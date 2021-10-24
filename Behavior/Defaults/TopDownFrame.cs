@@ -46,6 +46,7 @@ namespace DotRPG.Behavior.Defaults
         Int32 objects = 0;
         Boolean ready = false;
         Boolean loaded = false;
+        Boolean showHitboxes = false;
         public Int32 ContentTasks_Total
         {
             get
@@ -274,6 +275,14 @@ namespace DotRPG.Behavior.Defaults
                                 case "interactable":
                                     interactable.Add(xe2.Attribute(XName.Get("interactAction")).Value, props[ID]);
                                     break;
+                                case "objectscript":
+                                {
+                                    String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe2.Attribute(XName.Get("location")).Value));
+                                    LuaModule lm = new LuaModule(scriptContent, xe2.Attribute(XName.Get("location")).Value+":"+ID);
+                                    lm.Runtime["this"] = ID;
+                                    Scripts.Add(lm);
+                                    break;
+                                }
                             }
                         }
                         break;
@@ -477,7 +486,12 @@ namespace DotRPG.Behavior.Defaults
                     }
                 }
             }
-            
+#if DEBUG
+            if (Keyboard.GetState().IsKeyDown(Keys.F3))
+            {
+                showHitboxes = true;
+            }
+#endif            
             cameraManager.Update(gameTime);
             cam.TrackTarget = cameraManager.TrackPoint;
             cam.OffsetTarget = cameraManager.Offset;
@@ -506,17 +520,31 @@ namespace DotRPG.Behavior.Defaults
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
             Rectangle dynDrawZone = cam.GetDrawArea(drawZone);
+            Texture2D t2d = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+            t2d.SetData(new Color[] { Color.White });
             foreach (Backdrop b in backdrops)
             {
                 b.Draw(spriteBatch, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height));
             }
             foreach (String i in props.Keys)
             {
-                props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (props[i].Location.Y / 540))));
-            }
-            player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), (0.3f - (0.1f * (player.Location.Y / 540))));
-
+                Single depth = (0.3f - (0.1f * (props[i].Location.Y / 540)));
+                props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), depth);
 #if DEBUG
+                if (showHitboxes)
+                {
+                    spriteBatch.Draw(t2d, props[i].Collider, interactable.ContainsValue(props[i]) ? Color.Yellow : Color.Red);
+                }
+#endif
+            }
+            Single p_depth = 0.3f - (0.1f * (player.Location.Y / 540));
+            player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), p_depth);
+#if DEBUG
+            if (showHitboxes)
+            {
+                spriteBatch.Draw(t2d, player.Collider, Color.Green);
+                spriteBatch.Draw(t2d, player.SightArea, new Color(0, 255, 0, 128));
+            }
             Single y = 48.0f;
             Int32 c = Scripts.Count;
             for (int i = 0; i < c; i++)
@@ -537,6 +565,7 @@ namespace DotRPG.Behavior.Defaults
 
         public override void UnloadContent()
         {
+            showHitboxes = false;
             audio.Dispose();
             FrameResources.Dispose();
             props.Clear();

@@ -28,7 +28,7 @@ namespace DotRPG.Objects.Dynamics
                     {
                             return new Rectangle
                             (
-                                c.X + c.Width / 2 - SightAreaSize.X,
+                                c.X + (c.Width / 2) - (SightAreaSize.X / 2),
                                 c.Y - SightAreaSize.Y,
                                 SightAreaSize.X,
                                 SightAreaSize.Y
@@ -38,8 +38,8 @@ namespace DotRPG.Objects.Dynamics
                     {
                             return new Rectangle
                             (
-                                c.X + c.Width / 2 - SightAreaSize.X,
-                                c.Y + c.Height + SightAreaSize.Y,
+                                c.X + (c.Width / 2) - (SightAreaSize.X / 2),
+                                c.Y + c.Height,
                                 SightAreaSize.X,
                                 SightAreaSize.Y
                             );
@@ -49,7 +49,7 @@ namespace DotRPG.Objects.Dynamics
                             return new Rectangle
                             (
                                 c.X - SightAreaSize.X,
-                                c.Y + c.Height / 2 - SightAreaSize.Y,
+                                c.Y + (c.Height / 2) - (SightAreaSize.Y / 2),
                                 SightAreaSize.Y,
                                 SightAreaSize.X
                             );
@@ -58,8 +58,8 @@ namespace DotRPG.Objects.Dynamics
                     {
                             return new Rectangle
                             (
-                                c.X + c.Width + SightAreaSize.X,
-                                c.Y + c.Height / 2 - SightAreaSize.Y,
+                                c.X + c.Width,
+                                c.Y + (c.Height / 2) - (SightAreaSize.Y / 2),
                                 SightAreaSize.Y,
                                 SightAreaSize.X
                             );

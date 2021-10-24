@@ -10,7 +10,7 @@ namespace DotRPG.Objects.Dynamics
     {
         public Boolean Static;
         public Vector2 Location;
-        protected Point BodySize;
+        public Point BodySize;
         public SpriteController Sprite;
         public Boolean Collidable = true;
         public Boolean Active = true;

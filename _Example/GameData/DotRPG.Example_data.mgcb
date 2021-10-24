@@ -48,6 +48,9 @@
 #begin Scripts/dialog.lua
 /copy:Scripts/dialog.lua
 
+#begin Scripts/kickable.lua
+/copy:Scripts/kickable.lua
+
 #begin Sounds/clickText.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

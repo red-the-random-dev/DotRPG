@@ -1,5 +1,3 @@
-import ('DotRPG.Scripting', 'DotRPG.Objects')
-
 event_counts = {default=1,treetalk=1,whiterectreset=1,treegone=1}
 
 _manifest = {
@@ -9,26 +7,13 @@ _manifest = {
 
 punch_count = 0
 
-function start()
-    audio:BufferLocal("slide", "slide")
-    audio:SetLooped("slide", true)
-end
-
 function update(objID, eventID, frameTime, totalTime)
     if objID == "default" then
-        if math.abs(obj:GetVelocityDerivative("whiterect")) > 32 then
-            camera:Shake(10 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"), 50 * math.abs(obj:GetVelocityDerivative("whiterect")) / obj:GetDistanceToPlayer("whiterect"))
-            audio:PlayLocal("hit", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), 1, obj:GetSoundPanning("whiterect"))
-        end
-        if obj:GetScalarVelocity("whiterect") > 128 then
-            audio:SetParameters("slide", math.min(0.8, 64 / obj:GetDistanceToPlayer("whiterect")), obj:GetDopplerShift("whiterect"), obj:GetSoundPanning("whiterect"))
-            audio:Play("slide")
-        else
-            audio:Stop("slide")
-        end
-        --error("Something is creating script errors")
-    elseif objID == "treetalk" then
-        timer:Enqueue(totalTime, 1000, "whiterectreset")
+        punch_count = punch_count - frameTime
+        if punch_count < 0 then punch_count = 0 end
+    end
+    if objID == "treetalk" then
+        timer:Enqueue(totalTime, 1000, "kickablereset")
         audio:PlayLocal("hit")
         camera:Shake(10, 10)
         punch_count = punch_count + 1000
@@ -38,12 +23,9 @@ function update(objID, eventID, frameTime, totalTime)
             obj:SetAnimationSequence("tree", "explodes")
             timer:Enqueue(totalTime, 1000, "treegone")
         end
-    elseif objID == "whiterectreset" then
-        obj:SetObjectPosition("whiterect", 512, 270)
-    elseif objID == "treegone" then
+    end
+    if objID == "treegone" then
         obj:SetActive("tree", false)
         obj:EnablePlayerControls()
     end
-    punch_count = punch_count - frameTime
-    if punch_count < 0 then punch_count = 0 end
 end

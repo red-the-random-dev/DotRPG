@@ -183,5 +183,62 @@ namespace DotRPG.Behavior.Management
         {
             Player.Visible = visible;
         }
+
+        public Single FindAzimuthFromPlayer(String target)
+        {
+            Vector2 src = ObjectHeap[target].Location - Player.Location;
+            Single len = src.Length();
+            if (len == 0.0f)
+            {
+                return 0.0f;
+            }
+            Vector2 i = src / len;
+            Single Angle = (Single)Math.Acos(i.X);
+            if (i.Y < 0.0f)
+            {
+                Angle = MathHelper.TwoPi - Angle;
+            }
+            return Angle;
+        }
+
+        public Single FindAzimuthToPlayer(String target)
+        {
+            Vector2 src = Player.Location - ObjectHeap[target].Location;
+            Single len = src.Length();
+            if (len == 0.0f)
+            {
+                return 0.0f;
+            }
+            Vector2 i = src / len;
+            Single Angle = (Single)Math.Acos(i.X);
+            if (i.Y < 0.0f)
+            {
+                Angle = MathHelper.TwoPi - Angle;
+            }
+            return Angle;
+        }
+
+        public Single FindAzimuth(String origin, String target)
+        {
+            Vector2 src = ObjectHeap[target].Location - ObjectHeap[origin].Location;
+            Single len = src.Length();
+            if (len == 0.0f)
+            {
+                return 0.0f;
+            }
+            Vector2 i = src / len;
+            Single Angle = (Single)Math.Acos(i.X);
+            if (i.Y < 0.0f)
+            {
+                Angle = MathHelper.TwoPi - Angle;
+            }
+            return Angle;
+        }
+
+        public void ApplyForce(String target, Single force, Single angle)
+        {
+            Vector2 v = new Vector2(force * (Single)Math.Cos(angle), force * (Single)Math.Sin(angle));
+            ObjectHeap[target].AppliedForce += v;
+        }
     }
 }

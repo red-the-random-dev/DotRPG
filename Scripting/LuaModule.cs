@@ -12,7 +12,8 @@ namespace DotRPG.Scripting
     {
         public Lua Runtime;
         public Boolean IsUp = true;
-        public readonly LuaTable EventAmounts;
+        public readonly String Name;
+        public LuaTable EventAmounts { get; private set; }
         public Dictionary<String, Int64> EventIDs = new Dictionary<string, long>();
         public Boolean HasDefaultAction = false;
         public String LastError = "";
@@ -29,6 +30,7 @@ namespace DotRPG.Scripting
             {
                 EventIDs.Add(i, 0);
             }
+            Name = initName;
         }
         public LuaModule(String initFile, String initName = "dotrpgmodule")
         {
@@ -40,6 +42,7 @@ namespace DotRPG.Scripting
             {
                 EventIDs.Add(i, 0);
             }
+            Name = initName;
         }
 
         public void Start()
@@ -52,6 +55,12 @@ namespace DotRPG.Scripting
                     startFunction.Call();
                     LastError = "";
                     LastErrorDetails = null;
+                    EventAmounts = (LuaTable)Runtime["event_counts"];
+                    EventIDs.Clear();
+                    foreach (String i in EventAmounts.Keys)
+                    {
+                        EventIDs.Add(i, 0);
+                    }
                 }
                 catch (LuaException e)
                 {
@@ -77,7 +86,7 @@ namespace DotRPG.Scripting
         public void Update(String EventSetID, Single elapsedTime, Single totalTime)
         {
             // Event will be ignored if its ID is not referenced in file's eventAmounts table
-            foreach (String x in EventAmounts.Keys)
+            foreach (String x in EventIDs.Keys)
             {
                 if (EventSetID == x)
                 {
