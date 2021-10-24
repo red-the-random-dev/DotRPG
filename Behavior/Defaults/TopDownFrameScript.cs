@@ -35,5 +35,10 @@ namespace DotRPG.Behavior.Defaults
                     break;
             }
         }
+
+        public override void Start()
+        {
+            
+        }
     }
 }

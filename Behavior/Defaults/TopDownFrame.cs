@@ -293,6 +293,24 @@ namespace DotRPG.Behavior.Defaults
                         Scripts.Add(new LuaModule(scriptContent, xe.Attribute(XName.Get("location")).Value));
                         break;
                     }
+                case "csiscript":
+                    {
+                        /*
+                        List<String> log = new List<string>();
+                        CSIModule csim = ClassBuilder.ComplileFromFile(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value), log);
+                        if (csim == null)
+                        {
+                            String ErrorText = "Errors have occured while trying to build a script!";
+                            foreach (String t in log)
+                            {
+                                ErrorText += "\n" + t;
+                            }
+                            throw new SerializationException(ErrorText);
+                        }
+                        Scripts.Add(csim);
+                        */
+                        break;
+                    }
                 case "backdrop":
                     {
                         Texture2D t = null;
