@@ -8,7 +8,7 @@ namespace DotRPG.Scripting
     /// <summary>
     /// Embedded Lua module which features Update() function done every frame.
     /// </summary>
-    public class LuaModule
+    public class LuaModule : IScriptModule
     {
         public Lua Runtime;
         public Boolean IsUp = true;
@@ -16,9 +16,9 @@ namespace DotRPG.Scripting
         public LuaTable EventAmounts { get; private set; }
         public Dictionary<String, Int64> EventIDs = new Dictionary<string, long>();
         public Boolean HasDefaultAction = false;
-        public String LastError = "";
-        public Exception LastErrorDetails;
-        public Boolean SuppressExceptions = false;
+        public String LastError { get; set; } = "";
+        public Exception LastErrorDetails { get; set; }
+        public Boolean SuppressExceptions { get; set; } = false;
 
         public LuaModule(String initFile, LuaTable eventAmounts, String initName = "dotrpgmodule")
         {
@@ -31,6 +31,17 @@ namespace DotRPG.Scripting
                 EventIDs.Add(i, 0);
             }
             Name = initName;
+        }
+        public void AddData(Dictionary<String, Object> data)
+        {
+            foreach (String i in data.Keys)
+            {
+                Runtime[i] = data[i];
+            }
+        }
+        public void AddData(String key, Object value)
+        {
+            Runtime[key] = value;
         }
         public LuaModule(String initFile, String initName = "dotrpgmodule")
         {
