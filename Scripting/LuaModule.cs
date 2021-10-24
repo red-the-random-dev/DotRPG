@@ -18,7 +18,7 @@ namespace DotRPG.Scripting
         public Boolean HasDefaultAction = false;
         public String LastError { get; protected set; } = "";
         public Exception LastErrorDetails { get; protected set; }
-        public Boolean SuppressExceptions { get; set; } = false;
+        public Boolean SuppressExceptions { get; set; }
 
         public LuaModule(String initFile, LuaTable eventAmounts, String initName = "dotrpgmodule")
         {
@@ -26,6 +26,18 @@ namespace DotRPG.Scripting
             Runtime.LoadCLRPackage();
             Runtime.DoString(initFile, initName);
             EventAmounts = eventAmounts;
+            foreach (String i in EventAmounts.Keys)
+            {
+                EventIDs.Add(i, 0);
+            }
+            Name = initName;
+        }
+        public LuaModule(String initFile, String initName = "dotrpgmodule")
+        {
+            Runtime = new Lua();
+            Runtime.LoadCLRPackage();
+            Runtime.DoString(initFile, initName);
+            EventAmounts = (LuaTable) Runtime["event_counts"];
             foreach (String i in EventAmounts.Keys)
             {
                 EventIDs.Add(i, 0);
@@ -44,19 +56,6 @@ namespace DotRPG.Scripting
         {
             Runtime[key] = value;
         }
-        public LuaModule(String initFile, String initName = "dotrpgmodule")
-        {
-            Runtime = new Lua();
-            Runtime.LoadCLRPackage();
-            Runtime.DoString(initFile, initName);
-            EventAmounts = (LuaTable) Runtime["event_counts"];
-            foreach (String i in EventAmounts.Keys)
-            {
-                EventIDs.Add(i, 0);
-            }
-            Name = initName;
-        }
-
         public void Start()
         {
             if (Runtime["start"] != null)

@@ -1,12 +1,14 @@
 using System;
 using DotRPG.Behavior;
 using DotRPG.Behavior.Defaults;
+using DotRPG.Scripting;
 
-namespace ScriptTest
+namespace DotRPG._Example
 {
-    class DialogScript
+    [BuiltScript("tree")]
+    public class DialogScript : TopDownFrameScript
     {
-        public override void Update(String EventID, String ElapsedGameTime, String TotalGameTime)
+        public override void Update(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
             Single PunchCount = 0.0f;
             switch (EventID)
@@ -19,20 +21,20 @@ namespace ScriptTest
                     }
                     break;
                 case "treetalk":
-                    Events.Enqueue(totalTime, 1000, "kickablereset")
-                    Audio.PlayLocal("hit")
-                    Camera.Shake(10, 10)
-                    punch_count = punch_count + 1000.0f;
-                    if (punch_count > 9000) {
+                    Events.Enqueue(TotalGameTime, 1000.0f, "kickablereset");
+                    Audio.PlayLocal("hit");
+                    Camera.Shake(10, 10);
+                    PunchCount = PunchCount + 1000.0f;
+                    if (PunchCount > 9000) {
                         Audio.PlayLocal("kaboom");
                         ObjectHeap.DisablePlayerControls();
-                        ObjectHeap.SetAnimationSequence("tree", "explodes")
-                        Events.Enqueue(totalTime, 1000, "treegone")
+                        ObjectHeap.SetAnimationSequence("tree", "explodes");
+                        Events.Enqueue(TotalGameTime, 1000.0f, "treegone");
                     }
                     break;
                 case "treegone":
                     ObjectHeap.SetActive("tree", false);
-                    ObjectHeap.EnabledPlayerControls();
+                    ObjectHeap.EnablePlayerControls();
                     break;
             }
         }
