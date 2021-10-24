@@ -37,7 +37,7 @@ namespace DotRPG.Behavior.Defaults
         Int32 LastMWheelValue = 0;
 
         Boolean AllowManualZoom = false;
-
+        Boolean SuppressScriptExceptions = false;
 
         #region ILoadable implementation
         Int32 content = 0;
@@ -130,6 +130,7 @@ namespace DotRPG.Behavior.Defaults
                 x.Runtime["obj"] = obj;
                 x.Runtime["camera"] = cameraManager;
                 x.Runtime["audio"] = audio;
+                x.SuppressExceptions = SuppressScriptExceptions;
                 x.Start();
             }
             loaded = true;
@@ -313,6 +314,9 @@ namespace DotRPG.Behavior.Defaults
                             {
                                 case "allowManualZoom":
                                     AllowManualZoom = Boolean.Parse(xa.Value);
+                                    break;
+                                case "suppressScriptExceptions":
+                                    SuppressScriptExceptions = Boolean.Parse(xa.Value);
                                     break;
                             }
                         }
@@ -500,6 +504,9 @@ namespace DotRPG.Behavior.Defaults
             props.Clear();
             interactable.Clear();
             cameraManager.Player = null;
+            AllowManualZoom = false;
+            SuppressScriptExceptions = false;
+            cam.Zoom = 1.0f;
             obj.Player = null;
             player = null;
             Scripts.Clear();

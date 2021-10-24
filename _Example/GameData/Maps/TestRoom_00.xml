@@ -12,7 +12,7 @@
 
     <Backdrop local="backdrop" offset="480,270" />
 
-    <RuleSet allowManualZoom="true" />
+    <RuleSet allowManualZoom="true" suppressScriptExceptions="true"/>
 
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
