@@ -24,6 +24,9 @@
     <None Remove=".legacy\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="GameData\Scripts\DialogComp.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="GameData\DotRPG.Example_data.mgcb" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
@@ -34,6 +37,9 @@
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="GameData\DotRPG.Example_data.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GameData\Scripts\DialogComp.cs" />
   </ItemGroup>
   <ItemGroup>
     <TrimmerRootAssembly Include="Microsoft.Xna.Framework.Content.ContentTypeReader" Visible="false" />

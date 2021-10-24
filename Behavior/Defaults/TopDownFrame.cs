@@ -29,7 +29,7 @@ namespace DotRPG.Behavior.Defaults
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<XElement> objectPrototypes = new List<XElement>();
-        List<LuaModule> Scripts = new List<LuaModule>();
+        List<IScriptModule> Scripts = new List<IScriptModule>();
         List<Backdrop> backdrops = new List<Backdrop>();
 
         Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
@@ -128,12 +128,12 @@ namespace DotRPG.Behavior.Defaults
         public void PostLoadTask()
         {
             cam.Focus = player.Location.ToPoint();
-            foreach (LuaModule x in Scripts)
+            foreach (IScriptModule x in Scripts)
             {
-                x.Runtime["obj"] = obj;
-                x.Runtime["camera"] = cameraManager;
-                x.Runtime["audio"] = audio;
-                x.Runtime["timer"] = timer;
+                x.AddData("obj", obj);
+                x.AddData("camera", cameraManager);
+                x.AddData("audio", audio);
+                x.AddData("timer", timer);
                 x.SuppressExceptions = SuppressScriptExceptions;
                 x.Start();
             }
@@ -293,6 +293,24 @@ namespace DotRPG.Behavior.Defaults
                         Scripts.Add(new LuaModule(scriptContent, xe.Attribute(XName.Get("location")).Value));
                         break;
                     }
+                case "csiscript":
+                    {
+                        /*
+                        List<String> log = new List<string>();
+                        CSIModule csim = ClassBuilder.ComplileFromFile(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value), log);
+                        if (csim == null)
+                        {
+                            String ErrorText = "Errors have occured while trying to build a script!";
+                            foreach (String t in log)
+                            {
+                                ErrorText += "\n" + t;
+                            }
+                            throw new SerializationException(ErrorText);
+                        }
+                        Scripts.Add(csim);
+                        */
+                        break;
+                    }
                 case "backdrop":
                     {
                         Texture2D t = null;
@@ -411,7 +429,7 @@ namespace DotRPG.Behavior.Defaults
 
         public void Execute(Object sender, String e, GameTime g)
         {
-            foreach (LuaModule lm in Scripts)
+            foreach (IScriptModule lm in Scripts)
             {
                 lm.Update(e, (Single)g.ElapsedGameTime.TotalMilliseconds, (Single)g.TotalGameTime.TotalMilliseconds);
             }
@@ -479,7 +497,7 @@ namespace DotRPG.Behavior.Defaults
                 {
                     if (player.SightArea.Intersects(interactable[i].Collider) && interactable[i].Active)
                     {
-                        foreach (LuaModule lm in Scripts)
+                        foreach (IScriptModule lm in Scripts)
                         {
                             lm.Update(i, (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
                         }
@@ -497,7 +515,7 @@ namespace DotRPG.Behavior.Defaults
             cam.OffsetTarget = cameraManager.Offset;
             cam.Update(gameTime);
             timer.Update(gameTime);
-            foreach (LuaModule x in Scripts)
+            foreach (IScriptModule x in Scripts)
             {
                 x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
             }
