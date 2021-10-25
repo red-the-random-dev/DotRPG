@@ -8,9 +8,9 @@
         <SoundEffect id="kaboom" location="Sounds/pixel-explosion"/>
     </Require>
     <Prop colliderSize="19,8" static="true" mass="150">
-        <Sprite frameRate="2" frameAmount="1">
+        <Sprite frameRate="12" frameAmount="1">
             <DefaultAnimationSequence local="tree"/>
-            <Animation id="explodes" local="explosion" frameAmount="2" />
+            <Animation id="explodes" local="explosion" frameAmount="15" />
         </Sprite>
     </Prop>
 </ObjectPrefab>
