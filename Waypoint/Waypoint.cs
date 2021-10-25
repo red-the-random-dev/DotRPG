@@ -11,7 +11,11 @@ namespace DotRPG.Waypoint
 
         public Single GetDistanceTo(Single x, Single y)
         {
-            return (Single)Math.Sqrt(Math.Pow(x - Pos_X, 2) + Math.Pow(x - Pos_X, 2));
+            return (Single)Math.Sqrt(Math.Pow(x - Pos_X, 2) + Math.Pow(y - Pos_Y, 2));
+        }
+        public Single GetDistanceTo(Waypoint other)
+        {
+            return (Single)Math.Sqrt(Math.Pow(other.Pos_X - Pos_X, 2) + Math.Pow(other.Pos_Y - Pos_Y, 2));
         }
 
         public Boolean Equals(Waypoint other)
