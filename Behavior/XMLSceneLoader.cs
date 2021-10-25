@@ -234,6 +234,23 @@ namespace DotRPG.Behavior
             }
             return new Vector4(Single.Parse(dims[0]), Single.Parse(dims[1]), Single.Parse(dims[2]), Single.Parse(dims[3]));
         }
+        public static Vector4 ResolveColorVector4(String intake)
+        {
+            String a = "";
+            foreach (Char x in intake)
+            {
+                if (x != ' ')
+                {
+                    a += x;
+                }
+            }
+            String[] dims = a.Split(',');
+            if (dims.Length < 4)
+            {
+                throw new SerializationException(String.Format("Unable to load Vector4 from {0}-dimensional string vector.", dims.Length));
+            }
+            return new Vector4(Single.Parse(dims[0]) / 255.0f, Single.Parse(dims[1]) / 255.0f, Single.Parse(dims[2]) / 255.0f, Single.Parse(dims[3]) / 255.0f);
+        }
 
         public static SpriteController LoadSpriteController(XElement xe2, ResourceHeap FrameResources)
         {

@@ -25,6 +25,7 @@ namespace DotRPG.Behavior.Defaults
         public CameraManager CameraManager { get; private set; }
         public ObjectHeapManager ObjectManager { get; private set; }
         public SoundManager Audio { get; private set; }
+        public PaletteManager Palette { get; private set; }
         public ScriptEventManager EventTimer { get; private set; }
         public PlayerObject Player;
         Int32 _id;
@@ -124,6 +125,8 @@ namespace DotRPG.Behavior.Defaults
             Camera.CameraVelocity = 300.0f;
             Camera.OffsetVelocity = 450.0f;
             Camera.DefaultHeight = 540;
+            Palette = new PaletteManager();
+            Palette.SetColor("--bg", 255, 255, 255, 255);
             ready = true;
         }
         public void PostLoadTask()
@@ -135,6 +138,7 @@ namespace DotRPG.Behavior.Defaults
                 x.AddData("camera", CameraManager);
                 x.AddData("audio", Audio);
                 x.AddData("timer", EventTimer);
+                x.AddData("palette", Palette);
                 x.SuppressExceptions = SuppressScriptExceptions;
                 if (x is TopDownFrameScript)
                 {
@@ -240,6 +244,7 @@ namespace DotRPG.Behavior.Defaults
                         Point interactFieldSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("interactFieldSize")).Value).ToPoint();
                         Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
                         Player = new PlayerObject(startPos, colliderSize, mass, interactFieldSize);
+                        String channel = "global";
                         #endregion
                         foreach (XElement xe2 in xe.Elements())
                         {
@@ -247,6 +252,9 @@ namespace DotRPG.Behavior.Defaults
                             {
                                 case "sprite":
                                     Player.Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    break;
+                                case "colorchannel":
+                                    channel = xe2.Attribute(XName.Get("channel")).Value;
                                     break;
                                 case "motion":
                                     Player.Motion.MovementSpeed = Single.Parse(xe2.Attribute(XName.Get("movementSpeed")).Value);
@@ -266,6 +274,7 @@ namespace DotRPG.Behavior.Defaults
 
                             }
                         }
+                        Palette.SetObjectChannel("--player", channel);
                         break;
                     }
                 case "prop":
@@ -276,6 +285,7 @@ namespace DotRPG.Behavior.Defaults
                         Point colliderSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("colliderSize")).Value).ToPoint();
                         Boolean isStatic = Boolean.Parse(xe.Attribute(XName.Get("static")).Value);
                         Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
+                        String channel = "global";
                         #endregion
                         Props.Add(ID, new DynamicRectObject(startPos, colliderSize, mass, isStatic));
                         foreach (XElement xe2 in xe.Elements())
@@ -284,6 +294,9 @@ namespace DotRPG.Behavior.Defaults
                             {
                                 case "sprite":
                                     Props[ID].Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    break;
+                                case "colorchannel":
+                                    channel = xe2.Attribute(XName.Get("channel")).Value;
                                     break;
                                 case "interactable":
                                     Interactable.Add(xe2.Attribute(XName.Get("interactAction")).Value, Props[ID]);
@@ -297,6 +310,18 @@ namespace DotRPG.Behavior.Defaults
                                     break;
                                 }
                             }
+                        }
+                        Palette.SetObjectChannel(ID, channel);
+                        break;
+                    }
+                case "colorchannel":
+                    {
+                        String ID = xe.Attribute(XName.Get("id")).Value;
+                        Vector4 color = XMLSceneLoader.ResolveColorVector4(xe.Attribute(XName.Get("color")).Value);
+                        Palette.SetColor(ID, color);
+                        if (xe.Attribute(XName.Get("mixWithGlobal")) != null)
+                        {
+                            Palette.SetMixWithGlobal(ID, bool.Parse(xe.Attribute(XName.Get("mixWithGlobal")).Value));
                         }
                         break;
                     }
@@ -560,12 +585,12 @@ namespace DotRPG.Behavior.Defaults
             t2d.SetData(new Color[] { Color.White });
             foreach (Backdrop b in backdrops)
             {
-                b.Draw(spriteBatch, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height));
+                b.Draw(spriteBatch, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetColor("--bg"));
             }
             foreach (String i in Props.Keys)
             {
                 Single depth = (0.3f - (0.1f * (Props[i].Location.Y / 540)));
-                Props[i].Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), depth);
+                Props[i].Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), depth);
 #if DEBUG
                 if (showHitboxes)
                 {
@@ -574,7 +599,7 @@ namespace DotRPG.Behavior.Defaults
 #endif
             }
             Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
-            Player.Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), p_depth);
+            Player.Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), p_depth);
 #if DEBUG
             if (showHitboxes)
             {
@@ -602,6 +627,8 @@ namespace DotRPG.Behavior.Defaults
 
         public override void UnloadContent()
         {
+            Palette.Dispose();
+            Palette = null;
             showHitboxes = false;
             Audio.Dispose();
             FrameResources.Dispose();

@@ -8,6 +8,11 @@
         <SoundEffect id="pixelText" location="Sounds/text-scroll"/>
         <SoundEffect id="hit" location="Sounds/impact"/>
         <SoundEffect id="slide" location="Sounds/wallcling"/>
+
+        <SoundEffect id="sam_r" location="Sounds/TTS/R"/>
+        <SoundEffect id="sam_g" location="Sounds/TTS/G"/>
+        <SoundEffect id="sam_b" location="Sounds/TTS/B"/>
+        <SoundEffect id="sam_reset" location="Sounds/TTS/RESET"/>
     </Require>
 
     <Backdrop local="backdrop" offset="480,270" />
@@ -17,11 +22,37 @@
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
         <Interactable interactAction="treetalk"/>
+        <ColorChannel channel="treecolor"/>
     </Prop>
     <Prop id="whiterect" startPos="512,270" mass="20" _usePrefab="Prefabs/whiterect.xml">
         <ObjectScript location="Scripts/kickable.lua"/>
         <Interactable interactAction="kick__whiterect"/>
     </Prop>
+
+    <Prop id="r" startPos="496,128" mass="20" static="true" _usePrefab="Prefabs/whiterect.xml">
+        <Interactable interactAction="set_r" />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="g" startPos="596,128" mass="20" static="true" _usePrefab="Prefabs/whiterect.xml">
+        <Interactable interactAction="set_g" />
+        <ColorChannel channel="g"/>
+    </Prop>
+    <Prop id="b" startPos="696,128" mass="20" static="true" _usePrefab="Prefabs/whiterect.xml">
+        <Interactable interactAction="set_b" />
+        <ColorChannel channel="b"/>
+    </Prop>
+    <Prop id="w" startPos="796,128" mass="20" static="true" _usePrefab="Prefabs/whiterect.xml">
+        <Interactable interactAction="set_w" />
+        <ColorChannel channel="w"/>
+    </Prop>
+    
+
+    <ColorChannel id="treecolor" color="255,255,255,255"/>
+    <ColorChannel id="whiterect" color="255,0,0,255"/>
+    <ColorChannel id="r" color="255,0,0,255" mixWithGlobal="false"/>
+    <ColorChannel id="g" color="0,255,0,255" mixWithGlobal="false"/>
+    <ColorChannel id="b" color="0,0,255,255" mixWithGlobal="false"/>
+    <ColorChannel id="w" color="255,255,255,255" mixWithGlobal="false"/>
 
     <Prop id="barrier_t" startPos="480,48" colliderSize="1000,96" mass="1000" static="true"/>
     <Prop id="barrier_b" startPos="480,588" colliderSize="1000,96" mass="1000" static="true"/>

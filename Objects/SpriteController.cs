@@ -63,8 +63,9 @@ namespace DotRPG.Objects
             }
         }
 
-        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Vector2? Origin, Single drawSize = 1.0f, Single ZIndex = 0.0f)
+        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Vector2? Origin, Color? drawColor = null, Single drawSize = 1.0f, Single ZIndex = 0.0f)
         {
+            Color DrawColor = drawColor ?? Color.White;
             Vector2 origin = Origin ?? Vector2.Zero;
             
             Single addFrames = 0.0f;
@@ -96,7 +97,7 @@ namespace DotRPG.Objects
                 toDraw, drawLocation,
                 lololol,
                 // null,
-                Color.White,
+                DrawColor,
                 0,
                 a_origin,
                 drawSize,

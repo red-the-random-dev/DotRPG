@@ -78,6 +78,30 @@
 /processorParam:Quality=Best
 /build:Sounds/text-scroll.wav
 
+#begin Sounds/TTS/B.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/TTS/B.wav
+
+#begin Sounds/TTS/G.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/TTS/G.wav
+
+#begin Sounds/TTS/R.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/TTS/R.wav
+
+#begin Sounds/TTS/RESET.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/TTS/RESET.wav
+
 #begin Sounds/wallcling.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

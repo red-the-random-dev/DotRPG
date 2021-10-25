@@ -173,7 +173,7 @@ namespace DotRPG.Objects.Dynamics
             }
         }
 
-        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Single ZIndex = 0.0f)
+        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Single ZIndex = 0.0f)
         {
             if (Sprite == null || !Active  || !Visible)
             {
@@ -185,7 +185,7 @@ namespace DotRPG.Objects.Dynamics
                 Location.X * sizeMorph - scrollOffset.X,
                 Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - scrollOffset.Y
             );
-            Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), sizeMorph, ZIndex);
+            Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), DrawColor, sizeMorph, ZIndex);
         }
 
         public Boolean TryCollideWith(DynamicRectObject another, Boolean splitVector = false)

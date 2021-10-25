@@ -11,11 +11,18 @@ namespace DotRPG._Example
         Single PunchCount = 0.0f;
         public override bool RequireRawSceneData => true;
         public override bool RequireResourceHeap => true;
+
+        public override void Start()
+        {
+            // Palette.SetMixWithGlobal("treecolor", false);
+        }
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
             switch (EventID)
             {
                 case "default":
+                    if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
+                        Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
                     PunchCount -= ElapsedGameTime;
                     if (PunchCount < 0.0f)
                     {
@@ -31,6 +38,8 @@ namespace DotRPG._Example
                     PunchCount += 2500.0f;
                     if (PunchCount > 9000)
                     {
+                        Palette.SetColor("treecolor", 255, 255, 255, 255);
+                        // Palette.SetColor("global", 255, 0, 0, 255);
                         Audio.PlayLocal("kaboom");
                         ObjectHeap.DisablePlayerControls();
                         ObjectHeap.SetAnimationSequence("tree", "explodes");
@@ -45,6 +54,22 @@ namespace DotRPG._Example
                 case "treegone":
                     ObjectHeap.SetActive("tree", false);
                     ObjectHeap.EnablePlayerControls();
+                    break;
+                case "set_r":
+                    Palette.SetColor("global", 255, 0, 0, 255);
+                    Audio.PlayLocal("sam_r");
+                    break;
+                case "set_g":
+                    Palette.SetColor("global", 0, 255, 0, 255);
+                    Audio.PlayLocal("sam_g");
+                    break;
+                case "set_b":
+                    Palette.SetColor("global", 0, 0, 255, 255);
+                    Audio.PlayLocal("sam_b");
+                    break;
+                case "set_w":
+                    Audio.PlayLocal("sam_reset");
+                    Palette.SetColor("global", 255, 255, 255, 255);
                     break;
             }
         }
