@@ -153,7 +153,7 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
-/processorParam:TextureFormat=DxtCompressed
+/processorParam:TextureFormat=Color16Bit
 /build:Texture2D/kaboom.png
 
 #begin Texture2D/red.idle.down.png
