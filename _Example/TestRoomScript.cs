@@ -32,7 +32,21 @@ namespace DotRPG._Example
                 wl.SetNeighbor(w);
                 wl = w;
             }
-            wf = new Waypoint(36, 2);
+            wl = ws;
+            for (int i = 1; i <= 64; i++)
+            {
+                Waypoint w = new Waypoint(i, 2);
+                wl.SetNeighbor(w);
+                wl = w;
+            }
+            wl = ws;
+            for (int i = 1; i <= 64; i++)
+            {
+                Waypoint w = new Waypoint(i, 3);
+                wl.SetNeighbor(w);
+                wl = w;
+            }
+            wf = new Waypoint(36, 4);
             ws.SetNeighbor(wf);
         }
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
