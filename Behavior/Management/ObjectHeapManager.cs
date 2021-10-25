@@ -240,5 +240,10 @@ namespace DotRPG.Behavior.Management
             Vector2 v = new Vector2(force * (Single)Math.Cos(angle), force * (Single)Math.Sin(angle));
             ObjectHeap[target].AppliedForce += v;
         }
+
+        public String GetPlayerSightDirection()
+        {
+            return Player.SightDirection.ToString().ToLower();
+        }
     }
 }

@@ -7,6 +7,10 @@
         <Texture2D id="red.idle.up" location="Texture2D/red.idle.up"/>
         <Texture2D id="red.idle.left" location="Texture2D/red.idle.left"/>
         <Texture2D id="red.idle.right" location="Texture2D/red.idle.right"/>
+        <Texture2D id="red.punch.down" location="Texture2D/red.punch.down"/>
+        <Texture2D id="red.punch.up" location="Texture2D/red.punch.up"/>
+        <Texture2D id="red.punch.left" location="Texture2D/red.punch.left"/>
+        <Texture2D id="red.punch.right" location="Texture2D/red.punch.right"/>
     </Require>
     <Player colliderSize="32,32" interactFieldSize="48,48" mass="20">
         <Sprite frameRate="6">
@@ -15,6 +19,10 @@
             <Animation id="red.idle.up" local="red.idle.up" frameAmount="1"/>
             <Animation id="red.idle.left" local="red.idle.left" frameAmount="12"/>
             <Animation id="red.idle.right" local="red.idle.right" frameAmount="12"/>
+            <Animation id="red.punch.down" local="red.punch.down" frameAmount="4"/>
+            <Animation id="red.punch.up" local="red.punch.up" frameAmount="4"/>
+            <Animation id="red.punch.left" local="red.punch.left" frameAmount="4"/>
+            <Animation id="red.punch.right" local="red.punch.right" frameAmount="4"/>
         </Sprite>
         <Motion movementSpeed="256">
             <IdleAnimation id="red.idle.{0}"/>
