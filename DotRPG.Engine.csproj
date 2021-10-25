@@ -28,6 +28,7 @@
     <Compile Remove="Scripting\Pipeline\**" />
     <Compile Remove="UI\bin\**" />
     <Compile Remove="UI\obj\**" />
+    <Compile Remove="Waypoints\obj\**" />
     <Compile Remove="Waypoint\obj\**" />
     <Compile Remove="_Example\**" />
     <EmbeddedResource Remove="Behavior\bin\**" />
@@ -47,6 +48,7 @@
     <EmbeddedResource Remove="Scripting\Pipeline\**" />
     <EmbeddedResource Remove="UI\bin\**" />
     <EmbeddedResource Remove="UI\obj\**" />
+    <EmbeddedResource Remove="Waypoints\obj\**" />
     <EmbeddedResource Remove="Waypoint\obj\**" />
     <EmbeddedResource Remove="_Example\**" />
     <None Remove="Behavior\bin\**" />
@@ -66,6 +68,7 @@
     <None Remove="Scripting\Pipeline\**" />
     <None Remove="UI\bin\**" />
     <None Remove="UI\obj\**" />
+    <None Remove="Waypoints\obj\**" />
     <None Remove="Waypoint\obj\**" />
     <None Remove="_Example\**" />
   </ItemGroup>

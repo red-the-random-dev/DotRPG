@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotRPG.Waypoint
+namespace DotRPG.Waypoints
 {
-    class WaypointGraph
+    public class WaypointGraph
     {
         public static Waypoint[] BuildPath(Waypoint start, Waypoint destination, out Single totalDistance)
         {

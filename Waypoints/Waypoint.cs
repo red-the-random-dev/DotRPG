@@ -1,26 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotRPG.Waypoint
+namespace DotRPG.Waypoints
 {
     public class Waypoint : IEquatable<Waypoint>
     {
-        public Single Pos_X;
-        public Single Pos_Y;
-        protected HashSet<Waypoint> Neighbors;
+        public Single X;
+        public Single Y;
+        protected HashSet<Waypoint> Neighbors = new HashSet<Waypoint>();
 
+        public Waypoint(Single x, Single y)
+        {
+            X = x; Y = y;
+        }
         public Single GetDistanceTo(Single x, Single y)
         {
-            return (Single)Math.Sqrt(Math.Pow(x - Pos_X, 2) + Math.Pow(y - Pos_Y, 2));
+            return (Single)Math.Sqrt(Math.Pow(x - X, 2) + Math.Pow(y - X, 2));
         }
         public Single GetDistanceTo(Waypoint other)
         {
-            return (Single)Math.Sqrt(Math.Pow(other.Pos_X - Pos_X, 2) + Math.Pow(other.Pos_Y - Pos_Y, 2));
+            return (Single)Math.Sqrt(Math.Pow(other.X - X, 2) + Math.Pow(other.Y - Y, 2));
         }
 
         public Boolean Equals(Waypoint other)
         {
-            return this.Pos_X == other.Pos_X && this.Pos_Y == other.Pos_Y;
+            return this.X == other.X && this.Y == other.Y;
         }
 
         public override Boolean Equals(Object other)
@@ -34,7 +38,7 @@ namespace DotRPG.Waypoint
 
         public override int GetHashCode()
         {
-            return Pos_X.GetHashCode() ^ Pos_Y.GetHashCode();
+            return X.GetHashCode() ^ Y.GetHashCode();
         }
 
         public static Boolean operator == (Waypoint a, Waypoint b)
