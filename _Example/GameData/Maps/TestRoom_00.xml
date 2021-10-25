@@ -59,7 +59,7 @@
     <Prop id="barrier_l" startPos="-48,270" colliderSize="96,600" mass="1000" static="true"/>
     <Prop id="barrier_r" startPos="1008,270" colliderSize="96,600" mass="1000" static="true"/>
 
-    <PreBuiltScript name="testroom00" location="Scripts/DialogComp.cs"/>
+    <PreBuiltScript name="testroom_00" location="Scripts/DialogComp.cs"/>
     <!--
     <TextBox relativeSize="1.0,0.2" location="0.0,0.8" textColor="255,255,255,255" backgroundColor="0,0,0,255">
         <Font global="vcr-large"/>

@@ -14,7 +14,8 @@ namespace DotRPG.Waypoints
             CurrentPath.Push(start);
             List<Waypoint[]> Solutions = new List<Waypoint[]>();
             totalDistance = Single.PositiveInfinity;
-            if (TraceTo(CurrentPath, destination, Visited, Solutions))
+            TraceTo(CurrentPath, destination, Visited, Solutions);
+            if (Solutions.Count > 0)
             {
                 Waypoint[] path = null;
                 foreach (Waypoint[] wp in Solutions)
