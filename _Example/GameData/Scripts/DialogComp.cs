@@ -8,12 +8,15 @@ namespace DotRPG._Example
     [BuiltScript("tree")]
     public class DialogScript : TopDownFrameScript
     {
+        Single PunchCount = 0.0f;
+        public override bool RequireRawSceneData => true;
+        public override bool RequireResourceHeap => true;
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
-            Single PunchCount = 0.0f;
             switch (EventID)
             {
                 case "default":
+                    Scene.DebugText = PunchCount.ToString();
                     PunchCount -= ElapsedGameTime;
                     if (PunchCount < 0.0f)
                     {
@@ -24,8 +27,9 @@ namespace DotRPG._Example
                     Events.Enqueue(TotalGameTime, 1000.0f, "kickablereset");
                     Audio.PlayLocal("hit");
                     Camera.Shake(10, 10);
-                    PunchCount = PunchCount + 1000.0f;
-                    if (PunchCount > 9000) {
+                    PunchCount += 2500.0f;
+                    if (PunchCount > 9000)
+                    {
                         Audio.PlayLocal("kaboom");
                         ObjectHeap.DisablePlayerControls();
                         ObjectHeap.SetAnimationSequence("tree", "explodes");

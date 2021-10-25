@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DotRPG.Scripting;
 using DotRPG.Behavior.Management;
+using DotRPG.Objects;
 
 namespace DotRPG.Behavior.Defaults
 {
@@ -13,6 +14,11 @@ namespace DotRPG.Behavior.Defaults
         protected ScriptEventManager Events;
         protected ObjectHeapManager ObjectHeap;
         protected SoundManager Audio;
+        protected TopDownFrame Scene;
+        protected ResourceHeap FrameResources;
+
+        public virtual Boolean RequireRawSceneData => false;
+        public virtual Boolean RequireResourceHeap => false;
 
         public override void AddData(string key, object value)
         {
@@ -32,6 +38,12 @@ namespace DotRPG.Behavior.Defaults
                     break;
                 case "this":
                     ObjectName = value as String;
+                    break;
+                case "scene":
+                    Scene = value as TopDownFrame;
+                    break;
+                case "resources":
+                    FrameResources = value as ResourceHeap;
                     break;
             }
         }

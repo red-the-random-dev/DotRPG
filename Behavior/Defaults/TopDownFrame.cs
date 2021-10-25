@@ -20,23 +20,24 @@ namespace DotRPG.Behavior.Defaults
     [SceneBuilder("default/topdown", typeof(TopDownFrame), true)]
     public class TopDownFrame : Frame, IXMLSceneBuilder, ILoadable
     {
-        CameraFrameObject cam = new CameraFrameObject();
-        CameraManager cameraManager;
-        ObjectHeapManager obj;
-        SoundManager audio;
-        ScriptEventManager timer;
-        PlayerObject player;
+        public String DebugText = "";
+        public CameraFrameObject Camera { get; private set; } = new CameraFrameObject();
+        public CameraManager CameraManager { get; private set; }
+        public ObjectHeapManager ObjectManager { get; private set; }
+        public SoundManager Audio { get; private set; }
+        public ScriptEventManager EventTimer { get; private set; }
+        public PlayerObject Player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<XElement> objectPrototypes = new List<XElement>();
         List<IScriptModule> Scripts = new List<IScriptModule>();
-        List<Backdrop> backdrops = new List<Backdrop>();
+        public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
 
-        Dictionary<String, DynamicRectObject> props = new Dictionary<string, DynamicRectObject>();
-        Dictionary<String, DynamicRectObject> interactable = new Dictionary<string, DynamicRectObject>();
+        public Dictionary<String, DynamicRectObject> Props { get; private set; } = new Dictionary<string, DynamicRectObject>();
+        public Dictionary<String, DynamicRectObject> Interactable { get; private set; } = new Dictionary<string, DynamicRectObject>();
 
         Int32 LastMWheelValue = 0;
-        Boolean[] lastInput = new bool[8];
+        public Boolean[] LastInput { get; private set; } = new bool[8];
 
         Boolean AllowManualZoom = false;
         Boolean SuppressScriptExceptions = false;
@@ -120,28 +121,40 @@ namespace DotRPG.Behavior.Defaults
         }
         public void PreloadTask()
         {
-            cam.CameraVelocity = 300.0f;
-            cam.OffsetVelocity = 450.0f;
-            cam.DefaultHeight = 540;
+            Camera.CameraVelocity = 300.0f;
+            Camera.OffsetVelocity = 450.0f;
+            Camera.DefaultHeight = 540;
             ready = true;
         }
         public void PostLoadTask()
         {
-            cam.Focus = player.Location.ToPoint();
+            Camera.Focus = Player.Location.ToPoint();
             foreach (IScriptModule x in Scripts)
             {
-                x.AddData("obj", obj);
-                x.AddData("camera", cameraManager);
-                x.AddData("audio", audio);
-                x.AddData("timer", timer);
+                x.AddData("obj", ObjectManager);
+                x.AddData("camera", CameraManager);
+                x.AddData("audio", Audio);
+                x.AddData("timer", EventTimer);
                 x.SuppressExceptions = SuppressScriptExceptions;
+                if (x is TopDownFrameScript)
+                {
+                    TopDownFrameScript a = x as TopDownFrameScript;
+                    if (a.RequireRawSceneData)
+                    {
+                        a.AddData("scene", this);
+                    }
+                    if (a.RequireResourceHeap)
+                    {
+                        a.AddData("resources", FrameResources);
+                    }
+                }
                 x.Start();
             }
             loaded = true;
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
-            cameraManager.Player = player;
-            cameraManager.TrackToPlayer();
-            obj.Player = player;
+            CameraManager.Player = Player;
+            CameraManager.TrackToPlayer();
+            ObjectManager.Player = Player;
         }
         public Boolean SupportsMultiLoading
         {
@@ -162,9 +175,9 @@ namespace DotRPG.Behavior.Defaults
         {
             if (e is FrameShiftEventArgs fs)
             {
-                if (fs.IncludesPlayerLocation && player != null)
+                if (fs.IncludesPlayerLocation && Player != null)
                 {
-                    player.Location = fs.PlayerLocation.ToVector2();
+                    Player.Location = fs.PlayerLocation.ToVector2();
                 }
             }
         }
@@ -226,26 +239,26 @@ namespace DotRPG.Behavior.Defaults
                         Point colliderSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("colliderSize")).Value).ToPoint();
                         Point interactFieldSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("interactFieldSize")).Value).ToPoint();
                         Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
-                        player = new PlayerObject(startPos, colliderSize, mass, interactFieldSize);
+                        Player = new PlayerObject(startPos, colliderSize, mass, interactFieldSize);
                         #endregion
                         foreach (XElement xe2 in xe.Elements())
                         {
                             switch (xe2.Name.LocalName.ToLower())
                             {
                                 case "sprite":
-                                    player.Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    Player.Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
                                     break;
                                 case "motion":
-                                    player.Motion.MovementSpeed = Single.Parse(xe2.Attribute(XName.Get("movementSpeed")).Value);
+                                    Player.Motion.MovementSpeed = Single.Parse(xe2.Attribute(XName.Get("movementSpeed")).Value);
                                     foreach (XElement xe3 in xe2.Elements())
                                     {
                                         switch (xe3.Name.LocalName.ToLower())
                                         {
                                             case "idleanimation":
-                                                player.Motion.IdleAnimation = xe3.Attribute(XName.Get("id")).Value;
+                                                Player.Motion.IdleAnimation = xe3.Attribute(XName.Get("id")).Value;
                                                 break;
                                             case "walkinganimation":
-                                                player.Motion.WalkingAnimation = xe3.Attribute(XName.Get("id")).Value;
+                                                Player.Motion.WalkingAnimation = xe3.Attribute(XName.Get("id")).Value;
                                                 break;
                                         }
                                     }
@@ -264,16 +277,16 @@ namespace DotRPG.Behavior.Defaults
                         Boolean isStatic = Boolean.Parse(xe.Attribute(XName.Get("static")).Value);
                         Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
                         #endregion
-                        props.Add(ID, new DynamicRectObject(startPos, colliderSize, mass, isStatic));
+                        Props.Add(ID, new DynamicRectObject(startPos, colliderSize, mass, isStatic));
                         foreach (XElement xe2 in xe.Elements())
                         {
                             switch (xe2.Name.LocalName.ToLower())
                             {
                                 case "sprite":
-                                    props[ID].Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    Props[ID].Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
                                     break;
                                 case "interactable":
-                                    interactable.Add(xe2.Attribute(XName.Get("interactAction")).Value, props[ID]);
+                                    Interactable.Add(xe2.Attribute(XName.Get("interactAction")).Value, Props[ID]);
                                     break;
                                 case "objectscript":
                                 {
@@ -426,10 +439,10 @@ namespace DotRPG.Behavior.Defaults
         #endregion
         public TopDownFrame(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
         {
-            cameraManager = new CameraManager(cam, props);
-            obj = new ObjectHeapManager(props);
-            audio = new SoundManager(FrameResources);
-            timer = new ScriptEventManager(Execute);
+            CameraManager = new CameraManager(Camera, Props);
+            ObjectManager = new ObjectHeapManager(Props);
+            Audio = new SoundManager(FrameResources);
+            EventTimer = new ScriptEventManager(Execute);
         }
 
         public void Execute(Object sender, String e, GameTime g)
@@ -443,7 +456,7 @@ namespace DotRPG.Behavior.Defaults
         public override void Update(GameTime gameTime, bool[] controls)
         {
             Single loco_x = 0.0f; Single loco_y = 0.0f;
-            if (player.Controlled)
+            if (Player.Controlled)
             {
                 if (controls[0]) { loco_y -= 1.0f; }
                 if (controls[1]) { loco_y += 1.0f; }
@@ -451,56 +464,56 @@ namespace DotRPG.Behavior.Defaults
                 if (controls[3]) { loco_x += 1.0f; }
             }
             Vector2 Locomotion = new Vector2(loco_x, loco_y);
-            if (player.Controlled)
+            if (Player.Controlled)
             {
                 if (controls[0] && !(controls[1] || controls[2] || controls[3]))
                 {
-                    player.SightDirection = Direction.Up;
+                    Player.SightDirection = Direction.Up;
                 }
                 if (controls[1] && !(controls[0] || controls[2] || controls[3]))
                 {
-                    player.SightDirection = Direction.Down;
+                    Player.SightDirection = Direction.Down;
                 }
                 if (controls[2] && !(controls[1] || controls[0] || controls[3]))
                 {
-                    player.SightDirection = Direction.Left;
+                    Player.SightDirection = Direction.Left;
                 }
                 if (controls[3] && !(controls[1] || controls[0] || controls[2]))
                 {
-                    player.SightDirection = Direction.Right;
+                    Player.SightDirection = Direction.Right;
                 }
-                String newAnimSequence = player.Motion.FetchAnimationSequenceID(Locomotion.Length(), player.SightDirection);
-                if (player.Sprite.CurrentAnimationSequence != newAnimSequence)
+                String newAnimSequence = Player.Motion.FetchAnimationSequenceID(Locomotion.Length(), Player.SightDirection);
+                if (Player.Sprite.CurrentAnimationSequence != newAnimSequence)
                 {
-                    player.Sprite.SetAnimationSequence(newAnimSequence);
+                    Player.Sprite.SetAnimationSequence(newAnimSequence);
                 }
             }
             
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
-            Locomotion *= player.Motion.MovementSpeed;
-            player.Velocity = Locomotion;
-            player.Update(gameTime);
-            foreach (String i in props.Keys)
+            Locomotion *= Player.Motion.MovementSpeed;
+            Player.Velocity = Locomotion;
+            Player.Update(gameTime);
+            foreach (String i in Props.Keys)
             {
-                props[i].Update(gameTime);
-                player.TryCollideWith(props[i]);
-                if (!props[i].Static)
+                Props[i].Update(gameTime);
+                Player.TryCollideWith(Props[i]);
+                if (!Props[i].Static)
                 {
-                    foreach (String x in props.Keys)
+                    foreach (String x in Props.Keys)
                     {
                         if (i == x)
                         {
                             continue;
                         }
-                        props[i].TryCollideWith(props[x]);
+                        Props[i].TryCollideWith(Props[x]);
                     }
                 }
             }
-            if (controls[4] && !lastInput[4] && player.Controlled)
+            if (controls[4] && !LastInput[4] && Player.Controlled)
             {
-                foreach (String i in interactable.Keys)
+                foreach (String i in Interactable.Keys)
                 {
-                    if (player.SightArea.Intersects(interactable[i].Collider) && interactable[i].Active)
+                    if (Player.SightArea.Intersects(Interactable[i].Collider) && Interactable[i].Active)
                     {
                         foreach (IScriptModule lm in Scripts)
                         {
@@ -515,11 +528,11 @@ namespace DotRPG.Behavior.Defaults
                 showHitboxes = true;
             }
 #endif            
-            cameraManager.Update(gameTime);
-            cam.TrackTarget = cameraManager.TrackPoint;
-            cam.OffsetTarget = cameraManager.Offset;
-            cam.Update(gameTime);
-            timer.Update(gameTime);
+            CameraManager.Update(gameTime);
+            Camera.TrackTarget = CameraManager.TrackPoint;
+            Camera.OffsetTarget = CameraManager.Offset;
+            Camera.Update(gameTime);
+            EventTimer.Update(gameTime);
             foreach (IScriptModule x in Scripts)
             {
                 x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
@@ -529,45 +542,46 @@ namespace DotRPG.Behavior.Defaults
                 Int32 mwheel = Mouse.GetState().ScrollWheelValue - LastMWheelValue;
                 if (mwheel != 0)
                 {
-                    cam.Zoom = Math.Max(0.3f, Math.Min(2.5f, cam.Zoom + (0.1f * mwheel / 120)));
+                    Camera.Zoom = Math.Max(0.3f, Math.Min(2.5f, Camera.Zoom + (0.1f * mwheel / 120)));
                 }
             }
             base.Update(gameTime, controls);
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
-            for (int i = 0; i < Math.Min(controls.Length, lastInput.Length); i++)
+            for (int i = 0; i < Math.Min(controls.Length, LastInput.Length); i++)
             {
-                lastInput[i] = controls[i];
+                LastInput[i] = controls[i];
             }
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
-            Rectangle dynDrawZone = cam.GetDrawArea(drawZone);
+            Rectangle dynDrawZone = Camera.GetDrawArea(drawZone);
             Texture2D t2d = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
             t2d.SetData(new Color[] { Color.White });
             foreach (Backdrop b in backdrops)
             {
-                b.Draw(spriteBatch, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height));
+                b.Draw(spriteBatch, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height));
             }
-            foreach (String i in props.Keys)
+            foreach (String i in Props.Keys)
             {
-                Single depth = (0.3f - (0.1f * (props[i].Location.Y / 540)));
-                props[i].Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), depth);
+                Single depth = (0.3f - (0.1f * (Props[i].Location.Y / 540)));
+                Props[i].Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), depth);
 #if DEBUG
                 if (showHitboxes)
                 {
-                    spriteBatch.Draw(t2d, props[i].Collider, interactable.ContainsValue(props[i]) ? Color.Yellow : Color.Red);
+                    spriteBatch.Draw(t2d, Props[i].Collider, Interactable.ContainsValue(Props[i]) ? Color.Yellow : Color.Red);
                 }
 #endif
             }
-            Single p_depth = 0.3f - (0.1f * (player.Location.Y / 540));
-            player.Draw(spriteBatch, gameTime, 540, cam.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), p_depth);
+            Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
+            Player.Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), p_depth);
 #if DEBUG
             if (showHitboxes)
             {
-                spriteBatch.Draw(t2d, player.Collider, Color.Green);
-                spriteBatch.Draw(t2d, player.SightArea, new Color(0, 255, 0, 128));
+                spriteBatch.Draw(t2d, Player.Collider, Color.Green);
+                spriteBatch.Draw(t2d, Player.SightArea, new Color(0, 255, 0, 128));
             }
+            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], DebugText, new Vector2(0, 36), Color.Yellow);
             Single y = 48.0f;
             Int32 c = Scripts.Count;
             for (int i = 0; i < c; i++)
@@ -589,16 +603,16 @@ namespace DotRPG.Behavior.Defaults
         public override void UnloadContent()
         {
             showHitboxes = false;
-            audio.Dispose();
+            Audio.Dispose();
             FrameResources.Dispose();
-            props.Clear();
-            interactable.Clear();
-            cameraManager.Player = null;
+            Props.Clear();
+            Interactable.Clear();
+            CameraManager.Player = null;
             AllowManualZoom = false;
             SuppressScriptExceptions = false;
-            cam.Zoom = 1.0f;
-            obj.Player = null;
-            player = null;
+            Camera.Zoom = 1.0f;
+            ObjectManager.Player = null;
+            Player = null;
             Scripts.Clear();
             backdrops.Clear();
             content = 0;
