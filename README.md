@@ -1,12 +1,13 @@
 # DotRPG
 A game engine for creation of jRPGs and visual novels based on MonoGame.
 
-## Things implemented so far
+## Things implemented so far (week 5 day 2)
 + User interface elements such as text boxes and progress bars
 + Sprite display and animation assistance
-+ Embedded scripting engine
++ Embedded scripting engine, which supports Lua and pre-built C# modules
 + Rigid body collision physics (see \_Example and Objects/Dynamics projects)
 + Timed event firing
++ Color channels and control of them (see Behavior/Management and \_Example/DialogComp.cs)
 + Default behavior for top-down maps (see Behavior/Defaults)
 
 ## DotRPG uses

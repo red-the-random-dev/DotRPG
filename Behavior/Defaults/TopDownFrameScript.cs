@@ -16,6 +16,7 @@ namespace DotRPG.Behavior.Defaults
         protected SoundManager Audio;
         protected TopDownFrame Scene;
         protected ResourceHeap FrameResources;
+        protected PaletteManager Palette;
 
         public virtual Boolean RequireRawSceneData => false;
         public virtual Boolean RequireResourceHeap => false;
@@ -44,6 +45,9 @@ namespace DotRPG.Behavior.Defaults
                     break;
                 case "resources":
                     FrameResources = value as ResourceHeap;
+                    break;
+                case "palette":
+                    Palette = value as PaletteManager;
                     break;
             }
         }

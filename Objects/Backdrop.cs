@@ -11,7 +11,7 @@ namespace DotRPG.Objects
         public Texture2D Sprite;
         public Vector2 Position;
 
-        public void Draw(SpriteBatch sb, Int32 VirtualVSize, Point drawOffset, Point drawSize)
+        public void Draw(SpriteBatch sb, Int32 VirtualVSize, Point drawOffset, Point drawSize, Color drawColor)
         {
             Single transform = 1.0f * drawSize.Y / VirtualVSize;
             sb.Draw
@@ -23,7 +23,7 @@ namespace DotRPG.Objects
                 ),
                 new Rectangle(0, 0, Sprite.Width, Sprite.Height),
                 // null,
-                Color.White,
+                drawColor,
                 0,
                 new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f),
                 transform,
