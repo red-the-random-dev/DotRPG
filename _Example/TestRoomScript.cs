@@ -5,35 +5,42 @@ using DotRPG.Scripting;
 
 namespace DotRPG._Example
 {
-    [BuiltScript("testroom00")]
-    public class DialogScript : TopDownFrameScript
+    [BuiltScript("testroom_00")]
+    public class TestRoomScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
-        Waypoint w1;
-        Waypoint w5;
+        Waypoint ws;
+        Waypoint wf;
         public override bool RequireRawSceneData => true;
         public override bool RequireResourceHeap => true;
 
         public override void Start()
         {
             // Palette.SetMixWithGlobal("treecolor", false);
-            w1 = new Waypoint(0, 0);
-            Waypoint w2 = new Waypoint(2, 0);
-            Waypoint w3 = new Waypoint(3, 0);
-            Waypoint w4 = new Waypoint(3, 1);
-            w5 = new Waypoint(4, 0);
-            w1.SetNeighbor(w2);
-            w2.SetNeighbor(w3);
-            w2.SetNeighbor(w4);
-            w3.SetNeighbor(w5);
-            w4.SetNeighbor(w5);
+            ws = new Waypoint(0, 0);
+            Waypoint wl = ws;
+            for (int i = 1; i <= 64; i++)
+            {
+                Waypoint w = new Waypoint(i, 0);
+                wl.SetNeighbor(w);
+                wl = w;
+            }
+            wl = ws;
+            for (int i = 1; i <= 64; i++)
+            {
+                Waypoint w = new Waypoint(i, 1);
+                wl.SetNeighbor(w);
+                wl = w;
+            }
+            wf = new Waypoint(36, 2);
+            ws.SetNeighbor(wf);
         }
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
             switch (EventID)
             {
                 case "default":
-                    WaypointGraph.BuildPath(w1, w5, out Single x);
+                    Waypoint[] p = WaypointGraph.BuildPath(ws, wf, out Single x);
                     if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
                         Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
                     PunchCount -= ElapsedGameTime;

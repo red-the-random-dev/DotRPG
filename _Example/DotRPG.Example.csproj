@@ -20,8 +20,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove=".legacy\**" />
+    <Compile Remove="GameData\bin\**" />
     <EmbeddedResource Remove=".legacy\**" />
+    <EmbeddedResource Remove="GameData\bin\**" />
     <None Remove=".legacy\**" />
+    <None Remove="GameData\bin\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="GameData\DotRPG.Example_data.mgcb" />
