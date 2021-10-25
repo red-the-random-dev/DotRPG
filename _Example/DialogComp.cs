@@ -5,7 +5,7 @@ using DotRPG.Scripting;
 
 namespace DotRPG._Example
 {
-    [BuiltScript("tree")]
+    [BuiltScript("testroom00")]
     public class DialogScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
@@ -16,17 +16,18 @@ namespace DotRPG._Example
             switch (EventID)
             {
                 case "default":
-                    Scene.DebugText = PunchCount.ToString();
                     PunchCount -= ElapsedGameTime;
                     if (PunchCount < 0.0f)
                     {
                         PunchCount = 0.0f;
                     }
                     break;
-                case "treetalk":
+                case "treeouch":
                     Events.Enqueue(TotalGameTime, 1000.0f, "kickablereset");
                     Audio.PlayLocal("hit");
                     Camera.Shake(10, 10);
+                    ObjectHeap.SetPlayerAnimationSequence("red.idle." + Scene.Player.SightDirection.ToString().ToLower());
+                    ObjectHeap.EnablePlayerControls();
                     PunchCount += 2500.0f;
                     if (PunchCount > 9000)
                     {
@@ -35,6 +36,11 @@ namespace DotRPG._Example
                         ObjectHeap.SetAnimationSequence("tree", "explodes");
                         Events.Enqueue(TotalGameTime, 1000.0f, "treegone");
                     }
+                    break;
+                case "treetalk":
+                    ObjectHeap.DisablePlayerControls();
+                    ObjectHeap.SetPlayerAnimationSequence("red.punch." + Scene.Player.SightDirection.ToString().ToLower());
+                    Events.Enqueue(TotalGameTime, 666.0f, "treeouch");
                     break;
                 case "treegone":
                     ObjectHeap.SetActive("tree", false);

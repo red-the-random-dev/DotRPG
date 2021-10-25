@@ -45,9 +45,6 @@
 #begin Prefabs/whiterect.xml
 /copy:Prefabs/whiterect.xml
 
-#begin Scripts/dialog.lua
-/copy:Scripts/dialog.lua
-
 #begin Scripts/kickable.lua
 /copy:Scripts/kickable.lua
 
@@ -206,6 +203,54 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Texture2D/red.idle.up.png
+
+#begin Texture2D/red.punch.down.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture2D/red.punch.down.png
+
+#begin Texture2D/red.punch.left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture2D/red.punch.left.png
+
+#begin Texture2D/red.punch.right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture2D/red.punch.right.png
+
+#begin Texture2D/red.punch.up.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Texture2D/red.punch.up.png
 
 #begin Texture2D/ScrollMarker.png
 /importer:TextureImporter
