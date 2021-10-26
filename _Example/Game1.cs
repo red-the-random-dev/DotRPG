@@ -110,12 +110,14 @@ namespace DotRPG._Example
             ResetAspectRatio();
             foreach (String i in Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "Maps/")))
             {
-                Frame f = XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(i)), new Type[] {typeof(TopDownFrame)}, new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
+                XDocument xd = XDocument.Parse(File.ReadAllText(i));
+                Frame f = XMLSceneLoader.LoadFrame(xd, new Type[] { typeof(TopDownFrame) }, new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
+                GC.SuppressFinalize(xd);
                 FrameNames.Add(Name);
                 Frames.Add(f);
                 f.Initialize();
             }
-            GC.Collect();
+            
             base.Initialize();
         }
 
