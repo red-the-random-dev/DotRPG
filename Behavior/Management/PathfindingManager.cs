@@ -10,7 +10,7 @@ namespace DotRPG.Behavior.Management
     public class PathfindingManager
     {
         protected Dictionary<String, Waypoint> NavMesh;
-        protected Dictionary<String, Stack<Waypoint>> TracedPaths = new Dictionary<string, Stack<Waypoint>>();
+        protected Dictionary<String, Queue<Waypoint>> TracedPaths = new Dictionary<string, Queue<Waypoint>>();
         protected Dictionary<String, DynamicRectObject> Objects;
         protected PlayerObject Player;
 
@@ -44,7 +44,7 @@ namespace DotRPG.Behavior.Management
 
             foreach (String a in NavMesh.Keys)
             {
-                if (NavMesh[a].GetDistanceTo(x, y) < dist)
+                if (NavMesh[a].GetDistanceTo(x, y) < dist && dist != Single.PositiveInfinity || dist == Single.PositiveInfinity)
                 {
                     dist = NavMesh[a].GetDistanceTo(x, y);
                     n = a;
@@ -69,13 +69,14 @@ namespace DotRPG.Behavior.Management
         {
             return GetClosestWaypointTo(Player.Location.X, Player.Location.Y, out dist);
         }
-        public Boolean ForceMoveObjectByPath(String ObjectID, String PathID, Single velocity, Single ApproachDistance = 0.1f)
+        public Boolean ForceMoveObjectByPath(String ObjectID, String PathID, Single velocity, Single ApproachDistance = 1.0f)
         {
             if (!TracedPaths.ContainsKey(PathID))
             {
+                Objects[ObjectID].Velocity = Vector2.Zero;
                 return false;
             }
-            Stack<Waypoint> path = TracedPaths[PathID];
+            Queue<Waypoint> path = TracedPaths[PathID];
             if (path.Count == 0)
             {
                 TracedPaths.Remove(PathID);
@@ -84,18 +85,13 @@ namespace DotRPG.Behavior.Management
 
             Waypoint nextWaypoint = path.Peek();
             Vector2 v = new Vector2(nextWaypoint.X, nextWaypoint.Y) - Objects[ObjectID].Location;
-            if (v.Length() != 0)
-            {
-                v /= v.Length();
-                v *= velocity;
-            }
-            Objects[ObjectID].Velocity = v;
             if (v.Length() <= ApproachDistance)
             {
-                path.Pop();
+                path.Dequeue();
                 if (path.Count == 0)
                 {
                     TracedPaths.Remove(PathID);
+                    Objects[ObjectID].Velocity = Vector2.Zero;
                     return false;
                 }
                 else
@@ -103,6 +99,12 @@ namespace DotRPG.Behavior.Management
                     return true;
                 }
             }
+            if (v.Length() != 0)
+            {
+                v /= v.Length();
+                v *= velocity;
+            }
+            Objects[ObjectID].Velocity = v;
             return true;
         }
         public Boolean IsEndPoint(String PathID, String waypointID)
@@ -142,18 +144,18 @@ namespace DotRPG.Behavior.Management
             {
                 return false;
             }
-            Stack<Waypoint> ws = new Stack<Waypoint>();
+            Queue<Waypoint> wq = new Queue<Waypoint>();
             foreach (Waypoint x in w)
             {
-                ws.Push(x);
+                wq.Enqueue(x);
             }
-            if (TracedPaths.ContainsKey(PathID))
+            if (TracedPaths.ContainsKey(PathID) && !IsEndPoint(PathID, end))
             {
-                TracedPaths[PathID] = ws;
+                TracedPaths[PathID] = wq;
             }
             else
             {
-                TracedPaths.Add(PathID, ws);
+                TracedPaths.Add(PathID, wq);
             }
             return true;
         }

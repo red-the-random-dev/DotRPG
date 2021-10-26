@@ -22,8 +22,7 @@ namespace DotRPG._Example
             {
                 case "default":
                     Pathfinder.BuildPath("whiterectchase", Pathfinder.GetClosestWaypointToObject("whiterect2"), Pathfinder.GetClosestWaypointToPlayer());
-                    Pathfinder.ForceMoveObjectByPath("whiterect2", "whiterectchase", 256);
-                    Scene.DebugText = ObjectHeap.Pos_X("whiterect2") + " " + ObjectHeap.Pos_Y("whiterect2");
+                    Pathfinder.ForceMoveObjectByPath("whiterect2", "whiterectchase", 256, 16);
                     if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
                         Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
                     PunchCount -= ElapsedGameTime;

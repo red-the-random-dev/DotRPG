@@ -15,7 +15,7 @@ namespace DotRPG.Waypoints
         }
         public Single GetDistanceTo(Single x, Single y)
         {
-            return (Single)Math.Sqrt(Math.Pow(x - X, 2) + Math.Pow(y - X, 2));
+            return (Single)Math.Sqrt(Math.Pow(x - X, 2) + Math.Pow(y - Y, 2));
         }
         public Single GetDistanceTo(Waypoint other)
         {
@@ -73,6 +73,10 @@ namespace DotRPG.Waypoints
             {
                 yield return w;
             }
+        }
+        public override string ToString()
+        {
+            return "{" + X + ", " + Y + "}";
         }
     }
 }

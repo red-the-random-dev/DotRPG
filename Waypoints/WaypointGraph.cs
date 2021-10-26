@@ -14,7 +14,7 @@ namespace DotRPG.Waypoints
             CurrentPath.Push(start);
             List<Waypoint[]> Solutions = new List<Waypoint[]>();
             totalDistance = Single.PositiveInfinity;
-            TraceTo(CurrentPath, destination, Visited, Solutions);
+            TraceTo(CurrentPath, destination, Solutions);
             if (Solutions.Count > 0)
             {
                 Waypoint[] path = null;
@@ -31,11 +31,12 @@ namespace DotRPG.Waypoints
                         totalDistance = dist;
                     }
                 }
+                Array.Reverse(path);
                 return path;
             }
             return null;
         }
-        protected static Boolean TraceTo(Stack<Waypoint> route, Waypoint destination, HashSet<Waypoint> alreadyVisited, List<Waypoint[]> Solutions)
+        protected static Boolean TraceTo(Stack<Waypoint> route, Waypoint destination, List<Waypoint[]> Solutions)
         {
             Waypoint c = route.Peek();
             if (c == destination)
@@ -48,13 +49,12 @@ namespace DotRPG.Waypoints
                 {
                     continue;
                 }
-                if (alreadyVisited.Contains(w))
+                if (route.Contains(w))
                 {
                     continue;
                 }
                 route.Push(w);
-                alreadyVisited.Add(w);
-                if (TraceTo(route, destination, alreadyVisited, Solutions))
+                if (TraceTo(route, destination, Solutions))
                 {
                     Solutions.Add(route.ToArray());
                 }

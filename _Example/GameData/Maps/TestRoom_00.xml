@@ -49,28 +49,21 @@
         <ColorChannel channel="w"/>
     </Prop>
     <NavMesh>
-        <Node id="topleft" location="128,128" />
-        <Node id="topcenter" location="192,128" />
-        <Node id="topright" location="256,128" />
-        <Node id="centerleft" location="128,192" />
-        <Node id="center" location="192,192" />
-        <Node id="centerright" location="256,192" />
-        <Node id="bottomleft" location="128,256" />
-        <Node id="bottomcenter" location="192,256" />
-        <Node id="bottomright" location="256,256" />
+        <Node id="topleft" location="328,328" />
+        <Node id="topcenter" location="492,328" />
+        <Node id="topright" location="656,328" />
+        <Node id="centerleft" location="328,492" />
+        <Node id="center" location="492,492" />
+        <Node id="centerright" location="656,492" />
         
         <Weld first="topleft" second="topcenter" />
         <Weld first="topcenter" second="topright" />
+        <Weld first="topcenter" second="center"/>
         <Weld first="topleft" second="topcenter" />
         <Weld first="topleft" second="centerleft" />
         <Weld first="topright" second="centerright" />
         <Weld first="centerleft" second="center" />
         <Weld first="centerright" second="center" />
-        <Weld first="centerleft" second="bottomleft" />
-        <Weld first="centerright" second="bottomright" />
-        <Weld first="bottomleft" second="bottomcenter" />
-        <Weld first="bottomcenter" second="bottomright" />
-        <Weld first="bottomcenter" second="center" />
     </NavMesh>
     
 
