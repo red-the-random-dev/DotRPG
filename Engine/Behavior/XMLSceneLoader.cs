@@ -35,7 +35,7 @@ namespace DotRPG.Behavior
                     if (typeof(IXMLSceneBuilder).IsAssignableFrom(type))
                     {
                         Object[] attrs = type.GetCustomAttributes(false);
-                        
+
                         foreach (Object x in attrs)
                         {
                             if (x is SceneBuilderAttribute y)
@@ -57,7 +57,7 @@ namespace DotRPG.Behavior
                     }
                 }
             }
-            throw new InvalidOperationException("Unable to fetch appropriate scene builder instance for behavior type \""+behaviorType+"\" among registered types.");
+            throw new InvalidOperationException("Unable to fetch appropriate scene builder instance for behavior type \"" + behaviorType + "\" among registered types.");
         }
 
         public static Frame LoadFrame(XDocument Document, Assembly[] lookIn, object[] buildData, out String literalName)
@@ -116,7 +116,7 @@ namespace DotRPG.Behavior
             XElement rt = Document.Root;
             if (rt.Name.LocalName.ToString().ToLower() != "scene")
             {
-                throw new System.Runtime.Serialization.SerializationException("Unable to load data from root tag of following type: <"+ rt.Name+"> (type <Scene> expected).");
+                throw new System.Runtime.Serialization.SerializationException("Unable to load data from root tag of following type: <" + rt.Name + "> (type <Scene> expected).");
             }
             literalName = rt.Attribute(XName.Get("id")).Value;
             String behaviorType = rt.Attribute(XName.Get("behaviorType")).Value;
@@ -268,58 +268,58 @@ namespace DotRPG.Behavior
                 switch (xe3.Name.LocalName.ToLower())
                 {
                     case "defaultanimationsequence":
-                    {
-                        Texture2D defAnim = null;
-                        UInt16 frameAmount = 1;
-                        foreach (XAttribute xa in xe3.Attributes())
                         {
-                            switch (xa.Name.LocalName)
+                            Texture2D defAnim = null;
+                            UInt16 frameAmount = 1;
+                            foreach (XAttribute xa in xe3.Attributes())
                             {
-                                case "local":
-                                    defAnim = FrameResources.Textures[xa.Value];
-                                    break;
-                                case "global":
-                                    defAnim = FrameResources.Global.Textures[xa.Value];
-                                    break;
-                                case "frameAmount":
-                                    frameAmount = UInt16.Parse(xa.Value);
-                                    break;
+                                switch (xa.Name.LocalName)
+                                {
+                                    case "local":
+                                        defAnim = FrameResources.Textures[xa.Value];
+                                        break;
+                                    case "global":
+                                        defAnim = FrameResources.Global.Textures[xa.Value];
+                                        break;
+                                    case "frameAmount":
+                                        frameAmount = UInt16.Parse(xa.Value);
+                                        break;
+                                }
                             }
+                            if (defAnim == null)
+                            {
+                                throw new SerializationException("Unable to load animation sequence data for: default.");
+                            }
+                            sc = new SpriteController(frameTime, defAnim, frameAmount);
+                            break;
                         }
-                        if (defAnim == null)
-                        {
-                            throw new SerializationException("Unable to load animation sequence data for: default.");
-                        }
-                        sc = new SpriteController(frameTime, defAnim, frameAmount);
-                        break;
-                    }
                     case "animation":
-                    {
-                        String ID = xe3.Attribute(XName.Get("id")).Value;
-                        Texture2D Anim = null;
-                        UInt16 frameAmount = 1;
-                        foreach (XAttribute xa in xe3.Attributes())
                         {
-                            switch (xa.Name.LocalName)
+                            String ID = xe3.Attribute(XName.Get("id")).Value;
+                            Texture2D Anim = null;
+                            UInt16 frameAmount = 1;
+                            foreach (XAttribute xa in xe3.Attributes())
                             {
-                                case "local":
-                                    Anim = FrameResources.Textures[xa.Value];
-                                    break;
-                                case "global":
-                                    Anim = FrameResources.Global.Textures[xa.Value];
-                                    break;
-                                case "frameAmount":
-                                    frameAmount = UInt16.Parse(xa.Value);
-                                    break;
+                                switch (xa.Name.LocalName)
+                                {
+                                    case "local":
+                                        Anim = FrameResources.Textures[xa.Value];
+                                        break;
+                                    case "global":
+                                        Anim = FrameResources.Global.Textures[xa.Value];
+                                        break;
+                                    case "frameAmount":
+                                        frameAmount = UInt16.Parse(xa.Value);
+                                        break;
+                                }
                             }
+                            if (Anim == null)
+                            {
+                                throw new SerializationException("Unable to load animation sequence data for: default.");
+                            }
+                            sc.AddAnimationSequence(ID, Anim, frameAmount);
+                            break;
                         }
-                        if (Anim == null)
-                        {
-                            throw new SerializationException("Unable to load animation sequence data for: default.");
-                        }
-                        sc.AddAnimationSequence(ID, Anim, frameAmount);
-                        break;
-                    }
                 }
             }
             return sc;
