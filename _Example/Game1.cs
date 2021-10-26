@@ -110,12 +110,14 @@ namespace DotRPG._Example
             ResetAspectRatio();
             foreach (String i in Directory.EnumerateFiles(Path.Combine(Content.RootDirectory, "Maps/")))
             {
-                Frame f = XMLSceneLoader.LoadFrame(XDocument.Parse(File.ReadAllText(i)), new Type[] {typeof(TopDownFrame)}, new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
+                XDocument xd = XDocument.Parse(File.ReadAllText(i));
+                Frame f = XMLSceneLoader.LoadFrame(xd, new Type[] { typeof(TopDownFrame) }, new Object[] { this, ResourceHGlobal, LogicEventSet }, out String Name);
+                GC.SuppressFinalize(xd);
                 FrameNames.Add(Name);
                 Frames.Add(f);
                 f.Initialize();
             }
-            GC.Collect();
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
             base.Initialize();
         }
 
@@ -138,8 +140,7 @@ namespace DotRPG._Example
 
         protected override void LoadContent()
         {
-            
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            ResourceHGlobal.Dispose();
             ResourceHGlobal.Fonts.Add("vcr", Content.Load<SpriteFont>("Fonts/MainFont"));
             ResourceHGlobal.Fonts.Add("vcr_large", Content.Load<SpriteFont>("Fonts/MainFont_Large"));
             _spriteFontLarge = ResourceHGlobal.Fonts["vcr_large"];
@@ -198,7 +199,8 @@ namespace DotRPG._Example
                 else if (ActiveFrame.FrameID != -128 && Keyboard.GetState().IsKeyDown(Keys.F2))
                 {
                     ActiveFrame.UnloadContent();
-                    stageSelect.SelectedOption = -1;
+                    Content.Unload();
+                    LoadContent();
                     ActiveFrame = stageSelect;
                     GC.Collect();
                 }

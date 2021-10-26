@@ -10,9 +10,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
-    <AssemblyVersion>1.4.4.0</AssemblyVersion>
+    <AssemblyVersion>1.5.3.0</AssemblyVersion>
     <FileVersion>1.4.4.0</FileVersion>
-    <Version>1.4.4.0</Version>
+    <Version>1.5.3.0</Version>
     <Authors>red-the-random-dev</Authors>
     <Product>DotRPG</Product>
     <PackageId>DotRPG Example Application</PackageId>
@@ -44,27 +44,6 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <ProjectReference Include="..\DotRPG.Engine.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Fractured_Debug'">
-    <ProjectReference Include="..\Behavior\Defaults\DotRPG.Behavior.Defaults.csproj" />
-    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj" />
-    <ProjectReference Include="..\Behavior\Routines\DotRPG.Behavior.Routines.csproj" />
-    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
-    <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
-    <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
-    <ProjectReference Include="..\UI\DotRPG.UI.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Fractured_Release'">
-    <ProjectReference Include="..\Behavior\Defaults\DotRPG.Behavior.Defaults.csproj" />
-    <ProjectReference Include="..\Behavior\DotRPG.Behavior.csproj" />
-    <ProjectReference Include="..\Behavior\Routines\DotRPG.Behavior.Routines.csproj" />
-    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
-    <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
-    <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
-    <ProjectReference Include="..\UI\DotRPG.UI.csproj" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\DotRPG.Engine.csproj" />
