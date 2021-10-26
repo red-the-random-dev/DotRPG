@@ -117,7 +117,7 @@ namespace DotRPG._Example
                 Frames.Add(f);
                 f.Initialize();
             }
-            
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
             base.Initialize();
         }
 
@@ -140,8 +140,7 @@ namespace DotRPG._Example
 
         protected override void LoadContent()
         {
-            
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            ResourceHGlobal.Dispose();
             ResourceHGlobal.Fonts.Add("vcr", Content.Load<SpriteFont>("Fonts/MainFont"));
             ResourceHGlobal.Fonts.Add("vcr_large", Content.Load<SpriteFont>("Fonts/MainFont_Large"));
             _spriteFontLarge = ResourceHGlobal.Fonts["vcr_large"];
@@ -200,7 +199,8 @@ namespace DotRPG._Example
                 else if (ActiveFrame.FrameID != -128 && Keyboard.GetState().IsKeyDown(Keys.F2))
                 {
                     ActiveFrame.UnloadContent();
-                    stageSelect.SelectedOption = -1;
+                    Content.Unload();
+                    LoadContent();
                     ActiveFrame = stageSelect;
                     GC.Collect();
                 }
