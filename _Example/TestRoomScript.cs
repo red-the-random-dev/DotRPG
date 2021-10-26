@@ -1,12 +1,12 @@
 using System;
-using DotRPG.Behavior;
+using DotRPG.Waypoints;
 using DotRPG.Behavior.Defaults;
 using DotRPG.Scripting;
 
 namespace DotRPG._Example
 {
-    [BuiltScript("testroom00")]
-    public class DialogScript : TopDownFrameScript
+    [BuiltScript("testroom_00")]
+    public class TestRoomScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
         public override bool RequireRawSceneData => true;
@@ -21,6 +21,8 @@ namespace DotRPG._Example
             switch (EventID)
             {
                 case "default":
+                    Pathfinder.BuildPath("whiterectchase", Pathfinder.GetClosestWaypointToObject("whiterect2"), Pathfinder.GetClosestWaypointToPlayer());
+                    Pathfinder.ForceMoveObjectByPath("whiterect2", "whiterectchase", 256, 16);
                     if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
                         Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
                     PunchCount -= ElapsedGameTime;

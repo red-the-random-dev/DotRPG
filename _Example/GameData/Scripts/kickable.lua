@@ -33,6 +33,6 @@ function update(objID, eventID, frameTime, totalTime)
         obj:SetObjectPosition(this, og_pos_x, og_pos_y)
     end
     if objID == "kick__"..this then
-        obj:ApplyForce(this, 256*15, obj:GetAzimuthFromPlayer(this))
+        obj:ApplyForce(this, 256*15, obj:FindAzimuthFromPlayer(this))
     end
 end

@@ -17,7 +17,7 @@
 
     <Backdrop local="backdrop" offset="480,270" />
 
-    <RuleSet allowManualZoom="true" suppressScriptExceptions="true"/>
+    <RuleSet allowManualZoom="true"/>
 
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
@@ -27,6 +27,32 @@
     <Prop id="whiterect" startPos="512,270" mass="20" _usePrefab="Prefabs/whiterect.xml">
         <ObjectScript location="Scripts/kickable.lua"/>
         <Interactable interactAction="kick__whiterect"/>
+    </Prop>
+    <Prop id="whiterect2" startPos="328,328" mass="20" _usePrefab="Prefabs/whiterect.xml" />
+    
+    <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterecttc" startPos="496,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterecttr" startPos="656,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterectcl" startPos="328,496" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterectcc" startPos="496,496" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterectcr" startPos="656,496" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
     </Prop>
 
     <Prop id="r" startPos="496,128" mass="20" static="true" _usePrefab="Prefabs/whiterect.xml">
@@ -45,6 +71,27 @@
         <Interactable interactAction="set_w" />
         <ColorChannel channel="w"/>
     </Prop>
+    <NavMesh>
+        <Node id="topleft" location="328,328" />
+        <Node id="topcenter" location="492,328" />
+        <Node id="topright" location="656,328" />
+        <Node id="centerleft" location="328,492" />
+        <Node id="center" location="492,492" />
+        <Node id="centerright" location="656,492" />
+        
+        <Weld first="topleft" second="topcenter" />
+        <Weld first="topcenter" second="topright" />
+        <Weld first="topcenter" second="center"/>
+        <Weld first="topleft" second="topcenter" />
+        <Weld first="topleft" second="centerleft" />
+        <Weld first="topright" second="centerright" />
+        <Weld first="centerleft" second="center" />
+        <Weld first="centerright" second="center" />
+        <Weld first="topleft" second="center" />
+        <Weld first="topcenter" second="centerleft" />
+        <Weld first="topright" second="center" />
+        <Weld first="topcenter" second="centerright" />
+    </NavMesh>
     
 
     <ColorChannel id="treecolor" color="255,255,255,255"/>
@@ -59,7 +106,7 @@
     <Prop id="barrier_l" startPos="-48,270" colliderSize="96,600" mass="1000" static="true"/>
     <Prop id="barrier_r" startPos="1008,270" colliderSize="96,600" mass="1000" static="true"/>
 
-    <PreBuiltScript name="testroom00" location="Scripts/DialogComp.cs"/>
+    <PreBuiltScript name="testroom_00" location="Scripts/DialogComp.cs"/>
     <!--
     <TextBox relativeSize="1.0,0.2" location="0.0,0.8" textColor="255,255,255,255" backgroundColor="0,0,0,255">
         <Font global="vcr-large"/>

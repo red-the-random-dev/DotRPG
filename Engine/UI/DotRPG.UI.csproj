@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,9 +7,5 @@
     <Product>DotRPG</Product>
     <Configurations>Debug;Release;Fractured_Debug</Configurations>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Objects\DotRPG.Objects.csproj" />
-  </ItemGroup>
 
 </Project>
