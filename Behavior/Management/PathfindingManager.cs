@@ -153,7 +153,7 @@ namespace DotRPG.Behavior.Management
             {
                 TracedPaths[PathID] = wq;
             }
-            else
+            else if (!TracedPaths.ContainsKey(PathID))
             {
                 TracedPaths.Add(PathID, wq);
             }

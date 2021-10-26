@@ -31,6 +31,30 @@
     <Prop id="whiterect2" startPos="128,128" mass="20" _usePrefab="Prefabs/whiterect.xml">
         <IgnoreCollisions />
     </Prop>
+    <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterecttc" startPos="496,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterecttr" startPos="656,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterectcl" startPos="328,496" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterectcc" startPos="496,496" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
+    <Prop id="whiterectcr" startPos="656,496" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
+        <ColorChannel channel="r"/>
+    </Prop>
 
     <Prop id="r" startPos="496,128" mass="20" static="true" _usePrefab="Prefabs/whiterect.xml">
         <Interactable interactAction="set_r" />
@@ -64,6 +88,10 @@
         <Weld first="topright" second="centerright" />
         <Weld first="centerleft" second="center" />
         <Weld first="centerright" second="center" />
+        <Weld first="topleft" second="center" />
+        <Weld first="topcenter" second="centerleft" />
+        <Weld first="topright" second="center" />
+        <Weld first="topcenter" second="centerright" />
     </NavMesh>
     
 
