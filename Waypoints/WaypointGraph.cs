@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Xml.Linq;
 
 namespace DotRPG.Waypoints
 {
@@ -61,6 +61,40 @@ namespace DotRPG.Waypoints
                 route.Pop();
             }
             return false;
+        }
+        public static void LoadNavMapFromXML(XElement root, Dictionary<String, Waypoint> output)
+        {
+            foreach (XElement x in root.Elements())
+            {
+                switch (x.Name.LocalName.ToLower())
+                {
+                    case "node":
+                        ResolveVector2(x.Attribute(XName.Get("location")).Value, out Single px, out Single py);
+                        output.Add(x.Attribute(XName.Get("id")).Value, new Waypoint(px, py));
+                        break;
+                    case "weld":
+                        output[x.Attribute(XName.Get("first")).Value].SetNeighbor(output[x.Attribute(XName.Get("second")).Value]);
+                        break;
+                }
+            }
+        }
+        public static void ResolveVector2(String intake, out Single x, out Single y)
+        {
+            String a = "";
+            foreach (Char c in intake)
+            {
+                if (c != ' ')
+                {
+                    a += c;
+                }
+            }
+            String[] dims = a.Split(',');
+            if (dims.Length < 2)
+            {
+                throw new InvalidCastException(String.Format("Unable to load Vector2 from {0}-dimensional string vector.", dims.Length));
+            }
+            x = Single.Parse(dims[0]);
+            y = Single.Parse(dims[1]);
         }
     }
 }

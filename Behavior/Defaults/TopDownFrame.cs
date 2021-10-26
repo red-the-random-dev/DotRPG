@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 using DotRPG.Scripting;
 using DotRPG.Behavior.Routines;
 using Microsoft.Xna.Framework.Input;
-using DotRPG.UI;
+using DotRPG.Waypoints;
 using DotRPG.Behavior.Management;
 
 namespace DotRPG.Behavior.Defaults
@@ -26,6 +26,7 @@ namespace DotRPG.Behavior.Defaults
         public ObjectHeapManager ObjectManager { get; private set; }
         public SoundManager Audio { get; private set; }
         public PaletteManager Palette { get; private set; }
+        public PathfindingManager Pathfinder { get; private set; }
         public ScriptEventManager EventTimer { get; private set; }
         public PlayerObject Player;
         Int32 _id;
@@ -33,6 +34,7 @@ namespace DotRPG.Behavior.Defaults
         List<XElement> objectPrototypes = new List<XElement>();
         List<IScriptModule> Scripts = new List<IScriptModule>();
         public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
+        public Dictionary<String, Waypoint> NavMap { get; private set; }  = new Dictionary<string, Waypoint>();
 
         public Dictionary<String, DynamicRectObject> Props { get; private set; } = new Dictionary<string, DynamicRectObject>();
         public Dictionary<String, DynamicRectObject> Interactable { get; private set; } = new Dictionary<string, DynamicRectObject>();
@@ -132,6 +134,7 @@ namespace DotRPG.Behavior.Defaults
         public void PostLoadTask()
         {
             Camera.Focus = Player.Location.ToPoint();
+            Pathfinder = new PathfindingManager(NavMap, Props, Player);
             foreach (IScriptModule x in Scripts)
             {
                 x.AddData("obj", ObjectManager);
@@ -139,6 +142,7 @@ namespace DotRPG.Behavior.Defaults
                 x.AddData("audio", Audio);
                 x.AddData("timer", EventTimer);
                 x.AddData("palette", Palette);
+                x.AddData("navmap", Pathfinder);
                 x.SuppressExceptions = SuppressScriptExceptions;
                 if (x is TopDownFrameScript)
                 {
@@ -301,6 +305,9 @@ namespace DotRPG.Behavior.Defaults
                                 case "interactable":
                                     Interactable.Add(xe2.Attribute(XName.Get("interactAction")).Value, Props[ID]);
                                     break;
+                                case "ignorecollisions":
+                                    Props[ID].Collidable = false;
+                                    break;
                                 case "objectscript":
                                 {
                                     String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe2.Attribute(XName.Get("location")).Value));
@@ -394,6 +401,11 @@ namespace DotRPG.Behavior.Defaults
                             }
                         }
 
+                        break;
+                    }
+                case "navmesh":
+                    {
+                        WaypointGraph.LoadNavMapFromXML(xe, NavMap);
                         break;
                     }
             }
@@ -629,6 +641,8 @@ namespace DotRPG.Behavior.Defaults
         {
             Palette.Dispose();
             Palette = null;
+            NavMap.Clear();
+            Pathfinder = null;
             showHitboxes = false;
             Audio.Dispose();
             FrameResources.Dispose();

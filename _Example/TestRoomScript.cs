@@ -9,52 +9,21 @@ namespace DotRPG._Example
     public class TestRoomScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
-        Waypoint ws;
-        Waypoint wf;
         public override bool RequireRawSceneData => true;
         public override bool RequireResourceHeap => true;
 
         public override void Start()
         {
             // Palette.SetMixWithGlobal("treecolor", false);
-            ws = new Waypoint(0, 0);
-            Waypoint wl = ws;
-            for (int i = 1; i <= 64; i++)
-            {
-                Waypoint w = new Waypoint(i, 0);
-                wl.SetNeighbor(w);
-                wl = w;
-            }
-            wl = ws;
-            for (int i = 1; i <= 64; i++)
-            {
-                Waypoint w = new Waypoint(i, 1);
-                wl.SetNeighbor(w);
-                wl = w;
-            }
-            wl = ws;
-            for (int i = 1; i <= 64; i++)
-            {
-                Waypoint w = new Waypoint(i, 2);
-                wl.SetNeighbor(w);
-                wl = w;
-            }
-            wl = ws;
-            for (int i = 1; i <= 64; i++)
-            {
-                Waypoint w = new Waypoint(i, 3);
-                wl.SetNeighbor(w);
-                wl = w;
-            }
-            wf = new Waypoint(36, 4);
-            ws.SetNeighbor(wf);
         }
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
             switch (EventID)
             {
                 case "default":
-                    Waypoint[] p = WaypointGraph.BuildPath(ws, wf, out Single x);
+                    Pathfinder.BuildPath("whiterectchase", Pathfinder.GetClosestWaypointToObject("whiterect2"), Pathfinder.GetClosestWaypointToPlayer());
+                    Pathfinder.ForceMoveObjectByPath("whiterect2", "whiterectchase", 256);
+                    Scene.DebugText = ObjectHeap.Pos_X("whiterect2") + " " + ObjectHeap.Pos_Y("whiterect2");
                     if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
                         Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
                     PunchCount -= ElapsedGameTime;

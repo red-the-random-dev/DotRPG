@@ -17,6 +17,7 @@ namespace DotRPG.Behavior.Defaults
         protected TopDownFrame Scene;
         protected ResourceHeap FrameResources;
         protected PaletteManager Palette;
+        protected PathfindingManager Pathfinder;
 
         public virtual Boolean RequireRawSceneData => false;
         public virtual Boolean RequireResourceHeap => false;
@@ -49,6 +50,9 @@ namespace DotRPG.Behavior.Defaults
                 case "palette":
                     Palette = value as PaletteManager;
                     break;
+                case "navmap":
+                    Pathfinder = value as PathfindingManager;
+                    break;
             }
         }
 
@@ -66,6 +70,10 @@ namespace DotRPG.Behavior.Defaults
             {
                 LastError = e.Message;
                 LastErrorDetails = e;
+                if (!SuppressExceptions)
+                {
+                    throw e;
+                }
             }
         }
 

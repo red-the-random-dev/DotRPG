@@ -17,7 +17,7 @@
 
     <Backdrop local="backdrop" offset="480,270" />
 
-    <RuleSet allowManualZoom="true" suppressScriptExceptions="true"/>
+    <RuleSet allowManualZoom="true"/>
 
     <Player startPos="200,200" _usePrefab="Prefabs/red.xml" />
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
@@ -27,6 +27,9 @@
     <Prop id="whiterect" startPos="512,270" mass="20" _usePrefab="Prefabs/whiterect.xml">
         <ObjectScript location="Scripts/kickable.lua"/>
         <Interactable interactAction="kick__whiterect"/>
+    </Prop>
+    <Prop id="whiterect2" startPos="128,128" mass="20" _usePrefab="Prefabs/whiterect.xml">
+        <IgnoreCollisions />
     </Prop>
 
     <Prop id="r" startPos="496,128" mass="20" static="true" _usePrefab="Prefabs/whiterect.xml">
@@ -45,6 +48,30 @@
         <Interactable interactAction="set_w" />
         <ColorChannel channel="w"/>
     </Prop>
+    <NavMesh>
+        <Node id="topleft" location="128,128" />
+        <Node id="topcenter" location="192,128" />
+        <Node id="topright" location="256,128" />
+        <Node id="centerleft" location="128,192" />
+        <Node id="center" location="192,192" />
+        <Node id="centerright" location="256,192" />
+        <Node id="bottomleft" location="128,256" />
+        <Node id="bottomcenter" location="192,256" />
+        <Node id="bottomright" location="256,256" />
+        
+        <Weld first="topleft" second="topcenter" />
+        <Weld first="topcenter" second="topright" />
+        <Weld first="topleft" second="topcenter" />
+        <Weld first="topleft" second="centerleft" />
+        <Weld first="topright" second="centerright" />
+        <Weld first="centerleft" second="center" />
+        <Weld first="centerright" second="center" />
+        <Weld first="centerleft" second="bottomleft" />
+        <Weld first="centerright" second="bottomright" />
+        <Weld first="bottomleft" second="bottomcenter" />
+        <Weld first="bottomcenter" second="bottomright" />
+        <Weld first="bottomcenter" second="center" />
+    </NavMesh>
     
 
     <ColorChannel id="treecolor" color="255,255,255,255"/>
