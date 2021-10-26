@@ -36,7 +36,7 @@ namespace DotRPG.Behavior.Defaults
         Dictionary<String, ObjectPrototype> prefabs = new Dictionary<string, ObjectPrototype>();
         List<IScriptModule> Scripts = new List<IScriptModule>();
         public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
-        public Dictionary<String, Waypoint> NavMap { get; private set; }  = new Dictionary<string, Waypoint>();
+        public Dictionary<String, Waypoint> NavMap { get; private set; } = new Dictionary<string, Waypoint>();
 
         public Dictionary<String, DynamicRectObject> Props { get; private set; } = new Dictionary<string, DynamicRectObject>();
         public Dictionary<String, DynamicRectObject> Interactable { get; private set; } = new Dictionary<string, DynamicRectObject>();
@@ -107,11 +107,11 @@ namespace DotRPG.Behavior.Defaults
         public void PerformContentTasks(Int32 step)
         {
             Int32 x = content;
-            for (int i = content; i < Math.Min(x+step, resourceLoad.Count); i++)
+            for (int i = content; i < Math.Min(x + step, resourceLoad.Count); i++)
             {
                 ResourceLoadTask rlt = resourceLoad[i];
                 LoadResource(rlt);
-                content = i+1;
+                content = i + 1;
             }
         }
         public void PerformObjectTasks(Int32 step)
@@ -121,7 +121,7 @@ namespace DotRPG.Behavior.Defaults
             {
                 ObjectPrototype op = objectPrototypes[i];
                 LoadObject(op);
-                objects = i+1;
+                objects = i + 1;
             }
         }
         public void PreloadTask()
@@ -205,7 +205,7 @@ namespace DotRPG.Behavior.Defaults
                         }
                     }
                     FrameResources.Textures.Add(rlt.ResourceID, Owner.Content.Load<Texture2D>(rlt.ResourcePath));
-                    end_t: break;
+                end_t: break;
                 case ResourceType.SoundEffect:
                     foreach (String x in FrameResources.Sounds.Keys)
                     {
@@ -215,7 +215,7 @@ namespace DotRPG.Behavior.Defaults
                         }
                     }
                     FrameResources.Sounds.Add(rlt.ResourceID, Owner.Content.Load<SoundEffect>(rlt.ResourcePath));
-                    end_s: break;
+                end_s: break;
                 case ResourceType.SpriteFont:
                     foreach (String x in FrameResources.Textures.Keys)
                     {
@@ -225,7 +225,7 @@ namespace DotRPG.Behavior.Defaults
                         }
                     }
                     FrameResources.Fonts.Add(rlt.ResourceID, Owner.Content.Load<SpriteFont>(rlt.ResourcePath));
-                    end_f: break;
+                end_f: break;
                 case ResourceType.Song:
                     foreach (String x in FrameResources.Textures.Keys)
                     {
@@ -235,7 +235,7 @@ namespace DotRPG.Behavior.Defaults
                         }
                     }
                     FrameResources.Music.Add(rlt.ResourceID, Owner.Content.Load<Song>(rlt.ResourcePath));
-                    end_m: break;
+                end_m: break;
             }
         }
         void LoadObject(ObjectPrototype op)
@@ -315,13 +315,13 @@ namespace DotRPG.Behavior.Defaults
                                     Props[ID].Collidable = false;
                                     break;
                                 case "objectscript":
-                                {
-                                    String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, op2.Properties["location"]));
-                                    LuaModule lm = new LuaModule(scriptContent, op2.Properties["location"]+":"+ID);
-                                    lm.Runtime["this"] = ID;
-                                    Scripts.Add(lm);
-                                    break;
-                                }
+                                    {
+                                        String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, op2.Properties["location"]));
+                                        LuaModule lm = new LuaModule(scriptContent, op2.Properties["location"] + ":" + ID);
+                                        lm.Runtime["this"] = ID;
+                                        Scripts.Add(lm);
+                                        break;
+                                    }
                             }
                         }
                         Palette.SetObjectChannel(ID, channel);
@@ -469,6 +469,46 @@ namespace DotRPG.Behavior.Defaults
                         break;
                 }
             }
+            List<ResourceLoadTask> rlt_new = new List<ResourceLoadTask>();
+            HashSet<String> textureIDs = new HashSet<string>();
+            HashSet<String> fontIDs = new HashSet<string>();
+            HashSet<String> soundIDs = new HashSet<string>();
+            HashSet<String> songIDs = new HashSet<string>();
+
+            HashSet<String> currentCollection = null;
+            foreach (ResourceLoadTask rlt in resourceLoad)
+            {
+                switch (rlt.Resource)
+                {
+                    case ResourceType.Texture2D:
+                        currentCollection = textureIDs;
+                        break;
+                    case ResourceType.SpriteFont:
+                        currentCollection = fontIDs;
+                        break;
+                    case ResourceType.SoundEffect:
+                        currentCollection = soundIDs;
+                        break;
+                    case ResourceType.Song:
+                        currentCollection = songIDs;
+                        break;
+                }
+                if (!currentCollection.Contains(rlt.ResourceID))
+                {
+                    rlt_new.Add(rlt);
+                    currentCollection.Add(rlt.ResourceID);
+                }
+            }
+            resourceLoad.Clear();
+            foreach (ResourceLoadTask rlt in rlt_new)
+            {
+                resourceLoad.Add(rlt);
+            }
+            rlt_new.Clear();
+            textureIDs.Clear();
+            fontIDs.Clear();
+            soundIDs.Clear();
+            songIDs.Clear();
             return this;
         }
         #endregion
@@ -523,7 +563,7 @@ namespace DotRPG.Behavior.Defaults
                     Player.Sprite.SetAnimationSequence(newAnimSequence);
                 }
             }
-            
+
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
             Locomotion *= Player.Motion.MovementSpeed;
             Player.Velocity = Locomotion;
@@ -632,7 +672,7 @@ namespace DotRPG.Behavior.Defaults
 
         public override void Initialize()
         {
-            
+
         }
 
         public override void UnloadContent()
