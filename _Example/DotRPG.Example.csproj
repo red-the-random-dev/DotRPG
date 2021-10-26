@@ -45,9 +45,6 @@
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Debug'">
-    <ProjectReference Include="..\DotRPG.Engine.csproj" />
-  </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Release'">
     <ProjectReference Include="..\DotRPG.Engine.csproj" />
   </ItemGroup>
@@ -68,6 +65,9 @@
     <ProjectReference Include="..\Objects\Dynamics\DotRPG.Objects.Dynamics.csproj" />
     <ProjectReference Include="..\Scripting\DotRPG.Scripting.csproj" />
     <ProjectReference Include="..\UI\DotRPG.UI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\DotRPG.Engine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="app.config">

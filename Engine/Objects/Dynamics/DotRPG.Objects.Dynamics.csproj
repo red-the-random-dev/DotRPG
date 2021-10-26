@@ -11,8 +11,4 @@
     <Configurations>Debug;Release;Fractured_Debug;Fractured_Release</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DotRPG.Objects.csproj" />
-  </ItemGroup>
-
 </Project>

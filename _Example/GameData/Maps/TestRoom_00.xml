@@ -28,9 +28,8 @@
         <ObjectScript location="Scripts/kickable.lua"/>
         <Interactable interactAction="kick__whiterect"/>
     </Prop>
-    <Prop id="whiterect2" startPos="128,128" mass="20" _usePrefab="Prefabs/whiterect.xml">
-        <IgnoreCollisions />
-    </Prop>
+    <Prop id="whiterect2" startPos="328,328" mass="20" _usePrefab="Prefabs/whiterect.xml" />
+    
     <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
         <IgnoreCollisions />
         <ColorChannel channel="r"/>
