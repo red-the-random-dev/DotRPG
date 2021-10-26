@@ -7,6 +7,7 @@ using System.IO;
 using DotRPG.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DotRPG.Construct;
 
 namespace DotRPG.Behavior
 {
@@ -151,7 +152,7 @@ namespace DotRPG.Behavior
             }
         }
 
-        public static XElement GetObjectPrototype(String elementName, String prefabFileName, List<ResourceLoadTask> addResources = null)
+        public static void GetPrefab(String elementName, String prefabFileName, Dictionary<String, ObjectPrototype> prefabs, out String ID, List<ResourceLoadTask> addResources = null)
         {
             XDocument Document = XDocument.Parse(File.ReadAllText(prefabFileName));
 
@@ -164,6 +165,11 @@ namespace DotRPG.Behavior
             {
                 throw new System.Runtime.Serialization.SerializationException("Unable to load data from root tag of following type: <" + rt.Name + "> (type <ObjectPrefab> expected).");
             }
+            ID = rt.Attribute(XName.Get("id")).Value;
+            if (prefabs.ContainsKey(ID))
+            {
+                return;
+            }
             foreach (XElement xe in Document.Root.Elements())
             {
                 if (xe.Name.LocalName.ToLower() == "require" && addResources != null)
@@ -175,7 +181,8 @@ namespace DotRPG.Behavior
                 }
                 else if (xe.Name.LocalName.ToLower() == elementName.ToLower())
                 {
-                    return xe;
+                    prefabs.Add(ID, ObjectPrototype.FromXML(xe));
+                    return;
                 }
             }
             throw new SerializationException("No data found for following tag: " + elementName + ".");
@@ -313,6 +320,71 @@ namespace DotRPG.Behavior
                         sc.AddAnimationSequence(ID, Anim, frameAmount);
                         break;
                     }
+                }
+            }
+            return sc;
+        }
+        public static SpriteController LoadSpriteController(ObjectPrototype op2, ResourceHeap FrameResources)
+        {
+            SpriteController sc = null;
+            Single frameTime = 1000.0f / Single.Parse(op2.Properties["frameRate"]);
+            foreach (ObjectPrototype op3 in op2.Subnodes)
+            {
+                switch (op3.Name.ToLower())
+                {
+                    case "defaultanimationsequence":
+                        {
+                            Texture2D defAnim = null;
+                            UInt16 frameAmount = 1;
+                            foreach (String opa in op3.Properties.Keys)
+                            {
+                                switch (opa)
+                                {
+                                    case "local":
+                                        defAnim = FrameResources.Textures[op3.Properties[opa]];
+                                        break;
+                                    case "global":
+                                        defAnim = FrameResources.Global.Textures[op3.Properties[opa]];
+                                        break;
+                                    case "frameAmount":
+                                        frameAmount = UInt16.Parse(op3.Properties[opa]);
+                                        break;
+                                }
+                            }
+                            if (defAnim == null)
+                            {
+                                throw new SerializationException("Unable to load animation sequence data for: default.");
+                            }
+                            sc = new SpriteController(frameTime, defAnim, frameAmount);
+                            break;
+                        }
+                    case "animation":
+                        {
+                            String ID = op3.Properties["id"];
+                            Texture2D Anim = null;
+                            UInt16 frameAmount = 1;
+                            foreach (String opa in op3.Properties.Keys)
+                            {
+                                switch (opa)
+                                {
+                                    case "local":
+                                        Anim = FrameResources.Textures[op3.Properties[opa]];
+                                        break;
+                                    case "global":
+                                        Anim = FrameResources.Global.Textures[op3.Properties[opa]];
+                                        break;
+                                    case "frameAmount":
+                                        frameAmount = UInt16.Parse(op3.Properties[opa]);
+                                        break;
+                                }
+                            }
+                            if (Anim == null)
+                            {
+                                throw new SerializationException("Unable to load animation sequence data for: default.");
+                            }
+                            sc.AddAnimationSequence(ID, Anim, frameAmount);
+                            break;
+                        }
                 }
             }
             return sc;
