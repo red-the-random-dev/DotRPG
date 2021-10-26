@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotRPG.Construct;
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
@@ -74,6 +75,22 @@ namespace DotRPG.Waypoints
                         break;
                     case "weld":
                         output[x.Attribute(XName.Get("first")).Value].SetNeighbor(output[x.Attribute(XName.Get("second")).Value]);
+                        break;
+                }
+            }
+        }
+        public static void LoadNavMap(ObjectPrototype root, Dictionary<String, Waypoint> output)
+        {
+            foreach (ObjectPrototype op in root.Subnodes)
+            {
+                switch (op.Name.ToLower())
+                {
+                    case "node":
+                        ResolveVector2(op.Properties["location"], out Single px, out Single py);
+                        output.Add(op.Properties["id"], new Waypoint(px, py));
+                        break;
+                    case "weld":
+                        output[op.Properties["first"]].SetNeighbor(output[op.Properties["second"]]);
                         break;
                 }
             }

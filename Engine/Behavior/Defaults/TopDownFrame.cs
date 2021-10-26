@@ -14,6 +14,7 @@ using DotRPG.Behavior.Routines;
 using Microsoft.Xna.Framework.Input;
 using DotRPG.Waypoints;
 using DotRPG.Behavior.Management;
+using DotRPG.Construct;
 
 namespace DotRPG.Behavior.Defaults
 {
@@ -31,7 +32,8 @@ namespace DotRPG.Behavior.Defaults
         public PlayerObject Player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
-        List<XElement> objectPrototypes = new List<XElement>();
+        List<ObjectPrototype> objectPrototypes = new List<ObjectPrototype>();
+        Dictionary<String, ObjectPrototype> prefabs = new Dictionary<string, ObjectPrototype>();
         List<IScriptModule> Scripts = new List<IScriptModule>();
         public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
         public Dictionary<String, Waypoint> NavMap { get; private set; }  = new Dictionary<string, Waypoint>();
@@ -117,8 +119,8 @@ namespace DotRPG.Behavior.Defaults
             Int32 x = objects;
             for (int i = objects; i < Math.Min(x + step, objectPrototypes.Count); i++)
             {
-                XElement xe = objectPrototypes[i];
-                LoadObject(xe);
+                ObjectPrototype op = objectPrototypes[i];
+                LoadObject(op);
                 objects = i+1;
             }
         }
@@ -236,41 +238,45 @@ namespace DotRPG.Behavior.Defaults
                     end_m: break;
             }
         }
-        void LoadObject(XElement xe)
+        void LoadObject(ObjectPrototype op)
         {
-            switch (xe.Name.LocalName.ToLower())
+            if (op.PrefabName != null)
+            {
+                op = ObjectPrototype.Forge(prefabs[op.PrefabName], op);
+            }
+            switch (op.Name.ToLower())
             {
                 case "player":
                     {
                         #region Parameters definition
-                        Point startPos = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("startPos")).Value).ToPoint();
-                        Point colliderSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("colliderSize")).Value).ToPoint();
-                        Point interactFieldSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("interactFieldSize")).Value).ToPoint();
-                        Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
+                        Point startPos = XMLSceneLoader.ResolveVector2(op.Properties["startPos"]).ToPoint();
+                        Point colliderSize = XMLSceneLoader.ResolveVector2(op.Properties["colliderSize"]).ToPoint();
+                        Point interactFieldSize = XMLSceneLoader.ResolveVector2(op.Properties["interactFieldSize"]).ToPoint();
+                        Single mass = Single.Parse(op.Properties["mass"]);
                         Player = new PlayerObject(startPos, colliderSize, mass, interactFieldSize);
                         String channel = "global";
                         #endregion
-                        foreach (XElement xe2 in xe.Elements())
+                        foreach (ObjectPrototype op2 in op.Subnodes)
                         {
-                            switch (xe2.Name.LocalName.ToLower())
+                            switch (op2.Name.ToLower())
                             {
                                 case "sprite":
-                                    Player.Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    Player.Sprite = XMLSceneLoader.LoadSpriteController(op2, FrameResources);
                                     break;
                                 case "colorchannel":
-                                    channel = xe2.Attribute(XName.Get("channel")).Value;
+                                    channel = op2.Properties["channel"];
                                     break;
                                 case "motion":
-                                    Player.Motion.MovementSpeed = Single.Parse(xe2.Attribute(XName.Get("movementSpeed")).Value);
-                                    foreach (XElement xe3 in xe2.Elements())
+                                    Player.Motion.MovementSpeed = Single.Parse(op2.Properties["movementSpeed"]);
+                                    foreach (ObjectPrototype op3 in op2.Subnodes)
                                     {
-                                        switch (xe3.Name.LocalName.ToLower())
+                                        switch (op3.Name.ToLower())
                                         {
                                             case "idleanimation":
-                                                Player.Motion.IdleAnimation = xe3.Attribute(XName.Get("id")).Value;
+                                                Player.Motion.IdleAnimation = op3.Properties["id"];
                                                 break;
                                             case "walkinganimation":
-                                                Player.Motion.WalkingAnimation = xe3.Attribute(XName.Get("id")).Value;
+                                                Player.Motion.WalkingAnimation = op3.Properties["id"];
                                                 break;
                                         }
                                     }
@@ -284,34 +290,34 @@ namespace DotRPG.Behavior.Defaults
                 case "prop":
                     {
                         #region Parameters definition
-                        String ID = xe.Attribute(XName.Get("id")).Value;
-                        Point startPos = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("startPos")).Value).ToPoint();
-                        Point colliderSize = XMLSceneLoader.ResolveVector2(xe.Attribute(XName.Get("colliderSize")).Value).ToPoint();
-                        Boolean isStatic = Boolean.Parse(xe.Attribute(XName.Get("static")).Value);
-                        Single mass = Single.Parse(xe.Attribute(XName.Get("mass")).Value);
+                        String ID = op.Properties["id"];
+                        Point startPos = XMLSceneLoader.ResolveVector2(op.Properties["startPos"]).ToPoint();
+                        Point colliderSize = XMLSceneLoader.ResolveVector2(op.Properties["colliderSize"]).ToPoint();
+                        Boolean isStatic = Boolean.Parse(op.Properties["static"]);
+                        Single mass = Single.Parse(op.Properties["mass"]);
                         String channel = "global";
                         #endregion
                         Props.Add(ID, new DynamicRectObject(startPos, colliderSize, mass, isStatic));
-                        foreach (XElement xe2 in xe.Elements())
+                        foreach (ObjectPrototype op2 in op.Subnodes)
                         {
-                            switch (xe2.Name.LocalName.ToLower())
+                            switch (op2.Name.ToLower())
                             {
                                 case "sprite":
-                                    Props[ID].Sprite = XMLSceneLoader.LoadSpriteController(xe2, FrameResources);
+                                    Props[ID].Sprite = XMLSceneLoader.LoadSpriteController(op2, FrameResources);
                                     break;
                                 case "colorchannel":
-                                    channel = xe2.Attribute(XName.Get("channel")).Value;
+                                    channel = op2.Properties["channel"];
                                     break;
                                 case "interactable":
-                                    Interactable.Add(xe2.Attribute(XName.Get("interactAction")).Value, Props[ID]);
+                                    Interactable.Add(op2.Properties["interactAction"], Props[ID]);
                                     break;
                                 case "ignorecollisions":
                                     Props[ID].Collidable = false;
                                     break;
                                 case "objectscript":
                                 {
-                                    String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe2.Attribute(XName.Get("location")).Value));
-                                    LuaModule lm = new LuaModule(scriptContent, xe2.Attribute(XName.Get("location")).Value+":"+ID);
+                                    String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, op2.Properties["location"]));
+                                    LuaModule lm = new LuaModule(scriptContent, op2.Properties["location"]+":"+ID);
                                     lm.Runtime["this"] = ID;
                                     Scripts.Add(lm);
                                     break;
@@ -323,19 +329,19 @@ namespace DotRPG.Behavior.Defaults
                     }
                 case "colorchannel":
                     {
-                        String ID = xe.Attribute(XName.Get("id")).Value;
-                        Vector4 color = XMLSceneLoader.ResolveColorVector4(xe.Attribute(XName.Get("color")).Value);
+                        String ID = op.Properties["id"];
+                        Vector4 color = XMLSceneLoader.ResolveColorVector4(op.Properties["color"]);
                         Palette.SetColor(ID, color);
-                        if (xe.Attribute(XName.Get("mixWithGlobal")) != null)
+                        if (op.Properties.ContainsKey("mixWithGlobal"))
                         {
-                            Palette.SetMixWithGlobal(ID, bool.Parse(xe.Attribute(XName.Get("mixWithGlobal")).Value));
+                            Palette.SetMixWithGlobal(ID, bool.Parse(op.Properties["mixWithGlobal"]));
                         }
                         break;
                     }
                 case "script":
                     {
-                        String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value));
-                        Scripts.Add(new LuaModule(scriptContent, xe.Attribute(XName.Get("location")).Value));
+                        String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, op.Properties["location"]));
+                        Scripts.Add(new LuaModule(scriptContent, op.Properties["location"]));
                         break;
                     }
                 case "csiscript":
@@ -358,25 +364,25 @@ namespace DotRPG.Behavior.Defaults
                     }
                 case "prebuiltscript":
                     {
-                        Scripts.Add(ClassBuilder.GetPrebuiltScript(xe.Attribute(XName.Get("name")).Value));
+                        Scripts.Add(ClassBuilder.GetPrebuiltScript(op.Properties["name"]));
                         break;
                     }
                 case "backdrop":
                     {
                         Texture2D t = null;
                         Vector2 p = Vector2.Zero;
-                        foreach (XAttribute xa in xe.Attributes())
+                        foreach (String opa in op.Properties.Keys)
                         {
-                            switch (xa.Name.LocalName)
+                            switch (opa)
                             {
                                 case "local":
-                                    t = FrameResources.Textures[xa.Value];
+                                    t = FrameResources.Textures[op.Properties[opa]];
                                     break;
                                 case "global":
-                                    t = FrameResources.Global.Textures[xa.Value];
+                                    t = FrameResources.Global.Textures[op.Properties[opa]];
                                     break;
                                 case "offset":
-                                    p = XMLSceneLoader.ResolveVector2(xa.Value);
+                                    p = XMLSceneLoader.ResolveVector2(op.Properties[opa]);
                                     break;
                             }
                         }
@@ -388,15 +394,15 @@ namespace DotRPG.Behavior.Defaults
                     }
                 case "ruleset":
                     {
-                        foreach (XAttribute xa in xe.Attributes())
+                        foreach (String opa in op.Properties.Keys)
                         {
-                            switch (xa.Name.LocalName)
+                            switch (opa)
                             {
                                 case "allowManualZoom":
-                                    AllowManualZoom = Boolean.Parse(xa.Value);
+                                    AllowManualZoom = Boolean.Parse(op.Properties[opa]);
                                     break;
                                 case "suppressScriptExceptions":
-                                    SuppressScriptExceptions = Boolean.Parse(xa.Value);
+                                    SuppressScriptExceptions = Boolean.Parse(op.Properties[opa]);
                                     break;
                             }
                         }
@@ -405,7 +411,7 @@ namespace DotRPG.Behavior.Defaults
                     }
                 case "navmesh":
                     {
-                        WaypointGraph.LoadNavMapFromXML(xe, NavMap);
+                        WaypointGraph.LoadNavMap(op, NavMap);
                         break;
                     }
             }
@@ -417,9 +423,9 @@ namespace DotRPG.Behavior.Defaults
             {
                 LoadResource(rlt);
             }
-            foreach (XElement xe in objectPrototypes)
+            foreach (ObjectPrototype op in objectPrototypes)
             {
-                LoadObject(xe);
+                LoadObject(op);
             }
             PostLoadTask();
             objects = objectPrototypes.Count;
@@ -448,22 +454,14 @@ namespace DotRPG.Behavior.Defaults
                             break;
                         }
                     default:
-                        XElement x = xe;
+                        ObjectPrototype x = ObjectPrototype.FromXML(xe);
                         foreach (XAttribute xa in xe.Attributes())
                         {
                             if (xa.Name.LocalName.ToString() == "_usePrefab")
                             {
                                 String loadPath = Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xa.Value.ToString()));
-                                x = XMLSceneLoader.GetObjectPrototype(xe.Name.LocalName, loadPath, resourceLoad);
-                                // Override prefab's attributes with specified attributes' values
-                                foreach (XAttribute xx in xe.Attributes())
-                                {
-                                    x.SetAttributeValue(xx.Name, xx.Value);
-                                }
-                                foreach (XElement xx in xe.Elements())
-                                {
-                                    x.Add(xx);
-                                }
+                                XMLSceneLoader.GetPrefab(xe.Name.LocalName, loadPath, prefabs, out String newID, resourceLoad);
+                                x.PrefabName = newID;
                                 break;
                             }
                         }

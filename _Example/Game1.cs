@@ -115,7 +115,7 @@ namespace DotRPG._Example
                 Frames.Add(f);
                 f.Initialize();
             }
-            
+            GC.Collect();
             base.Initialize();
         }
 
