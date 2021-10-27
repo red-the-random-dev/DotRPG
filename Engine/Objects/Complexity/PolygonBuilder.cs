@@ -7,17 +7,19 @@ namespace DotRPG.Objects.Complexity
 {
     public static class PolygonBuilder
     {
-        public static Polygon ToPolygon(Rectangle rect, Vector2 colliderOrigin)
+        public static Polygon BuildFromRect(Rectangle rect, Vector2 colliderOrigin)
         {
-            Point[] points = new Point[4];
-            points[0] = new Point(rect.X, rect.Y);
-            points[1] = new Point(rect.X + rect.Width, rect.Y);
-            points[2] = new Point(rect.X + rect.Width, rect.Y + rect.Height);
-            points[3] = new Point(rect.X, rect.Y + rect.Height);
+            Vector2[] points = new Vector2[4];
+            points[0] = new Vector2(rect.X, rect.Y);
+            points[1] = new Vector2(rect.X + rect.Width, rect.Y);
+            points[2] = new Vector2(rect.X + rect.Width, rect.Y + rect.Height);
+            points[3] = new Vector2(rect.X, rect.Y + rect.Height);
             Vector2 MassCenter = new Vector2(rect.X + (rect.Width * colliderOrigin.X), rect.Y + (rect.Height * colliderOrigin.Y));
-            Polygon p = new Polygon();
-            p.Perimeter = points;
-            p.MassCenter = MassCenter.ToPoint();
+            Polygon p = new Polygon
+            {
+                Vertices = points,
+                MassCenter = MassCenter
+            };
             return p;
         }
     }

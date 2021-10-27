@@ -29,7 +29,6 @@ namespace DotRPG.UI
             }
         }
         public SpriteFont Font;
-        public Single Rotation;
         public Single ScrollDelay;
         protected Double ScrollTimer;
         protected Int32 DrawnText;
