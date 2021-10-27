@@ -113,11 +113,11 @@ namespace DotRPG.Objects.Dynamics
             LineFragment[] inter = Polygon.FindEdges(c);
             LineFragment interEdge = inter[0];
             Vector2 center = Polygon.FindActualCenter(v1);
-            Single maxDist = 0;
+            Single maxDist = Single.PositiveInfinity;
             foreach (LineFragment i in inter)
             {
                 Single a = i.FullLine.GetDistanceTo(center);
-                if (a > maxDist)
+                if (a < maxDist)
                 {
                     maxDist = a;
                     interEdge = i;
@@ -141,15 +141,16 @@ namespace DotRPG.Objects.Dynamics
             {
                 Vector2 eviction = SharedVectorMethods.ToLengthAngle(one.Location - two.Location);
                 eviction = new Vector2(Polygon.FindMedianRadius(v1_new)+Polygon.FindMedianRadius(v2_new), eviction.Y);
-                one.Location += SharedVectorMethods.FromLengthAngle(eviction);
+                one.Location -= SharedVectorMethods.FromLengthAngle(eviction);
             }
         }
 
         protected void CollideWith(DynamicObject another, Vector2[] v1, Vector2[] v2, Vector2[] c, LineFragment[] e1, LineFragment[] e2)
         {
+            Shift(this, another, v1, v2, c, e1, e2);
             if (another.Static)
             {
-                Shift(this, another, v1, v2, c, e1, e2);
+                FullStop();
                 return;
             }
             Single Summary_X_Momentum = (this.Momentum.X + another.Momentum.X) / 2;
@@ -157,7 +158,6 @@ namespace DotRPG.Objects.Dynamics
 
             Velocity = new Vector2(Summary_X_Momentum / this.Mass, Summary_Y_Momentum / this.Mass);
             another.Velocity = new Vector2(Summary_X_Momentum / another.Mass, Summary_Y_Momentum / another.Mass);
-            Shift(this, another, v1, v2, c, e1, e2);
         }
 
         public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Single ZIndex = 0.0f)

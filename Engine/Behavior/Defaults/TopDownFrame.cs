@@ -620,6 +620,10 @@ namespace DotRPG.Behavior.Defaults
             Locomotion /= (Locomotion.Length() != 0 ? Locomotion.Length() : 1.0f);
             Locomotion *= Player.Motion.MovementSpeed;
             Player.Velocity = Locomotion;
+            if (Locomotion.Length() == 0.0f)
+            {
+                Player.AppliedForce += Player.Velocity * -Player.Motion.MovementSpeed;
+            }
             Player.Update(gameTime);
             foreach (String i in Props.Keys)
             {
@@ -695,7 +699,11 @@ namespace DotRPG.Behavior.Defaults
 #if DEBUG
                 if (showHitboxes)
                 {
-                    spriteBatch.Draw(t2d, Props[i].SquareForm, Interactable.ContainsValue(Props[i]) ? Color.Yellow : Color.Red);
+                    Vector2[] ppts = Props[i].Collider.TurnedVertices;
+                    foreach (Vector2 pt in ppts)
+                    {
+                        spriteBatch.Draw(t2d, new Rectangle((int)pt.X, (int)pt.Y, 4, 4), Interactable.ContainsValue(Props[i]) ? Color.Yellow : Color.Red);
+                    }
                 }
 #endif
             }
@@ -704,7 +712,12 @@ namespace DotRPG.Behavior.Defaults
 #if DEBUG
             if (showHitboxes)
             {
-                spriteBatch.Draw(t2d, Player.SquareForm, Color.Green);
+                Vector2[] ppts = Player.Collider.TurnedVertices;
+                foreach (Vector2 pt in ppts)
+                {
+                    spriteBatch.Draw(t2d, new Rectangle((int)pt.X, (int)pt.Y, 4, 4), Color.Green);
+                }
+                
                 spriteBatch.Draw(t2d, Player.SightArea, new Color(0, 255, 0, 128));
             }
             spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], DebugText, new Vector2(0, 36), Color.Yellow);
