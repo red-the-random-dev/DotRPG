@@ -66,6 +66,7 @@ namespace DotRPG.Behavior.Defaults
                 LastError = "";
                 LastErrorDetails = null;
             }
+#if !DEBUG
             catch (Exception e)
             {
                 LastError = e.Message;
@@ -75,6 +76,12 @@ namespace DotRPG.Behavior.Defaults
                     throw e;
                 }
             }
+#else
+            finally
+            {
+
+            }
+#endif
         }
 
         public override void Start()

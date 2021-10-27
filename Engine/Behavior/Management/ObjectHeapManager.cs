@@ -3,11 +3,29 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DotRPG.Construct;
+using PREFAB_SET = System.Collections.Generic.Dictionary<System.String, DotRPG.Construct.ObjectPrototype>;
 
 namespace DotRPG.Behavior.Management
 {
+    public delegate void DeploymentMethod(ObjectPrototype op);
+    public delegate void FinalizationMethod(String name);
+
     public class ObjectHeapManager
     {
+        protected DeploymentMethod DeployObj;
+        protected FinalizationMethod DeleteObj;
+        protected PREFAB_SET StaticPrefabs;
+        protected PREFAB_SET DynamicPrefabs = new PREFAB_SET();
+
+        public ObjectHeapManager(Dictionary<String, DynamicRectObject> objects, PREFAB_SET staticPrefabs, DeploymentMethod dm, FinalizationMethod fm)
+        {
+            ObjectHeap = objects;
+            StaticPrefabs = staticPrefabs;
+            DeployObj = dm;
+            DeleteObj = fm;
+        }
+
         protected Single VectorAngleCosine(Vector2 _1, Vector2 _2)
         {
             return (_1.X * _2.X + _1.Y * _2.Y) / (_1.Length() * _2.Length());
@@ -73,11 +91,6 @@ namespace DotRPG.Behavior.Management
         public Single Pos_Y(String name)
         {
             return ObjectHeap[name].Location.Y;
-        }
-
-        public ObjectHeapManager(Dictionary<String, DynamicRectObject> objects)
-        {
-            ObjectHeap = objects;
         }
 
         public Single GetSoundPanning(String target)
@@ -244,6 +257,84 @@ namespace DotRPG.Behavior.Management
         public String GetPlayerSightDirection()
         {
             return Player.SightDirection.ToString().ToLower();
+        }
+
+        public void Prefab_CreateNew(String Name, String Tag)
+        {
+            ObjectPrototype op = new ObjectPrototype();
+            op.Name = Tag;
+            DynamicPrefabs.Add(Name, op);
+        }
+        public void Prefab_CreateFromStatic(String Name, String StaticName)
+        {
+            DynamicPrefabs.Add(Name, ObjectPrototype.CreateCopy(StaticPrefabs[StaticName]));
+        }
+        public void Prefab_CreateCopy(String Name, String Original)
+        {
+            DynamicPrefabs.Add(Name, ObjectPrototype.CreateCopy(DynamicPrefabs[Original]));
+        }
+        public void Prefab_Dispose(String Name)
+        {
+            if (DynamicPrefabs.ContainsKey(Name))
+            {
+                DynamicPrefabs.Remove(Name);
+            }
+        }
+        public void Prefab_SetProperty(String Name, String Property, String Value)
+        {
+            if (DynamicPrefabs.TryGetValue(Name, out ObjectPrototype op))
+            {
+                if (op.Properties.ContainsKey(Property))
+                {
+                    op.Properties[Property] = Value;
+                }
+                else
+                {
+                    op.Properties.Add(Property, Value);
+                }
+            }
+        }
+        public void Prefab_AddSubnode(String Name, String Subnode)
+        {
+            if (DynamicPrefabs.TryGetValue(Name, out ObjectPrototype op))
+            {
+                if (DynamicPrefabs.TryGetValue(Subnode, out ObjectPrototype op2))
+                {
+                    op.Subnodes.Add(ObjectPrototype.CreateCopy(op2));
+                }
+            }
+        }
+        public String Prefab_DeployUnderRandomName(String Name)
+        {
+            Random r = new Random();
+            String a = "";
+            while (a == "" || ObjectHeap.ContainsKey(a))
+            {
+                a = r.Next(0, Int32.MaxValue).ToString();
+            }
+            ObjectPrototype op = ObjectPrototype.CreateCopy(DynamicPrefabs[Name]);
+            if (op.Properties.ContainsKey("id"))
+            {
+                op.Properties["id"] = a;
+            }
+            else
+            {
+                op.Properties.Add("id", a);
+            }
+            DeployObj(op);
+            return a;
+        }
+        public void DestroyObject(String name)
+        {
+            DeleteObj(name);
+        }
+        public Boolean Exists(String name)
+        {
+            return ObjectHeap.ContainsKey(name);
+        }
+        public void Prefab_Reset()
+        {
+            DynamicPrefabs.Clear();
         }
     }
 }
