@@ -1,4 +1,5 @@
 ﻿using System;
+using DotRPG.Algebra;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,16 +26,16 @@ namespace DotRPG.UI
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 positionOverride, Single turn = 0)
         {
             Single sizeMorph = 1.0f * drawArea.Height / DefaultDrawAreaHeight;
-            drawArea = SharedGraphicsMethods.ApplyPadding(drawArea, ElementPadding, sizeMorph);
+            drawArea = SharedVectorMethods.ApplyPadding(drawArea, ElementPadding, sizeMorph);
             DrawElement(gameTime, spriteBatch, drawArea, positionOverride, turn);
-            Rectangle newDrawRect = SharedGraphicsMethods.ApplyPadding(SharedGraphicsMethods.FindEmbedDrawArea(drawArea, RelativePosition, RelativeSize), SubnodePadding, sizeMorph);
+            Rectangle newDrawRect = SharedVectorMethods.ApplyPadding(SharedVectorMethods.FindEmbedDrawArea(drawArea, RelativePosition, RelativeSize), SubnodePadding, sizeMorph);
 
             foreach (UserInterfaceElement ui in Subnodes)
             {
                 Vector2 ogPos = ui.RelativePosition - RotationOrigin;
-                Vector2 pos = SharedGraphicsMethods.ToLengthAngle(ogPos);
+                Vector2 pos = SharedVectorMethods.ToLengthAngle(ogPos);
                 pos = new Vector2(pos.X, pos.Y + Rotation + turn);
-                pos = SharedGraphicsMethods.FromLengthAngle(pos);
+                pos = SharedVectorMethods.FromLengthAngle(pos);
                 Single newAngle = turn + Rotation;
                 // Doing some fucking vector magic over here
                 pos -= (pos * (Single)((RelativeSize.Y / RelativeSize.X) * Math.Abs(Math.Sin(newAngle))));

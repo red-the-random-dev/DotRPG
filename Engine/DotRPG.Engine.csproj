@@ -19,7 +19,7 @@
     <Compile Remove="Behavior\Routines\bin\**" />
     <Compile Remove="Behavior\Routines\obj\**" />
     <Compile Remove="Objects\bin\**" />
-    <Compile Remove="Objects\Complexity\**" />
+    <Compile Remove="Objects\Complexity\obj\**" />
     <Compile Remove="Objects\Dynamics\bin\**" />
     <Compile Remove="Objects\Dynamics\obj\**" />
     <Compile Remove="Objects\obj\**" />
@@ -39,7 +39,7 @@
     <EmbeddedResource Remove="Behavior\Routines\bin\**" />
     <EmbeddedResource Remove="Behavior\Routines\obj\**" />
     <EmbeddedResource Remove="Objects\bin\**" />
-    <EmbeddedResource Remove="Objects\Complexity\**" />
+    <EmbeddedResource Remove="Objects\Complexity\obj\**" />
     <EmbeddedResource Remove="Objects\Dynamics\bin\**" />
     <EmbeddedResource Remove="Objects\Dynamics\obj\**" />
     <EmbeddedResource Remove="Objects\obj\**" />
@@ -59,7 +59,7 @@
     <None Remove="Behavior\Routines\bin\**" />
     <None Remove="Behavior\Routines\obj\**" />
     <None Remove="Objects\bin\**" />
-    <None Remove="Objects\Complexity\**" />
+    <None Remove="Objects\Complexity\obj\**" />
     <None Remove="Objects\Dynamics\bin\**" />
     <None Remove="Objects\Dynamics\obj\**" />
     <None Remove="Objects\obj\**" />
@@ -71,6 +71,10 @@
     <None Remove="Waypoints\obj\**" />
     <None Remove="Waypoint\obj\**" />
     <None Remove="_Example\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Objects\Skeleton.cs" />
   </ItemGroup>
 
   <ItemGroup>

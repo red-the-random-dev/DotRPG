@@ -12,17 +12,21 @@ namespace DotRPG.Objects.Dynamics
         public Vector2 Location;
         public Point BodySize;
         public SpriteController Sprite;
+        public Single Rotation;
         public Boolean Collidable = true;
         public Boolean Active = true;
         public Boolean Visible = true;
+        public Vector2 ColliderOrigin = new Vector2(0.5f, 0.5f);
+        public Vector2 SpriteOffset = Vector2.Zero;
+        public Vector2 SpriteOrigin = new Vector2(0.5f, 0.5f);
         public Rectangle Collider
         {
             get
             {
                 return new Rectangle
                 (
-                    (int)Location.X - BodySize.X / 2,
-                    (int)Location.Y - BodySize.Y / 2,
+                    (int)(Location.X - BodySize.X * ColliderOrigin.X),
+                    (int)(Location.Y - BodySize.Y * ColliderOrigin.Y),
                     BodySize.X,
                     BodySize.Y
                 );

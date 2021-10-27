@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DotRPG.Algebra;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
@@ -23,7 +24,7 @@ namespace DotRPG.UI
             }
             set
             {
-                RotationOrigin = SharedGraphicsMethods.FindRelativeOrigin(value);
+                RotationOrigin = SharedVectorMethods.FindRelativeOrigin(value);
                 anc = value;
             }
         }
