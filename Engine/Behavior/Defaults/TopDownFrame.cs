@@ -35,6 +35,7 @@ namespace DotRPG.Behavior.Defaults
         List<ObjectPrototype> objectPrototypes = new List<ObjectPrototype>();
         Dictionary<String, ObjectPrototype> prefabs = new Dictionary<string, ObjectPrototype>();
         List<IScriptModule> Scripts = new List<IScriptModule>();
+        Dictionary<String, List<IScriptModule>> ObjectBoundScripts = new Dictionary<String, List<IScriptModule>>();
         public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
         public Dictionary<String, Waypoint> NavMap { get; private set; } = new Dictionary<string, Waypoint>();
 
@@ -46,6 +47,7 @@ namespace DotRPG.Behavior.Defaults
 
         Boolean AllowManualZoom = false;
         Boolean SuppressScriptExceptions = false;
+        Boolean Running = false;
 
         #region ILoadable implementation
         Int32 content = 0;
@@ -96,6 +98,20 @@ namespace DotRPG.Behavior.Defaults
             }
         }
 
+        protected void FinalizeObject(String name)
+        {
+            ObjectBoundScripts[name].Clear();
+            ObjectBoundScripts.Remove(name);
+            if (Interactable.ContainsKey(name))
+            {
+                Interactable.Remove(name);
+            }
+            if (Palette.ObjectColors.ContainsKey(name))
+            {
+                Palette.ObjectColors.Remove(name);
+            }
+            Props.Remove(name);
+        }
         public void PerformContentTask()
         {
             PerformContentTasks(1);
@@ -139,26 +155,14 @@ namespace DotRPG.Behavior.Defaults
             Pathfinder = new PathfindingManager(NavMap, Props, Player);
             foreach (IScriptModule x in Scripts)
             {
-                x.AddData("obj", ObjectManager);
-                x.AddData("camera", CameraManager);
-                x.AddData("audio", Audio);
-                x.AddData("timer", EventTimer);
-                x.AddData("palette", Palette);
-                x.AddData("navmap", Pathfinder);
-                x.SuppressExceptions = SuppressScriptExceptions;
-                if (x is TopDownFrameScript)
+                StartScript(x);
+            }
+            foreach (List<IScriptModule> scripts in ObjectBoundScripts.Values)
+            {
+                foreach (IScriptModule x in scripts)
                 {
-                    TopDownFrameScript a = x as TopDownFrameScript;
-                    if (a.RequireRawSceneData)
-                    {
-                        a.AddData("scene", this);
-                    }
-                    if (a.RequireResourceHeap)
-                    {
-                        a.AddData("resources", FrameResources);
-                    }
+                    StartScript(x);
                 }
-                x.Start();
             }
             loaded = true;
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
@@ -238,6 +242,29 @@ namespace DotRPG.Behavior.Defaults
                 end_m: break;
             }
         }
+        protected void StartScript(IScriptModule x)
+        {
+            x.AddData("obj", ObjectManager);
+            x.AddData("camera", CameraManager);
+            x.AddData("audio", Audio);
+            x.AddData("timer", EventTimer);
+            x.AddData("palette", Palette);
+            x.AddData("navmap", Pathfinder);
+            x.SuppressExceptions = SuppressScriptExceptions;
+            if (x is TopDownFrameScript)
+            {
+                TopDownFrameScript a = x as TopDownFrameScript;
+                if (a.RequireRawSceneData)
+                {
+                    a.AddData("scene", this);
+                }
+                if (a.RequireResourceHeap)
+                {
+                    a.AddData("resources", FrameResources);
+                }
+            }
+            x.Start();
+        }
         protected void LoadObject(ObjectPrototype op)
         {
             if (op.PrefabName != null)
@@ -298,6 +325,7 @@ namespace DotRPG.Behavior.Defaults
                         String channel = "global";
                         #endregion
                         Props.Add(ID, new DynamicRectObject(startPos, colliderSize, mass, isStatic));
+                        ObjectBoundScripts.Add(ID, new List<IScriptModule>());
                         foreach (ObjectPrototype op2 in op.Subnodes)
                         {
                             switch (op2.Name.ToLower())
@@ -319,7 +347,11 @@ namespace DotRPG.Behavior.Defaults
                                         String scriptContent = File.ReadAllText(Path.Combine(Owner.Content.RootDirectory, op2.Properties["location"]));
                                         LuaModule lm = new LuaModule(scriptContent, op2.Properties["location"] + ":" + ID);
                                         lm.Runtime["this"] = ID;
-                                        Scripts.Add(lm);
+                                        ObjectBoundScripts[ID].Add(lm);
+                                        if (Running)
+                                        {
+                                            StartScript(lm);
+                                        }
                                         break;
                                     }
                             }
@@ -515,7 +547,7 @@ namespace DotRPG.Behavior.Defaults
         public TopDownFrame(Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
         {
             CameraManager = new CameraManager(Camera, Props);
-            ObjectManager = new ObjectHeapManager(Props);
+            ObjectManager = new ObjectHeapManager(Props, prefabs, LoadObject, FinalizeObject);
             Audio = new SoundManager(FrameResources);
             EventTimer = new ScriptEventManager(Execute);
         }
@@ -526,10 +558,22 @@ namespace DotRPG.Behavior.Defaults
             {
                 lm.Update(e, (Single)g.ElapsedGameTime.TotalMilliseconds, (Single)g.TotalGameTime.TotalMilliseconds);
             }
+            foreach (String ism in ObjectBoundScripts.Keys)
+            {
+                foreach (IScriptModule lm in ObjectBoundScripts[ism].ToArray())
+                {
+                    lm.Update(e, (Single)g.ElapsedGameTime.TotalMilliseconds, (Single)g.TotalGameTime.TotalMilliseconds);
+                    if (!ObjectManager.Exists(ism))
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
         public override void Update(GameTime gameTime, bool[] controls)
         {
+            Running = true;
             Single loco_x = 0.0f; Single loco_y = 0.0f;
             if (Player.Controlled)
             {
@@ -608,10 +652,7 @@ namespace DotRPG.Behavior.Defaults
             Camera.OffsetTarget = CameraManager.Offset;
             Camera.Update(gameTime);
             EventTimer.Update(gameTime);
-            foreach (IScriptModule x in Scripts)
-            {
-                x.Update("default", (Single)gameTime.ElapsedGameTime.TotalMilliseconds, (Single)gameTime.TotalGameTime.TotalMilliseconds);
-            }
+            Execute(this, "default", gameTime);
             if (AllowManualZoom)
             {
                 Int32 mwheel = Mouse.GetState().ScrollWheelValue - LastMWheelValue;
@@ -626,6 +667,7 @@ namespace DotRPG.Behavior.Defaults
             {
                 LastInput[i] = controls[i];
             }
+            Running = false;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
@@ -677,14 +719,18 @@ namespace DotRPG.Behavior.Defaults
 
         public override void UnloadContent()
         {
+            foreach (String x in Props.Keys)
+            {
+                FinalizeObject(x);
+            }
             Palette.Dispose();
+            ObjectManager.Prefab_Reset();
             Palette = null;
             NavMap.Clear();
             Pathfinder = null;
             showHitboxes = false;
             Audio.Dispose();
             FrameResources.Dispose();
-            Props.Clear();
             Interactable.Clear();
             CameraManager.Player = null;
             AllowManualZoom = false;

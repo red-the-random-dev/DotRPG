@@ -14,7 +14,15 @@ namespace DotRPG._Example
 
         public override void Start()
         {
-            // Palette.SetMixWithGlobal("treecolor", false);
+            ObjectHeap.Prefab_CreateFromStatic("whiterectbullet", "whiterect");
+            ObjectHeap.Prefab_CreateNew("bulletscript", "ObjectScript");
+            ObjectHeap.Prefab_CreateNew("empty", "IgnoreCollisions");
+            ObjectHeap.Prefab_SetProperty("bulletscript", "location", "Scripts/bullet.lua");
+            ObjectHeap.Prefab_AddSubnode("whiterectbullet", "bulletscript");
+            ObjectHeap.Prefab_AddSubnode("whiterectbullet", "empty");
+            // ObjectHeap.Prefab_Dispose("bulletscript");
+            // ObjectHeap.Prefab_Dispose("empty");
+            ObjectHeap.Prefab_SetProperty("whiterectbullet", "startPos", "128,160");
         }
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
@@ -23,8 +31,13 @@ namespace DotRPG._Example
                 case "default":
                     Pathfinder.BuildPath("whiterectchase", Pathfinder.GetClosestWaypointToObject("whiterect2"), Pathfinder.GetClosestWaypointToPlayer());
                     Pathfinder.ForceMoveObjectByPath("whiterect2", "whiterectchase", 256, 16);
-                    if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
-                        Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
+                    if (ObjectHeap.Exists("tree"))
+                    {
+                        if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
+                            Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
+                        else
+                            ObjectHeap.Prefab_DeployUnderRandomName("whiterectbullet");
+                    }
                     PunchCount -= ElapsedGameTime;
                     if (PunchCount < 0.0f)
                     {
@@ -54,7 +67,7 @@ namespace DotRPG._Example
                     Events.Enqueue(TotalGameTime, 666.0f, "treeouch");
                     break;
                 case "treegone":
-                    ObjectHeap.SetActive("tree", false);
+                    ObjectHeap.DestroyObject("tree");
                     ObjectHeap.EnablePlayerControls();
                     break;
                 case "set_r":

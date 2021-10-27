@@ -45,6 +45,9 @@
 #begin Prefabs/whiterect.xml
 /copy:Prefabs/whiterect.xml
 
+#begin Scripts/bullet.lua
+/copy:Scripts/bullet.lua
+
 #begin Scripts/kickable.lua
 /copy:Scripts/kickable.lua
 
