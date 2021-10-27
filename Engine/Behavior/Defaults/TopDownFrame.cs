@@ -192,7 +192,7 @@ namespace DotRPG.Behavior.Defaults
             }
         }
         #region Loader
-        void LoadResource(ResourceLoadTask rlt)
+        protected void LoadResource(ResourceLoadTask rlt)
         {
             switch (rlt.Resource)
             {
@@ -238,7 +238,7 @@ namespace DotRPG.Behavior.Defaults
                 end_m: break;
             }
         }
-        void LoadObject(ObjectPrototype op)
+        protected void LoadObject(ObjectPrototype op)
         {
             if (op.PrefabName != null)
             {
