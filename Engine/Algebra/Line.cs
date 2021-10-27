@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace DotRPG.Algebra
 {
-    public class LinearEquation
+    public class Line
     {
         public readonly Single Tangent;
         public readonly Single Offset;
@@ -21,7 +21,7 @@ namespace DotRPG.Algebra
             }
         }
 
-        public LinearEquation(Vector2 P1, Vector2 P2)
+        public Line(Vector2 P1, Vector2 P2)
         {
             if (P1.X == P2.X)
             {
@@ -38,8 +38,15 @@ namespace DotRPG.Algebra
                 HorizontalOffset = 0.0f;
             }
         }
+        public Line(Single k, Single b)
+        {
+            IsVertical = false;
+            HorizontalOffset = 0.0f;
+            Tangent = k;
+            Offset = b;
+        }
 
-        public Boolean Intersects(Point p)
+        public Boolean Intersects(Vector2 p)
         {
             if (IsVertical)
             {
@@ -48,7 +55,7 @@ namespace DotRPG.Algebra
             return this[p.X] == p.Y;
         }
 
-        public Boolean Intersects(LinearEquation other, out Vector2 intPoint)
+        public Boolean Intersects(Line other, out Vector2 intPoint)
         {
             intPoint = Vector2.Zero;
             if (this.Tangent == other.Tangent || this.IsVertical && other.IsVertical)
@@ -70,6 +77,25 @@ namespace DotRPG.Algebra
                 Single x = (other.Offset - Offset) / (Tangent - other.Tangent);
                 intPoint = new Vector2(x, this[x]);
                 return true;
+            }
+        }
+        public Vector2 GetPointProjection(Vector2 p)
+        {
+            if (Tangent == 0 && !IsVertical)
+            {
+                return new Vector2(p.X, Offset);
+            }
+            else if (IsVertical)
+            {
+                return new Vector2(HorizontalOffset, p.Y);
+            }
+            else
+            {
+                Single newTangent = -1 / Tangent;
+                Single newOffset = p.Y - (p.X * newTangent);
+                Line s = new Line(newTangent, newOffset);
+                Intersects(s, out Vector2 np);
+                return np;
             }
         }
     }
