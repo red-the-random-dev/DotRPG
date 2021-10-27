@@ -3,14 +3,24 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DotRPG.Objects;
+using DotRPG.Objects.Complexity;
 
 namespace DotRPG.Objects.Dynamics
 {
     public class DynamicRectObject
     {
         public Boolean Static;
-        public Vector2 Location;
-        public Point BodySize;
+        public Vector2 Location
+        {
+            get
+            {
+                return Collider.Location;
+            }
+            set
+            {
+                Collider.Location = value;
+            }
+        }
         public SpriteController Sprite;
         public Single Rotation;
         public Boolean Collidable = true;
@@ -19,19 +29,7 @@ namespace DotRPG.Objects.Dynamics
         public Vector2 ColliderOrigin = new Vector2(0.5f, 0.5f);
         public Vector2 SpriteOffset = Vector2.Zero;
         public Vector2 SpriteOrigin = new Vector2(0.5f, 0.5f);
-        public Rectangle Collider
-        {
-            get
-            {
-                return new Rectangle
-                (
-                    (int)(Location.X - BodySize.X * ColliderOrigin.X),
-                    (int)(Location.Y - BodySize.Y * ColliderOrigin.Y),
-                    BodySize.X,
-                    BodySize.Y
-                );
-            }
-        }
+        public Polygon Collider;
         /// <summary>
         /// Vector value which describes how much body will travel (pts/s)
         /// </summary>
@@ -56,10 +54,16 @@ namespace DotRPG.Objects.Dynamics
                 return new Vector2(Velocity.X * Mass, Velocity.Y * Mass);
             }
         }
-        public DynamicRectObject(Point StartLocation, Point colliderSize, Single mass, Boolean isStatic = false)
+        public DynamicRectObject(Point StartLocation, Point colliderSize, Single mass, Vector2 origin, Boolean isStatic = false)
         {
+            Rectangle r = new Rectangle(
+                (int)(StartLocation.X - colliderSize.X * origin.X),
+                (int)(StartLocation.Y - colliderSize.Y * origin.Y),
+                colliderSize.X,
+                colliderSize.Y
+            );
+            Collider = PolygonBuilder.BuildFromRect(r, origin);
             Location = StartLocation.ToVector2();
-            BodySize = colliderSize;
             Mass = mass;
             Static = isStatic;
         }

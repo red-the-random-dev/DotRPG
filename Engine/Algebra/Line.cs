@@ -98,6 +98,24 @@ namespace DotRPG.Algebra
                 return np;
             }
         }
+        public Single GetDistanceTo(Vector2 p)
+        {
+            Vector2 proj = GetPointProjection(p);
+            Vector2 d = proj - p;
+            return d.Length();
+        }
+        public Single GetDistanceTo(Vector2 p, out Vector2 dist)
+        {
+            Vector2 proj = GetPointProjection(p);
+            dist = proj - p;
+            return dist.Length();
+        }
+        public Single GetDistanceTo(Vector2 p, out Vector2 projection, out Vector2 dist)
+        {
+            projection = GetPointProjection(p);
+            dist = projection - p;
+            return dist.Length();
+        }
         #region IEquatable implementation
         public Boolean Equals(Line other)
         {
