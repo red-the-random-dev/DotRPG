@@ -37,12 +37,7 @@ namespace DotRPG.Objects.Complexity
         {
             get
             {
-                Vector2 sigma = Vector2.Zero;
-                foreach (Vector2 v in Vertices)
-                {
-                    sigma += v;
-                }
-                return sigma / Vertices.Length;
+                return FindActualCenter(TurnedVertices);
             }
         }
         public Vector2 Location
@@ -103,6 +98,35 @@ namespace DotRPG.Objects.Complexity
                 }
             }
             return contacts.ToArray();
+        }
+        public static Vector2 FindActualCenter(Vector2[] Vertices)
+        {
+            Vector2 sigma = Vector2.Zero;
+            foreach (Vector2 v in Vertices)
+            {
+                sigma += v;
+            }
+            return sigma / Vertices.Length;
+        }
+        public static Single FindMedianRadius(Vector2[] Vertices)
+        {
+            Vector2 v = FindActualCenter(Vertices);
+            Single sigma = 0.0f;
+            foreach (Vector2 x in Vertices)
+            {
+                sigma += (x - v).Length();
+            }
+            return sigma / Vertices.Length;
+        }
+        public Boolean Overlaps(Polygon other)
+        {
+            Vector2[] v1 = TurnedVertices;
+            Vector2[] v2 = other.TurnedVertices;
+            return (FindActualCenter(v2) - FindActualCenter(v1)).Length() > (FindMedianRadius(v1) + FindMedianRadius(v2));
+        }
+        public static Boolean Overlaps(Vector2[] v1, Vector2[] v2)
+        {
+            return (FindActualCenter(v2) - FindActualCenter(v1)).Length() > (FindMedianRadius(v1) + FindMedianRadius(v2));
         }
     }
 }

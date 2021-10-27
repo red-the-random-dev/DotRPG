@@ -9,11 +9,11 @@ namespace DotRPG.Behavior.Management
     public class CameraManager
     {
         public CameraFrameObject ManagedCamera;
-        public Dictionary<String, DynamicRectObject> ObjectHeap;
+        public Dictionary<String, DynamicObject> ObjectHeap;
         public PlayerObject Player;
         protected Random ShakeRandomizer = new Random();
 
-        protected DynamicRectObject TrackedObject;
+        protected DynamicObject TrackedObject;
         protected Point _o = Point.Zero;
         protected Point ShakeOffset = Point.Zero;
         public Point Offset
@@ -34,7 +34,7 @@ namespace DotRPG.Behavior.Management
         protected Single MultiplyY = 1.0f;
         protected Single Frequency = 30.0f;
 
-        public CameraManager(CameraFrameObject camera, Dictionary<String, DynamicRectObject> objectHeap)
+        public CameraManager(CameraFrameObject camera, Dictionary<String, DynamicObject> objectHeap)
         {
             ManagedCamera = camera;
             ObjectHeap = objectHeap;

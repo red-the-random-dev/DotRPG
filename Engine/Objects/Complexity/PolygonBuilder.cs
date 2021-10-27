@@ -18,7 +18,7 @@ namespace DotRPG.Objects.Complexity
             Polygon p = new Polygon
             {
                 Vertices = points,
-                MassCenter = MassCenter
+                OriginPoint = MassCenter
             };
             return p;
         }

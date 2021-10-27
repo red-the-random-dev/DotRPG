@@ -18,7 +18,7 @@ namespace DotRPG.Behavior.Management
         protected PREFAB_SET StaticPrefabs;
         protected PREFAB_SET DynamicPrefabs = new PREFAB_SET();
 
-        public ObjectHeapManager(Dictionary<String, DynamicRectObject> objects, PREFAB_SET staticPrefabs, DeploymentMethod dm, FinalizationMethod fm)
+        public ObjectHeapManager(Dictionary<String, DynamicObject> objects, PREFAB_SET staticPrefabs, DeploymentMethod dm, FinalizationMethod fm)
         {
             ObjectHeap = objects;
             StaticPrefabs = staticPrefabs;
@@ -35,7 +35,7 @@ namespace DotRPG.Behavior.Management
         {
             return VectorAngleCosine(new Vector2(_1x, _1y), new Vector2(_2x, _2y));
         }
-        protected Dictionary<String, DynamicRectObject> ObjectHeap;
+        protected Dictionary<String, DynamicObject> ObjectHeap;
         public PlayerObject Player;
 
         public Single GetScalarVelocity(String name)

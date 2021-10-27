@@ -39,8 +39,8 @@ namespace DotRPG.Behavior.Defaults
         public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
         public Dictionary<String, Waypoint> NavMap { get; private set; } = new Dictionary<string, Waypoint>();
 
-        public Dictionary<String, DynamicRectObject> Props { get; private set; } = new Dictionary<string, DynamicRectObject>();
-        public Dictionary<String, DynamicRectObject> Interactable { get; private set; } = new Dictionary<string, DynamicRectObject>();
+        public Dictionary<String, DynamicObject> Props { get; private set; } = new Dictionary<string, DynamicObject>();
+        public Dictionary<String, DynamicObject> Interactable { get; private set; } = new Dictionary<string, DynamicObject>();
 
         Int32 LastMWheelValue = 0;
         public Boolean[] LastInput { get; private set; } = new bool[8];
@@ -280,7 +280,7 @@ namespace DotRPG.Behavior.Defaults
                         Point colliderSize = XMLSceneLoader.ResolveVector2(op.Properties["colliderSize"]).ToPoint();
                         Point interactFieldSize = XMLSceneLoader.ResolveVector2(op.Properties["interactFieldSize"]).ToPoint();
                         Single mass = Single.Parse(op.Properties["mass"]);
-                        Player = new PlayerObject(startPos, colliderSize, mass, interactFieldSize);
+                        Player = new PlayerObject(startPos, colliderSize, mass, new Vector2(0.5f, 0.5f), interactFieldSize);
                         String channel = "global";
                         #endregion
                         foreach (ObjectPrototype op2 in op.Subnodes)
@@ -324,7 +324,7 @@ namespace DotRPG.Behavior.Defaults
                         Single mass = Single.Parse(op.Properties["mass"]);
                         String channel = "global";
                         #endregion
-                        Props.Add(ID, new DynamicRectObject(startPos, colliderSize, mass, isStatic));
+                        Props.Add(ID, new DynamicObject(startPos, colliderSize, mass, new Vector2(0.5f, 0.5f), isStatic));
                         ObjectBoundScripts.Add(ID, new List<IScriptModule>());
                         foreach (ObjectPrototype op2 in op.Subnodes)
                         {
@@ -641,7 +641,7 @@ namespace DotRPG.Behavior.Defaults
             {
                 foreach (String i in Interactable.Keys)
                 {
-                    if (Player.SightArea.Intersects(Interactable[i].Collider) && Interactable[i].Active)
+                    if (Player.SightArea.Intersects(Interactable[i].SquareForm) && Interactable[i].Active)
                     {
                         foreach (IScriptModule lm in Scripts)
                         {
@@ -695,7 +695,7 @@ namespace DotRPG.Behavior.Defaults
 #if DEBUG
                 if (showHitboxes)
                 {
-                    spriteBatch.Draw(t2d, Props[i].Collider, Interactable.ContainsValue(Props[i]) ? Color.Yellow : Color.Red);
+                    spriteBatch.Draw(t2d, Props[i].SquareForm, Interactable.ContainsValue(Props[i]) ? Color.Yellow : Color.Red);
                 }
 #endif
             }
@@ -704,7 +704,7 @@ namespace DotRPG.Behavior.Defaults
 #if DEBUG
             if (showHitboxes)
             {
-                spriteBatch.Draw(t2d, Player.Collider, Color.Green);
+                spriteBatch.Draw(t2d, Player.SquareForm, Color.Green);
                 spriteBatch.Draw(t2d, Player.SightArea, new Color(0, 255, 0, 128));
             }
             spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], DebugText, new Vector2(0, 36), Color.Yellow);
