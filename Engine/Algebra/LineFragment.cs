@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace DotRPG.Algebra
 {
-    public class LineFragment
+    public class LineFragment : IEquatable<LineFragment>
     {
         public readonly Line FullLine;
         public readonly Single Clamp_MinX;
@@ -26,7 +26,6 @@ namespace DotRPG.Algebra
         {
             return FullLine.Intersects(i) && (i.X <= Clamp_MaxX && i.X >= Clamp_MinX && i.Y <= Clamp_MaxY && i.Y >= Clamp_MinY);
         }
-
         public Boolean Intersects(Line line, out Vector2 intPoint)
         {
             intPoint = Vector2.Zero;
@@ -40,7 +39,6 @@ namespace DotRPG.Algebra
             }
             return false;
         }
-
         public Boolean Intersects(LineFragment other, out Vector2 intPoint)
         {
             intPoint = Vector2.Zero;
@@ -62,5 +60,36 @@ namespace DotRPG.Algebra
                 return new Vector2((Clamp_MaxX + Clamp_MinX) / 2, (Clamp_MaxY + Clamp_MinY) / 2);
             }
         }
+        #region IEquatable implementation
+        public Boolean Equals(LineFragment o)
+        {
+            return (Clamp_MaxX == o.Clamp_MaxX && Clamp_MaxY == o.Clamp_MaxY && Clamp_MinX == o.Clamp_MinX && Clamp_MinY == o.Clamp_MinY) && FullLine == o.FullLine;
+        }
+        public override Boolean Equals(Object o)
+        {
+            if (o is LineFragment a)
+            {
+                return Equals(a);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Clamp_MaxX.GetHashCode() ^ Clamp_MaxY.GetHashCode() ^ Clamp_MinX.GetHashCode() ^ Clamp_MinY.GetHashCode() ^ FullLine.GetHashCode(); 
+        }
+
+        public static Boolean operator ==(LineFragment a, LineFragment b)
+        {
+            return a.Equals(b);
+        }
+        public static Boolean operator !=(LineFragment a, LineFragment b)
+        {
+            return !a.Equals(b);
+        }
+        #endregion
     }
 }

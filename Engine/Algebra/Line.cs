@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace DotRPG.Algebra
 {
-    public class Line
+    public class Line : IEquatable<Line>
     {
         public readonly Single Tangent;
         public readonly Single Offset;
@@ -98,5 +98,50 @@ namespace DotRPG.Algebra
                 return np;
             }
         }
+        #region IEquatable implementation
+        public Boolean Equals(Line other)
+        {
+            if (this.IsVertical != other.IsVertical)
+            {
+                return false;
+            }
+            else if (IsVertical && HorizontalOffset == other.HorizontalOffset)
+            {
+                return true;
+            }
+            else if (Tangent == other.Tangent && Offset == other.Offset)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public override Boolean Equals(Object o)
+        {
+            if (o is Line a)
+            {
+                return Equals(a);
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public override int GetHashCode()
+        {
+            return Tangent.GetHashCode() ^ Offset.GetHashCode() ^ HorizontalOffset.GetHashCode();
+        }
+
+        public static Boolean operator ==(Line one, Line other)
+        {
+            return one.Equals(other);
+        }
+        public static Boolean operator !=(Line one, Line other)
+        {
+            return !one.Equals(other);
+        }
+        #endregion
     }
 }
