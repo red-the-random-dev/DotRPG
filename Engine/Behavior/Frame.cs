@@ -41,19 +41,18 @@ namespace DotRPG.Behavior
         {
             if (LocalEventSet.Count > 0)
             {
-                try
+                TimedEvent[] tea = new TimedEvent[LocalEventSet.Count];
+                Int32 c = 0;
+                foreach (TimedEvent te in LocalEventSet)
                 {
-                    foreach (TimedEvent te in LocalEventSet)
-                    {
-                        if (te.TryFire(this, gameTime))
-                        {
-                            LocalEventSet.Remove(te);
-                        }
-                    }
+                    tea[c++] = te;
                 }
-                catch (InvalidOperationException)
+                foreach (TimedEvent te in tea)
                 {
-
+                    if (te.TryFire(this, gameTime))
+                    {
+                        LocalEventSet.Remove(te);
+                    }
                 }
             }
         }

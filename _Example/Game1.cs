@@ -230,19 +230,18 @@ namespace DotRPG._Example
 
             if (LogicEventSet.Count > 0)
             {
-                try
+                TimedEvent[] tea = new TimedEvent[LogicEventSet.Count];
+                Int32 c = 0;
+                foreach (TimedEvent te in LogicEventSet)
                 {
-                    foreach (TimedEvent te in LogicEventSet)
-                    {
-                        if (te.TryFire(this, gameTime))
-                        {
-                            LogicEventSet.Remove(te);
-                        }
-                    }
+                    tea[c++] = te;
                 }
-                catch (InvalidOperationException)
+                foreach (TimedEvent te in tea)
                 {
-
+                    if (te.TryFire(this, gameTime))
+                    {
+                        LogicEventSet.Remove(te);
+                    }
                 }
             }
             if (ActiveSubframe != null)

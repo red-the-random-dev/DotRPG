@@ -324,6 +324,36 @@ namespace DotRPG.Behavior.Management
             DeployObj(op);
             return a;
         }
+        public void Prefab_DeployRaw(String Name)
+        {
+            if (DynamicPrefabs.TryGetValue(Name, out ObjectPrototype op))
+            {
+                DeployObj(op);
+            }
+        }
+        public String Prefab_Launch(String Name, Single x, Single y, Single Velocity, Single Angle)
+        {
+            ObjectPrototype op = DynamicPrefabs[Name];
+            if (!op.Properties.ContainsKey("startPos"))
+            {
+                op.Properties.Add("startPos", String.Format("{0},{1}", x, y));
+            }
+            String a = Prefab_DeployUnderRandomName(Name);
+            if (ObjectHeap.ContainsKey(a))
+            {
+                ObjectHeap[a].Location = new Vector2(x, y);
+                ApplyForce(a, Velocity, Angle);
+            }
+            return a;
+        }
+        public Single RadFromDeg(Single deg)
+        {
+            return MathHelper.ToRadians(deg);
+        }
+        public Single DegFromRad(Single rad)
+        {
+            return MathHelper.ToDegrees(rad);
+        }
         public void DestroyObject(String name)
         {
             DeleteObj(name);

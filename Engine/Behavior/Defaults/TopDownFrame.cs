@@ -485,6 +485,11 @@ namespace DotRPG.Behavior.Defaults
                             }
                             break;
                         }
+                    case "prefab":
+                        {
+                            XMLSceneLoader.GetPrefab(xe.Attribute(XName.Get("objType")).Value, Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value)), prefabs, out String newID, resourceLoad);
+                            break;
+                        }
                     default:
                         ObjectPrototype x = ObjectPrototype.FromXML(xe);
                         foreach (XAttribute xa in xe.Attributes())
@@ -495,6 +500,10 @@ namespace DotRPG.Behavior.Defaults
                                 XMLSceneLoader.GetPrefab(xe.Name.LocalName, loadPath, prefabs, out String newID, resourceLoad);
                                 x.PrefabName = newID;
                                 break;
+                            }
+                            if (xa.Name.LocalName.ToString() == "_usePrefabID")
+                            {
+                                x.PrefabName = xa.Value.ToString();
                             }
                         }
                         objectPrototypes.Add(x);
@@ -725,6 +734,8 @@ namespace DotRPG.Behavior.Defaults
             }
             Palette.Dispose();
             ObjectManager.Prefab_Reset();
+            CameraManager.Reset();
+            EventTimer.Reset();
             Palette = null;
             NavMap.Clear();
             Pathfinder = null;

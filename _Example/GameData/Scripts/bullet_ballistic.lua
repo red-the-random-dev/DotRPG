@@ -9,11 +9,9 @@ lifetime = 0
 
 function update(objID, eventID, frameTime, totalTime)
     if objID == "default" then
-        if lifetime == 0 then
-            obj:ApplyForce(this, 256*15, totalTime % 1000 / 1000 * 2 * 3.14)
-        end
+        obj:ApplyForce(this, 64, obj:RadFromDeg(90))
         lifetime = lifetime + frameTime
-        if lifetime > 1000 then
+        if lifetime > 2000 then
             obj:DestroyObject(this)
         end
     end

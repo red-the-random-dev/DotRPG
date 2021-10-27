@@ -24,13 +24,14 @@
         <Interactable interactAction="treetalk"/>
         <ColorChannel channel="treecolor"/>
     </Prop>
-    <Prop id="whiterect" startPos="512,270" mass="20" _usePrefab="Prefabs/whiterect.xml">
+    <Prefab objType="Prop" location="Prefabs/whiterect.xml" />
+    <Prop id="whiterect" startPos="512,270" mass="20" _usePrefabID="whiterect">
         <ObjectScript location="Scripts/kickable.lua"/>
         <Interactable interactAction="kick__whiterect"/>
     </Prop>
-    <Prop id="whiterect2" startPos="328,328" mass="20" _usePrefab="Prefabs/whiterect.xml" />
+    <Prop id="whiterect2" startPos="328,328" mass="20" _usePrefabID="whiterect" />
     
-    <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefab="Prefabs/whiterect.xml">
+    <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefabID="whiterect">
         <IgnoreCollisions />
         <ColorChannel channel="r"/>
     </Prop>
