@@ -12,10 +12,14 @@ namespace DotRPG.Algebra
         public readonly Single Clamp_MinY;
         public readonly Single Clamp_MaxX;
         public readonly Single Clamp_MaxY;
+        public readonly Vector2 End1;
+        public readonly Vector2 End2;
 
         public LineFragment(Vector2 P1, Vector2 P2)
         {
             FullLine = new Line(P1, P2);
+            End1 = P1;
+            End2 = P2;
             Clamp_MinX = Math.Min(P1.X, P2.X);
             Clamp_MaxX = Math.Max(P1.X, P2.X);
             Clamp_MinY = Math.Min(P1.Y, P2.Y);
