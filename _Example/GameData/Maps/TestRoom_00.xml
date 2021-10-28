@@ -29,7 +29,7 @@
         <ObjectScript location="Scripts/kickable.lua"/>
         <Interactable interactAction="kick__whiterect"/>
     </Prop>
-    <Prop id="whiterect2" startPos="328,328" mass="20" _usePrefabID="whiterect" />
+    <Prop id="whiterect2" startPos="328,328" mass="40" _usePrefabID="whiterect" />
     
     <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefabID="whiterect">
         <IgnoreCollisions />

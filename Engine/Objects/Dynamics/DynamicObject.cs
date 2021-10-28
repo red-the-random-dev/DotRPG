@@ -103,38 +103,58 @@ namespace DotRPG.Objects.Dynamics
             Mass = mass;
             Static = isStatic;
         }
-        protected static void Shift(DynamicObject one, DynamicObject two, Vector2[] v1, Vector2[] v2, Vector2[] c, LineFragment[] e1, LineFragment[] e2, Boolean inverted = false)
+        protected static void Shift(DynamicObject one, DynamicObject two, Vector2[] v1, Vector2[] v2, Vector2[] c, LineFragment[] e1, LineFragment[] e2, out Vector2 normal, Boolean inverted = false)
         {
             if (one.Static || (one.Mass >= two.Mass && !inverted))
             {
-                Shift(two, one, v2, v1, c, e2, e1, true);
+                Shift(two, one, v2, v1, c, e2, e1, out normal, true);
                 return;
             }
             LineFragment[] inter = Polygon.FindEdges(c);
             LineFragment interEdge = inter[0];
-            Vector2 center = Polygon.FindActualCenter(v1);
-            Single maxDist = Single.PositiveInfinity;
+            Vector2 center1 = Polygon.FindActualCenter(v1);
+            Single distFromCenter = Single.PositiveInfinity;
             foreach (LineFragment i in inter)
             {
-                Single a = i.FullLine.GetDistanceTo(center);
-                if (a < maxDist)
+                Single a = i.FullLine.GetDistanceTo(center1);
+                if (a < distFromCenter)
                 {
-                    maxDist = a;
+                    distFromCenter = a;
                     interEdge = i;
                 }
             }
-            Single minDist = Single.PositiveInfinity;
-            Vector2 shift = Vector2.Zero;
+            Vector2 shiftOrigin1 = Vector2.Zero;
+            Single dist1 = 0.0f;
+            Vector2 shiftDestination1 = Vector2.Zero;
             foreach (Vector2 i in v1)
             {
-                Single a = interEdge.FullLine.GetDistanceTo(i, out Vector2 dist);
-                if (a < minDist || minDist == Single.PositiveInfinity)
+                Vector2 x = i - center1;
+                if (x.Length() > dist1 && interEdge.Intersects(new LineFragment(center1, i), out Vector2 dummy))
                 {
-                    minDist = a;
-                    shift = dist;
+                    dist1 = x.Length();
+                    shiftOrigin1 = i;
+                    shiftDestination1 = interEdge.FullLine.GetPointProjection(shiftOrigin1);
                 }
             }
+            Vector2 shift = shiftDestination1 - shiftOrigin1;
+            Vector2 center2 = Polygon.FindActualCenter(v2);
+            Vector2 shiftOrigin2 = Vector2.Zero;
+            Single dist2 = 0.0f;
+            Vector2 shiftDestination2 = Vector2.Zero;
+            foreach (Vector2 i in v2)
+            {
+                Vector2 x = i - center2;
+                if (x.Length() > dist2 && interEdge.Intersects(new LineFragment(center2, i), out Vector2 dummy))
+                {
+                    dist2 = x.Length();
+                    shiftOrigin2 = i;
+                    shiftDestination2 = interEdge.FullLine.GetPointProjection(shiftOrigin2);
+                }
+            }
+            shift += (shiftOrigin2 - shiftDestination2);
             one.Location = one.Location + shift;
+            normal = shift / (shift.Length() != 0.0f ? shift.Length() : 1.0f);
+            /*
             Vector2[] v1_new = one.Collider.TurnedVertices;
             Vector2[] v2_new = two.Collider.TurnedVertices;
             if (Polygon.Overlaps(v1_new, v2_new))
@@ -143,21 +163,25 @@ namespace DotRPG.Objects.Dynamics
                 eviction = new Vector2(Polygon.FindMedianRadius(v1_new)+Polygon.FindMedianRadius(v2_new), eviction.Y);
                 one.Location -= SharedVectorMethods.FromLengthAngle(eviction);
             }
+            */
         }
 
         protected void CollideWith(DynamicObject another, Vector2[] v1, Vector2[] v2, Vector2[] c, LineFragment[] e1, LineFragment[] e2)
         {
-            Shift(this, another, v1, v2, c, e1, e2);
+            Shift(this, another, v1, v2, c, e1, e2, out Vector2 normal);
+            Vector2 m1 = Momentum;
+            Vector2 m2 = another.Momentum;
+            Vector2 sacrificedMomentum1 = m1 * Math.Abs((m1.X * normal.X + m1.Y * normal.Y) / (m1.Length() != 0.0f ? m1.Length() : 1.0f));
+            Vector2 sacrificedMomentum2 = m2 * Math.Abs((m2.X * normal.X + m2.Y * normal.Y) / (m2.Length() != 0.0f ? m2.Length() : 1.0f));
+            Velocity -= sacrificedMomentum1 / Mass;
             if (another.Static)
             {
-                FullStop();
                 return;
             }
-            Single Summary_X_Momentum = (this.Momentum.X + another.Momentum.X) / 2;
-            Single Summary_Y_Momentum = (this.Momentum.Y + another.Momentum.Y) / 2;
-
-            Velocity = new Vector2(Summary_X_Momentum / this.Mass, Summary_Y_Momentum / this.Mass);
-            another.Velocity = new Vector2(Summary_X_Momentum / another.Mass, Summary_Y_Momentum / another.Mass);
+            another.Velocity -= sacrificedMomentum2 / Mass;
+            Vector2 summaryMomentum = sacrificedMomentum1 + sacrificedMomentum2;
+            Velocity += summaryMomentum / Mass;
+            another.Velocity += summaryMomentum / another.Mass;
         }
 
         public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Single ZIndex = 0.0f)

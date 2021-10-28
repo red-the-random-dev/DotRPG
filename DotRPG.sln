@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Example", "_Example\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotRPG.Engine", "Engine\DotRPG.Engine.csproj", "{74B8EDC2-863F-4C9F-AE8D-EE01F3E46AB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotRPG.PolygonTester", "_PolygonTester\DotRPG.PolygonTester.csproj", "{286CB7EF-D778-4481-98C7-E09E92659D06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{74B8EDC2-863F-4C9F-AE8D-EE01F3E46AB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{74B8EDC2-863F-4C9F-AE8D-EE01F3E46AB6}.Release|x64.ActiveCfg = Release|Any CPU
 		{74B8EDC2-863F-4C9F-AE8D-EE01F3E46AB6}.Release|x64.Build.0 = Release|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Debug|x64.Build.0 = Debug|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Release|x64.ActiveCfg = Release|Any CPU
+		{286CB7EF-D778-4481-98C7-E09E92659D06}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

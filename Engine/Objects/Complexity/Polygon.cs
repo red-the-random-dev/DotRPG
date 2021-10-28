@@ -16,10 +16,6 @@ namespace DotRPG.Objects.Complexity
         {
             get
             {
-                if (Turn == 0.0f)
-                {
-                    return Vertices;
-                }
                 Vector2[] newGeometry = new Vector2[Vertices.Length];
 
                 for (int i = 0; i < newGeometry.Length; i++)
@@ -27,7 +23,8 @@ namespace DotRPG.Objects.Complexity
                     Vector2 radiusLengthAngle = SharedVectorMethods.ToLengthAngle(Vertices[i] - OriginPoint);
                     radiusLengthAngle = new Vector2(radiusLengthAngle.X, radiusLengthAngle.Y + Turn);
                     Vector2 newLocation = SharedVectorMethods.FromLengthAngle(radiusLengthAngle);
-                    newGeometry[i] = OriginPoint + newLocation;
+                    newGeometry[i] = (OriginPoint + newLocation);
+                    newGeometry[i] = new Vector2((int)Math.Round(newGeometry[i].X), (int)Math.Round(newGeometry[i].Y));
                 }
 
                 return newGeometry;
@@ -86,7 +83,7 @@ namespace DotRPG.Objects.Complexity
 
         public static Vector2[] FindContactsOf(LineFragment[] e1, LineFragment[] e2)
         {
-            List<Vector2> contacts = new List<Vector2>();
+            HashSet<Vector2> contacts = new HashSet<Vector2>();
             foreach (LineFragment l1 in e1)
             {
                 foreach (LineFragment l2 in e2)
@@ -97,7 +94,13 @@ namespace DotRPG.Objects.Complexity
                     }
                 }
             }
-            return contacts.ToArray();
+            Vector2[] cArr = new Vector2[contacts.Count];
+            Int32 c = 0;
+            foreach (Vector2 v in contacts)
+            {
+                cArr[c++] = v;
+            }
+            return cArr;
         }
         public static Vector2 FindActualCenter(Vector2[] Vertices)
         {
