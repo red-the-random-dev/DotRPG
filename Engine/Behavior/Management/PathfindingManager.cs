@@ -11,10 +11,10 @@ namespace DotRPG.Behavior.Management
     {
         protected Dictionary<String, Waypoint> NavMesh;
         protected Dictionary<String, Queue<Waypoint>> TracedPaths = new Dictionary<string, Queue<Waypoint>>();
-        protected Dictionary<String, DynamicRectObject> Objects;
+        protected Dictionary<String, DynamicObject> Objects;
         protected PlayerObject Player;
 
-        public PathfindingManager(Dictionary<String, Waypoint> navMesh, Dictionary<String, DynamicRectObject> objectHeap, PlayerObject player)
+        public PathfindingManager(Dictionary<String, Waypoint> navMesh, Dictionary<String, DynamicObject> objectHeap, PlayerObject player)
         {
             NavMesh = navMesh;
             Objects = objectHeap;

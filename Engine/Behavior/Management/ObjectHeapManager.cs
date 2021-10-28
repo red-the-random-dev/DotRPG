@@ -18,7 +18,7 @@ namespace DotRPG.Behavior.Management
         protected PREFAB_SET StaticPrefabs;
         protected PREFAB_SET DynamicPrefabs = new PREFAB_SET();
 
-        public ObjectHeapManager(Dictionary<String, DynamicRectObject> objects, PREFAB_SET staticPrefabs, DeploymentMethod dm, FinalizationMethod fm)
+        public ObjectHeapManager(Dictionary<String, DynamicObject> objects, PREFAB_SET staticPrefabs, DeploymentMethod dm, FinalizationMethod fm)
         {
             ObjectHeap = objects;
             StaticPrefabs = staticPrefabs;
@@ -35,7 +35,7 @@ namespace DotRPG.Behavior.Management
         {
             return VectorAngleCosine(new Vector2(_1x, _1y), new Vector2(_2x, _2y));
         }
-        protected Dictionary<String, DynamicRectObject> ObjectHeap;
+        protected Dictionary<String, DynamicObject> ObjectHeap;
         public PlayerObject Player;
 
         public Single GetScalarVelocity(String name)
@@ -323,6 +323,36 @@ namespace DotRPG.Behavior.Management
             }
             DeployObj(op);
             return a;
+        }
+        public void Prefab_DeployRaw(String Name)
+        {
+            if (DynamicPrefabs.TryGetValue(Name, out ObjectPrototype op))
+            {
+                DeployObj(op);
+            }
+        }
+        public String Prefab_Launch(String Name, Single x, Single y, Single Velocity, Single Angle)
+        {
+            ObjectPrototype op = DynamicPrefabs[Name];
+            if (!op.Properties.ContainsKey("startPos"))
+            {
+                op.Properties.Add("startPos", String.Format("{0},{1}", x, y));
+            }
+            String a = Prefab_DeployUnderRandomName(Name);
+            if (ObjectHeap.ContainsKey(a))
+            {
+                ObjectHeap[a].Location = new Vector2(x, y);
+                ApplyForce(a, Velocity, Angle);
+            }
+            return a;
+        }
+        public Single RadFromDeg(Single deg)
+        {
+            return MathHelper.ToRadians(deg);
+        }
+        public Single DegFromRad(Single rad)
+        {
+            return MathHelper.ToDegrees(rad);
         }
         public void DestroyObject(String name)
         {

@@ -8,6 +8,7 @@ using DotRPG.Objects;
 using DotRPG.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DotRPG.Algebra;
 
 namespace DotRPG._Example
 {

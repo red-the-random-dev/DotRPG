@@ -7,7 +7,7 @@
         <Texture2D id="explosion" location="Texture2D/kaboom"/>
         <SoundEffect id="kaboom" location="Sounds/pixel-explosion"/>
     </Require>
-    <Prop colliderSize="19,8" static="true" mass="150">
+    <Prop colliderSize="48,48" static="true" mass="150">
         <Sprite frameRate="12" frameAmount="1">
             <DefaultAnimationSequence local="tree"/>
             <Animation id="explodes" local="explosion" frameAmount="15" />

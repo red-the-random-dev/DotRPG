@@ -13,6 +13,7 @@ using DotRPG.Behavior.Routines;
 using DotRPG.Behavior.Defaults;
 using DotRPG.UI;
 using System.Reflection;
+using DotRPG.Algebra;
 
 namespace DotRPG._Example
 {
@@ -230,19 +231,18 @@ namespace DotRPG._Example
 
             if (LogicEventSet.Count > 0)
             {
-                try
+                TimedEvent[] tea = new TimedEvent[LogicEventSet.Count];
+                Int32 c = 0;
+                foreach (TimedEvent te in LogicEventSet)
                 {
-                    foreach (TimedEvent te in LogicEventSet)
-                    {
-                        if (te.TryFire(this, gameTime))
-                        {
-                            LogicEventSet.Remove(te);
-                        }
-                    }
+                    tea[c++] = te;
                 }
-                catch (InvalidOperationException)
+                foreach (TimedEvent te in tea)
                 {
-
+                    if (te.TryFire(this, gameTime))
+                    {
+                        LogicEventSet.Remove(te);
+                    }
                 }
             }
             if (ActiveSubframe != null)
@@ -284,8 +284,8 @@ namespace DotRPG._Example
             
             if (ContinuityError)
             {
-                _spriteBatch.DrawString(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", SharedGraphicsMethods.FindTextAlignment(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", Window.ClientBounds, 0.5f, 0.5f), Color.Red);
-                _spriteBatch.DrawString(_spriteFont, "This is not an easter egg. Something is wrong with the game.", SharedGraphicsMethods.FindTextAlignment(_spriteFont, "This is not an easter egg. Something is wrong with the game.", Window.ClientBounds, 0.5f, 0.6f, AlignMode.TopCenter), new Color(new Vector4(Math.Min((Single)TimeSinceError*0.02f, 255.0f))));
+                _spriteBatch.DrawString(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", SharedVectorMethods.FindTextAlignment(_spriteFontLarge, "/!\\ CONTINUITY ERROR /!\\", Window.ClientBounds, 0.5f, 0.5f), Color.Red);
+                _spriteBatch.DrawString(_spriteFont, "This is not an easter egg. Something is wrong with the game.", SharedVectorMethods.FindTextAlignment(_spriteFont, "This is not an easter egg. Something is wrong with the game.", Window.ClientBounds, 0.5f, 0.6f, AlignMode.TopCenter), new Color(new Vector4(Math.Min((Single)TimeSinceError*0.02f, 255.0f))));
                 _spriteBatch.End();
                 base.Draw(gameTime);
                 return;

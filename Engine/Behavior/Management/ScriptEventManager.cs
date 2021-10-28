@@ -27,21 +27,24 @@ namespace DotRPG.Behavior.Management
         {
             if (events.Count > 0)
             {
-                try
+                TimedEvent<String>[] tea = new TimedEvent<String>[events.Count];
+                Int32 c = 0;
+                foreach (TimedEvent<String> te in events)
                 {
-                    foreach (TimedEvent<String> te in events)
+                    tea[c++] = te;
+                }
+                foreach (TimedEvent<String> te in tea)
+                {
+                    if (te.TryFire(this, gameTime))
                     {
-                        if (te.TryFire(this, gameTime))
-                        {
-                            events.Remove(te);
-                        }
+                        events.Remove(te);
                     }
                 }
-                catch (InvalidOperationException)
-                {
-
-                }
             }
+        }
+        public void Reset()
+        {
+            events.Clear();
         }
     }
 }

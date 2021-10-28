@@ -17,12 +17,15 @@ namespace DotRPG._Example
             ObjectHeap.Prefab_CreateFromStatic("whiterectbullet", "whiterect");
             ObjectHeap.Prefab_CreateNew("bulletscript", "ObjectScript");
             ObjectHeap.Prefab_CreateNew("empty", "IgnoreCollisions");
-            ObjectHeap.Prefab_SetProperty("bulletscript", "location", "Scripts/bullet.lua");
+            ObjectHeap.Prefab_CreateNew("color", "ColorChannel");
+            ObjectHeap.Prefab_SetProperty("color", "channel", "g");
+            ObjectHeap.Prefab_SetProperty("bulletscript", "location", "Scripts/bullet_ballistic.lua");
             ObjectHeap.Prefab_AddSubnode("whiterectbullet", "bulletscript");
             ObjectHeap.Prefab_AddSubnode("whiterectbullet", "empty");
-            // ObjectHeap.Prefab_Dispose("bulletscript");
-            // ObjectHeap.Prefab_Dispose("empty");
-            ObjectHeap.Prefab_SetProperty("whiterectbullet", "startPos", "128,160");
+            ObjectHeap.Prefab_AddSubnode("whiterectbullet", "color");
+            ObjectHeap.Prefab_Dispose("bulletscript");
+            ObjectHeap.Prefab_Dispose("empty");
+            ObjectHeap.Prefab_Dispose("color");
         }
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
@@ -35,8 +38,6 @@ namespace DotRPG._Example
                     {
                         if (ObjectHeap.GetCurrentAnimationSequence("tree") == "default")
                             Palette.SetColor("treecolor", 255, (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), (byte)Math.Max(1, 255 - (255 * PunchCount / 9000)), 255);
-                        else
-                            ObjectHeap.Prefab_DeployUnderRandomName("whiterectbullet");
                     }
                     PunchCount -= ElapsedGameTime;
                     if (PunchCount < 0.0f)
@@ -58,6 +59,14 @@ namespace DotRPG._Example
                         Audio.PlayLocal("kaboom");
                         ObjectHeap.DisablePlayerControls();
                         ObjectHeap.SetAnimationSequence("tree", "explodes");
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(0));
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(45));
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(90));
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(135));
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(180));
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(225));
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(270));
+                        ObjectHeap.Prefab_Launch("whiterectbullet", 128, 160, 2560.0f, ObjectHeap.RadFromDeg(315));
                         Events.Enqueue(TotalGameTime, 1000.0f, "treegone");
                     }
                     break;
