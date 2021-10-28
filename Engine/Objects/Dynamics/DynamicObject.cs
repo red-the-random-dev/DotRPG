@@ -123,6 +123,19 @@ namespace DotRPG.Objects.Dynamics
                     interEdge = i;
                 }
             }
+            Vector2 farthestEndPoint = (interEdge.End1 - center1).Length() > (interEdge.End2 - center1).Length() ? interEdge.End1 : interEdge.End2;
+            List<LineFragment> containingEdges = new List<LineFragment>();
+            foreach (LineFragment lf in e2)
+            {
+                if (lf.Intersects(farthestEndPoint))
+                {
+                    LineFragment ien = new LineFragment((lf.End1 - center1).Length() > (lf.End2 - center1).Length() ? lf.End2 : lf.End1, farthestEndPoint);
+                    if (ien.FullLine.Tangent != interEdge.FullLine.Tangent)
+                    {
+                        interEdge = ien;
+                    }
+                }
+            }
             Vector2 shiftOrigin1 = Vector2.Zero;
             Single dist1 = 0.0f;
             Vector2 shiftDestination1 = Vector2.Zero;
@@ -209,7 +222,7 @@ namespace DotRPG.Objects.Dynamics
             Vector2[] v2 = another.Collider.TurnedVertices;
             LineFragment[] e1 = Polygon.FindEdges(v1);
             LineFragment[] e2 = Polygon.FindEdges(v2);
-            Vector2[] c = Polygon.FindContactsOf(e1, e2);
+            Vector2[] c = Polygon.FindContactsOf(e1, e2, v1, v2);
             if (c.Length >= 2)
             {
                 CollideWith(another, v1, v2, c, e1, e2);

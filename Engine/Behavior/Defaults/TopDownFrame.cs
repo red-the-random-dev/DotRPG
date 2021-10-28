@@ -102,9 +102,17 @@ namespace DotRPG.Behavior.Defaults
         {
             ObjectBoundScripts[name].Clear();
             ObjectBoundScripts.Remove(name);
-            if (Interactable.ContainsKey(name))
+            if (Interactable.ContainsValue(Props[name]))
             {
-                Interactable.Remove(name);
+                foreach (String k in Interactable.Keys)
+                {
+                    if (Interactable[k] == Props[name])
+                    {
+                        Interactable.Remove(k);
+                        break;
+                    }
+                }
+                
             }
             if (Palette.ObjectColors.ContainsKey(name))
             {

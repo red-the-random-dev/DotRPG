@@ -64,7 +64,9 @@ namespace DotRPG.Objects.Complexity
 
         public Vector2[] FindContactsWith(Polygon other)
         {
-            return FindContactsOf(Edges, other.Edges);
+            Vector2[] thisVertices = TurnedVertices;
+            Vector2[] otherVertices = other.TurnedVertices;
+            return FindContactsOf(Edges, other.Edges, thisVertices, otherVertices);
         }
         public Vector2[] FindContactsWith(LineFragment[] edgeSet)
         {
@@ -81,7 +83,7 @@ namespace DotRPG.Objects.Complexity
             return edges;
         }
 
-        public static Vector2[] FindContactsOf(LineFragment[] e1, LineFragment[] e2)
+        public static Vector2[] FindContactsOf(LineFragment[] e1, LineFragment[] e2, Vector2[] v1 = null, Vector2[] v2 = null)
         {
             HashSet<Vector2> contacts = new HashSet<Vector2>();
             foreach (LineFragment l1 in e1)
@@ -91,6 +93,39 @@ namespace DotRPG.Objects.Complexity
                     if (l1.Intersects(l2, out Vector2 intPoint))
                     {
                         contacts.Add(intPoint);
+                    }
+                }
+            }
+            if (v1 != null && v2 != null)
+            {
+                foreach (Vector2 p1 in v1)
+                {
+                    foreach (Vector2 p2 in v2)
+                    {
+                        if (p1 == p2)
+                        {
+                            contacts.Add(p1);
+                        }
+                    }
+                }
+                foreach (Vector2 p in v1)
+                {
+                    foreach (LineFragment lf in e2)
+                    {
+                        if (lf.Intersects(p))
+                        {
+                            contacts.Add(p);
+                        }
+                    }
+                }
+                foreach (Vector2 p in v2)
+                {
+                    foreach (LineFragment lf in e1)
+                    {
+                        if (lf.Intersects(p))
+                        {
+                            contacts.Add(p);
+                        }
                     }
                 }
             }
