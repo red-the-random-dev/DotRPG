@@ -32,6 +32,7 @@ namespace DotRPG._Example
             switch (EventID)
             {
                 case "default":
+                    // Scene.Props["barrier_t"].Rotation += (Single)Math.PI / 16 * ElapsedGameTime / 1000;
                     Pathfinder.BuildPath("whiterectchase", Pathfinder.GetClosestWaypointToObject("whiterect2"), Pathfinder.GetClosestWaypointToPlayer());
                     Pathfinder.ForceMoveObjectByPath("whiterect2", "whiterectchase", 256, 16);
                     if (ObjectHeap.Exists("tree"))

@@ -25,7 +25,7 @@
         <ColorChannel channel="treecolor"/>
     </Prop>
     <Prefab objType="Prop" location="Prefabs/whiterect.xml" />
-    <Prop id="whiterect" startPos="512,270" mass="20" _usePrefabID="whiterect">
+    <Prop id="whiterect" startPos="512,270" mass="25" _usePrefabID="whiterect">
         <ObjectScript location="Scripts/kickable.lua"/>
         <Interactable interactAction="kick__whiterect"/>
     </Prop>
