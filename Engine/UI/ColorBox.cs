@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DotRPG.UI
 {
+    [TABS_Deployable("ColorBox", ObjectType.UserInterfaceElement)]
     public class ColorBox : UserInterfaceElement
     {
         [TABS_Property("color", PropertyType.Color)]

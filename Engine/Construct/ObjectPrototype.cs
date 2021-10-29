@@ -11,6 +11,7 @@ namespace DotRPG.Construct
         public readonly Dictionary<String, String> Properties = new Dictionary<string, string>();
         public readonly List<ObjectPrototype> Subnodes = new List<ObjectPrototype>();
         public String PrefabName = null;
+        public String InternalData = "";
 
         public static ObjectPrototype FromXML(XElement xe)
         {

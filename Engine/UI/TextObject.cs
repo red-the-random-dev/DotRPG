@@ -114,7 +114,7 @@ namespace DotRPG.UI
         /// Prepare a line of text according to elapsed gametime.
         /// </summary>
         /// <param name="gameTime">Gametime retrieved via game's Update() method parameter.</param>
-        public override void Update(GameTime gameTime)
+        protected override void UpdateElement(GameTime gameTime)
         {
             LastDrawnText = DrawnText;
             WrittenString = "";

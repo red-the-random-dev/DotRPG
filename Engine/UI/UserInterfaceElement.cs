@@ -25,7 +25,15 @@ namespace DotRPG.UI
         public Vector2 RelativePosition { get; set; }
         [TABS_Property("origin", PropertyType.Vector2)]
         public Vector2 RotationOrigin { get; set; } = new Vector2(0.5f, 0.5f);
-        public abstract void Update(GameTime gameTime);
+        protected abstract void UpdateElement(GameTime gameTime);
+        public void Update(GameTime gameTime)
+        {
+            UpdateElement(gameTime);
+            foreach (UserInterfaceElement uie in Subnodes)
+            {
+                uie.Update(gameTime);
+            }
+        }
         protected abstract void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 positionOverride, Single turn);
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Single turn = 0)
         {
