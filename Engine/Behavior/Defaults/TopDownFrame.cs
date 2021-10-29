@@ -636,7 +636,7 @@ namespace DotRPG.Behavior.Defaults
             foreach (String i in Props.Keys)
             {
                 Props[i].Update(gameTime);
-                Player.TryCollideWith(Props[i]);
+                Player.TryCollideWith(Props[i], 4, gameTime);
                 if (!Props[i].Static)
                 {
                     foreach (String x in Props.Keys)
@@ -645,7 +645,7 @@ namespace DotRPG.Behavior.Defaults
                         {
                             continue;
                         }
-                        Props[i].TryCollideWith(Props[x]);
+                        Props[i].TryCollideWith(Props[x], 4, gameTime);
                     }
                 }
             }

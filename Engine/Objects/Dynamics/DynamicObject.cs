@@ -212,21 +212,53 @@ namespace DotRPG.Objects.Dynamics
             Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), DrawColor, sizeMorph, ZIndex);
         }
 
-        public Boolean TryCollideWith(DynamicObject another)
+        public Boolean TryCollideWith(DynamicObject another, UInt16 sampleAmount = 1, GameTime gameTime = null)
         {
             if (!this.Collidable || !another.Collidable || !this.Active || !another.Active || this.Static)
             {
                 return false;
             }
-            Vector2[] v1 = Collider.TurnedVertices;
-            Vector2[] v2 = another.Collider.TurnedVertices;
-            LineFragment[] e1 = Polygon.FindEdges(v1);
-            LineFragment[] e2 = Polygon.FindEdges(v2);
-            Vector2[] c = Polygon.FindContactsOf(e1, e2, v1, v2);
-            if (c.Length >= 2)
+            Vector2 ogPos1 = Location;
+            Vector2 ogPos2 = another.Location;
+            
+            if (sampleAmount >= 2 && gameTime != null)
             {
-                CollideWith(another, v1, v2, c, e1, e2);
-                return true;
+                Polygon p1 = Polygon.Copy(Collider);
+                Polygon p2 = Polygon.Copy(another.Collider);
+                Vector2 loc1 = Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+                Vector2 loc2 = another.Velocity * (Single)gameTime.ElapsedGameTime.TotalSeconds;
+
+                for (UInt16 i = 0; i < sampleAmount; i++)
+                {
+                    p1.Location = ogPos1 + loc1 * 1.0f * i / (sampleAmount + 1);
+                    p2.Location = ogPos2 + loc2 * 1.0f * i / (sampleAmount + 1);
+
+                    Vector2[] v1 = p1.TurnedVertices;
+                    Vector2[] v2 = p2.TurnedVertices;
+                    LineFragment[] e1 = Polygon.FindEdges(v1);
+                    LineFragment[] e2 = Polygon.FindEdges(v2);
+                    Vector2[] c = Polygon.FindContactsOf(e1, e2, v1, v2);
+                    if (c.Length >= 2)
+                    {
+                        Location = p1.Location;
+                        another.Location = p2.Location;
+                        CollideWith(another, v1, v2, c, e1, e2);
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                Vector2[] v1 = Collider.TurnedVertices;
+                Vector2[] v2 = another.Collider.TurnedVertices;
+                LineFragment[] e1 = Polygon.FindEdges(v1);
+                LineFragment[] e2 = Polygon.FindEdges(v2);
+                Vector2[] c = Polygon.FindContactsOf(e1, e2, v1, v2);
+                if (c.Length >= 2)
+                {
+                    CollideWith(another, v1, v2, c, e1, e2);
+                    return true;
+                }
             }
             return false;
         }

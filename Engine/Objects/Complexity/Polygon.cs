@@ -102,7 +102,7 @@ namespace DotRPG.Objects.Complexity
                 {
                     foreach (Vector2 p2 in v2)
                     {
-                        if (p1 == p2)
+                        if (p1.X == p2.X && p1.Y == p2.Y)
                         {
                             contacts.Add(p1);
                         }
@@ -165,6 +165,27 @@ namespace DotRPG.Objects.Complexity
         public static Boolean Overlaps(Vector2[] v1, Vector2[] v2)
         {
             return (FindActualCenter(v2) - FindActualCenter(v1)).Length() > (FindMedianRadius(v1) + FindMedianRadius(v2));
+        }
+
+        public static Polygon CreateFromPointArray(Vector2[] v, Vector2 op)
+        {
+            Polygon p = new Polygon
+            {
+                OriginPoint = op
+            };
+            Vector2[] pts = new Vector2[v.Length];
+            for (int i = 0; i < v.Length; i++)
+            {
+                pts[i] = v[i];
+            }
+            p.Vertices = pts;
+            return p;
+        }
+        public static Polygon Copy(Polygon p)
+        {
+            Polygon n = CreateFromPointArray(p.Vertices, p.OriginPoint);
+            n.Turn = p.Turn;
+            return n;
         }
     }
 }
