@@ -24,7 +24,7 @@ namespace DotRPG.Objects.Complexity
                     radiusLengthAngle = new Vector2(radiusLengthAngle.X, radiusLengthAngle.Y + Turn);
                     Vector2 newLocation = SharedVectorMethods.FromLengthAngle(radiusLengthAngle);
                     newGeometry[i] = (OriginPoint + newLocation);
-                    newGeometry[i] = new Vector2(/*(int)Math.Round(*/newGeometry[i].X/*)*/, /*(int)Math.Round(*/newGeometry[i].Y/*)*/);
+                    newGeometry[i] = new Vector2((int)Math.Round(newGeometry[i].X), (int)Math.Round(newGeometry[i].Y));
                 }
 
                 return newGeometry;
