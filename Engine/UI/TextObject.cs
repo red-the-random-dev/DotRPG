@@ -8,11 +8,13 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace DotRPG.UI
 {
+    [Construct.TABS_Deployable("Text", Construct.ObjectType.UserInterfaceElement)]
     /// <summary>
     /// Instance of drawable object that represents scrollable text.
     /// </summary>
     public class TextObject : UserInterfaceElement
     {
+        [Construct.TABS_InternalText]
         public String Text;
         public Color TextColor;
         AlignMode anc;
@@ -28,13 +30,17 @@ namespace DotRPG.UI
                 anc = value;
             }
         }
+        [Construct.TABS_Property("font", Construct.PropertyType.Resource_Font)]
         public SpriteFont Font;
+        [Construct.TABS_Property("scrollDelay", Construct.PropertyType.FloatPoint)]
         public Single ScrollDelay;
         protected Double ScrollTimer;
         protected Int32 DrawnText;
+        [Construct.TABS_Property("scrollPerTick", Construct.PropertyType.Integer)]
         public Int32 ScrollPerTick;
         public Single Depth;
         protected String WrittenString = String.Empty;
+        [Construct.TABS_Property("scrollPerTick", Construct.PropertyType.Resource_SoundEffect)]
         public SoundEffect ScrollingSound = null;
         protected Int32 LastDrawnText = 0;
         /// <summary>

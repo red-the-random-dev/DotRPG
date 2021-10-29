@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DotRPG.Construct;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,6 +9,7 @@ namespace DotRPG.UI
 {
     public class ColorBox : UserInterfaceElement
     {
+        [TABS_Property("color", PropertyType.Color)]
         public Color DrawColor;
 
         public ColorBox(Color color, Vector2 relativeSize, Vector2 relativePos, Vector2 origin, Int32 defaultScreenHeight = 540)

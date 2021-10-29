@@ -17,7 +17,7 @@ namespace DotRPG.Algebra
             get
             {
                 // y = kx + b
-                return Tangent * x + Offset;
+                return (Single)Math.Round(Tangent * x + Offset);
             }
         }
 
@@ -27,7 +27,7 @@ namespace DotRPG.Algebra
             {
                 IsVertical = true;
                 Tangent = Single.PositiveInfinity;
-                HorizontalOffset = P1.X;
+                HorizontalOffset = (Single)Math.Round(P1.X);
                 Offset = Single.PositiveInfinity;
             }
             else
@@ -50,9 +50,9 @@ namespace DotRPG.Algebra
         {
             if (IsVertical)
             {
-                return p.X == HorizontalOffset;
+                return Math.Round(p.X) == HorizontalOffset;
             }
-            return this[p.X] == p.Y;
+            return Math.Round(this[p.X]) == Math.Round(p.Y);
         }
 
         public Boolean Intersects(Line other, out Vector2 intPoint)
@@ -64,17 +64,17 @@ namespace DotRPG.Algebra
             }
             else if (IsVertical && !other.IsVertical)
             {
-                intPoint = new Vector2(HorizontalOffset, other[HorizontalOffset]);
+                intPoint = new Vector2(HorizontalOffset, (Single)Math.Round(other[HorizontalOffset]));
                 return true;
             }
             else if (!IsVertical && other.IsVertical)
             {
-                intPoint = new Vector2(other.HorizontalOffset, this[HorizontalOffset]);
+                intPoint = new Vector2(other.HorizontalOffset, (Single)Math.Round(this[HorizontalOffset]));
                 return true;
             }
             else
             {
-                Single x = (other.Offset - Offset) / (Tangent - other.Tangent);
+                Single x = (Single)Math.Round((other.Offset - Offset) / (Tangent - other.Tangent));
                 intPoint = new Vector2(x, this[x]);
                 return true;
             }
