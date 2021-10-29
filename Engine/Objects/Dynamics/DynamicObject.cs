@@ -1,4 +1,4 @@
-﻿#define USE_LEGACY
+﻿#define FORCE_USE_LEGACY
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -64,7 +64,10 @@ namespace DotRPG.Objects.Dynamics
         public Boolean Collidable = true;
         public Boolean Active = true;
         public Boolean Visible = true;
+#if !FORCE_USE_LEGACY
+        // don't forget.
         public Boolean UseSimplifiedCollision = true;
+#endif
         public Vector2 ColliderOrigin = new Vector2(0.5f, 0.5f);
         public Vector2 SpriteOffset = Vector2.Zero;
         public Vector2 SpriteOrigin = new Vector2(0.5f, 0.5f);
@@ -88,7 +91,14 @@ namespace DotRPG.Objects.Dynamics
         }
         public Boolean TryCollideWith(DynamicObject another, out Int32 contactAmount, UInt16 sampleAmount = 1, GameTime gameTime = null)
         {
-            if (UseSimplifiedCollision)
+            if
+            (
+#if FORCE_USE_LEGACY
+                true
+#else
+                UseSimplifiedCollision
+#endif
+            )
             {
                 return _legacy_TryCollideWith(another, out contactAmount, sampleAmount, gameTime);
             }
@@ -321,6 +331,7 @@ namespace DotRPG.Objects.Dynamics
             if (another.Static)
             {
                 // Velocity += normal * 2 * Velocity.Length();
+                FullStop();
                 return;
             }
             another.Velocity -= sacrificedMomentum2 / Mass;
@@ -371,7 +382,7 @@ namespace DotRPG.Objects.Dynamics
                     LineFragment[] e1 = Polygon.FindEdges(v1);
                     LineFragment[] e2 = Polygon.FindEdges(v2);
                     Vector2[] c = Polygon.FindContactsOf(e1, e2, v1, v2);
-                    if ((contactAmount = c.Length) > 0 && c.Length % 2 == 0)
+                    if ((contactAmount = c.Length) >= 2)
                     {
                         Location = p1.Location;
                         another.Location = p2.Location;

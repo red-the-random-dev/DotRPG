@@ -637,7 +637,7 @@ namespace DotRPG.Behavior.Defaults
             foreach (String i in Props.Keys)
             {
                 Props[i].Update(gameTime);
-                if (Player.TryCollideWith(Props[i], out Int32 hits_p, 16, gameTime))
+                if (Player.TryCollideWith(Props[i], out Int32 hits_p, 0, gameTime))
                 {
                     DebugText += String.Format("Player hits {0} with {1} contact(s)\n", i, hits_p);
                 }
@@ -649,7 +649,7 @@ namespace DotRPG.Behavior.Defaults
                         {
                             continue;
                         }
-                        if (Props[i].TryCollideWith(Props[x], out Int32 hits, 16, gameTime))
+                        if (Props[i].TryCollideWith(Props[x], out Int32 hits, 0, gameTime))
                         {
                             DebugText += String.Format("{0} hits {1} with {2} contact(s)\n", i, x, hits);
                         }
