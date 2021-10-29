@@ -61,7 +61,7 @@ namespace DotRPG.Algebra
         {
             get
             {
-                return new Vector2((Clamp_MaxX + Clamp_MinX) / 2, (Clamp_MaxY + Clamp_MinY) / 2);
+                return new Vector2((End1.X + End2.X) / 2, (End2.Y + End1.Y) / 2);
             }
         }
         #region IEquatable implementation

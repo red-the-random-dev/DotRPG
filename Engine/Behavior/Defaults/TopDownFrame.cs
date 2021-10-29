@@ -591,6 +591,7 @@ namespace DotRPG.Behavior.Defaults
         public override void Update(GameTime gameTime, bool[] controls)
         {
             Running = true;
+            DebugText = "";
             Single loco_x = 0.0f; Single loco_y = 0.0f;
             if (Player.Controlled)
             {
@@ -636,7 +637,10 @@ namespace DotRPG.Behavior.Defaults
             foreach (String i in Props.Keys)
             {
                 Props[i].Update(gameTime);
-                Player.TryCollideWith(Props[i]);
+                if (Player.TryCollideWith(Props[i], out Int32 hits_p, 16, gameTime))
+                {
+                    DebugText += String.Format("Player hits {0} with {1} contact(s)\n", i, hits_p);
+                }
                 if (!Props[i].Static)
                 {
                     foreach (String x in Props.Keys)
@@ -645,7 +649,10 @@ namespace DotRPG.Behavior.Defaults
                         {
                             continue;
                         }
-                        Props[i].TryCollideWith(Props[x]);
+                        if (Props[i].TryCollideWith(Props[x], out Int32 hits, 16, gameTime))
+                        {
+                            DebugText += String.Format("{0} hits {1} with {2} contact(s)\n", i, x, hits);
+                        }
                     }
                 }
             }
