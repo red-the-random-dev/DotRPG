@@ -26,6 +26,7 @@ function update(objID, eventID, frameTime, totalTime)
         end
         if math.abs(obj:GetVelocityDerivative(this)) > 32 then
             camera:Shake(10 * math.abs(obj:GetVelocityDerivative(this)) / obj:GetDistanceToPlayer(this), 50 * math.abs(obj:GetVelocityDerivative(this)) / obj:GetDistanceToPlayer(this))
+            feedback:SetVibration(math.min(0.8, 64 / obj:GetDistanceToPlayer(this)), math.min(0.8, 64 / obj:GetDistanceToPlayer(this)) * 4, obj:GetSoundPanning(this))
             audio:PlayLocal("hit", math.min(0.8, 64 / obj:GetDistanceToPlayer(this)), 1, obj:GetSoundPanning(this))
         end
     end

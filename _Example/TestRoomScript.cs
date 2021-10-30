@@ -50,6 +50,7 @@ namespace DotRPG._Example
                     Events.Enqueue(TotalGameTime, 1000.0f, "kickablereset");
                     Audio.PlayLocal("hit");
                     Camera.Shake(10, 10);
+                    Feedback.SetVibration(10, 30);
                     ObjectHeap.SetPlayerAnimationSequence("red.idle." + Scene.Player.SightDirection.ToString().ToLower());
                     ObjectHeap.EnablePlayerControls();
                     PunchCount += 2500.0f;

@@ -29,6 +29,7 @@ namespace DotRPG.Behavior.Defaults
         public PaletteManager Palette { get; private set; }
         public PathfindingManager Pathfinder { get; private set; }
         public ScriptEventManager EventTimer { get; private set; }
+        public FeedbackManager Feedback { get; private set; } = new FeedbackManager();
         public PlayerObject Player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -258,6 +259,7 @@ namespace DotRPG.Behavior.Defaults
             x.AddData("timer", EventTimer);
             x.AddData("palette", Palette);
             x.AddData("navmap", Pathfinder);
+            x.AddData("feedback", Feedback);
             x.SuppressExceptions = SuppressScriptExceptions;
             if (x is TopDownFrameScript)
             {
@@ -689,6 +691,7 @@ namespace DotRPG.Behavior.Defaults
                     Camera.Zoom = Math.Max(0.3f, Math.Min(2.5f, Camera.Zoom + (0.1f * mwheel / 120)));
                 }
             }
+            Feedback.Update(gameTime);
             base.Update(gameTime, controls);
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
             for (int i = 0; i < Math.Min(controls.Length, LastInput.Length); i++)
@@ -756,6 +759,7 @@ namespace DotRPG.Behavior.Defaults
 
         public override void UnloadContent()
         {
+            Feedback.Reset();
             foreach (String x in Props.Keys)
             {
                 FinalizeObject(x);
