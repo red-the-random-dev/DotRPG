@@ -12,10 +12,23 @@ namespace DotRPG.Behavior.Management
         protected Single VibrationFadeout;
         protected Single Fac;
 
-        public void SetVibration(Single v, Single f = 0, Single fac = 0)
+        public void SetVibration(Single v)
+        {
+            Vibration = v;
+        }
+        public void SetVibration(Single v, Single f)
         {
             Vibration = v;
             VibrationFadeout = f;
+        }
+        public void SetVibration(Single v, Single f, Single fac)
+        {
+            Vibration = v;
+            VibrationFadeout = f;
+            Fac = fac;
+        }
+        public void SetPanning(Single fac)
+        {
             Fac = fac;
         }
 
