@@ -32,9 +32,9 @@ namespace DotRPG.UI
             DefaultDrawAreaHeight = DefaultScreenHeight;
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateElement(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 offset, float turn)

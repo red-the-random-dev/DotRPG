@@ -7,9 +7,9 @@ namespace DotRPG.UI
 {
     public static class UIBuilder
     {
-        public UserInterfaceElement BuildFromTABS(ObjectPrototype root, Dictionary<String, ObjectPrototype> namedElements)
+        public static UserInterfaceElement BuildFromTABS(ObjectPrototype root, Dictionary<String, ObjectPrototype> namedElements)
         {
-
+            throw new NotImplementedException();
         }
     }
 }

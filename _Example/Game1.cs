@@ -211,13 +211,14 @@ namespace DotRPG._Example
                 GameStarted = true;
                 GameStartMark = gameTime.TotalGameTime.TotalMilliseconds;
                 LogicEventSet.Add(new TimedEvent(gameTime, 1000.0f, StartScroll));
+                PressStart.Text = "[```````````````````]";
             }
-            if (!IsCtrlKeyDown[7] && (Keyboard.GetState().IsKeyDown(Keys.F4) || GamePad.GetState(PlayerIndex.One).Buttons.RightStick == ButtonState.Pressed))
+            if (!IsCtrlKeyDown[7] && Keyboard.GetState().IsKeyDown(Keys.F4) || GamePad.GetState(PlayerIndex.One).Buttons.RightStick == ButtonState.Pressed)
             {
                 IsCtrlKeyDown[7] = true;
                 FullScreen = !FullScreen;
             }
-            else if (IsCtrlKeyDown[7] && (Keyboard.GetState().IsKeyUp(Keys.F4) && GamePad.GetState(PlayerIndex.One).Buttons.RightStick != ButtonState.Pressed))
+            else if (IsCtrlKeyDown[7] && Keyboard.GetState().IsKeyUp(Keys.F4) && GamePad.GetState(PlayerIndex.One).Buttons.RightStick != ButtonState.Pressed)
             {
                 IsCtrlKeyDown[7] = false;
             }
@@ -258,6 +259,7 @@ namespace DotRPG._Example
                 TimeSinceError += gameTime.ElapsedGameTime.TotalSeconds;
             }
             PressStart.Rotation = (Single)Math.Sin(gameTime.TotalGameTime.TotalSeconds * Math.PI / 2) / 8;
+            PressStart.Update(gameTime);
             base.Update(gameTime);
         }
 

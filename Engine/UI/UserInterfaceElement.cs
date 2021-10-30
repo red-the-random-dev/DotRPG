@@ -22,7 +22,7 @@ namespace DotRPG.UI
         [TABS_Property("relativeSize", PropertyType.Vector2)]
         public Vector2 RelativeSize { get; set; }
         [TABS_Property("relativePos", PropertyType.Vector2)]
-        public Vector2 RelativePosition { get; set; }
+        public Vector2 RelativePosition { get; set; } = new Vector2(0.5f, 0.5f);
         [TABS_Property("origin", PropertyType.Vector2)]
         public Vector2 RotationOrigin { get; set; } = new Vector2(0.5f, 0.5f);
         protected abstract void UpdateElement(GameTime gameTime);

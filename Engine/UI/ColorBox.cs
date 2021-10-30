@@ -45,7 +45,7 @@ namespace DotRPG.UI
             );
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateElement(GameTime gameTime)
         {
             
         }

@@ -57,8 +57,9 @@ namespace DotRPG.Construct
             }
         }
 
-        public ObjectPrototype[] FromStream(Stream s)
+        public ObjectPrototype[] FromStream(Stream s, out String dataType)
         {
+            dataType = "";
             List<ObjectPrototype> opl = new List<ObjectPrototype>();
             StreamReader sr = new StreamReader(s);
             ObjectPrototype[] ActiveChain = new ObjectPrototype[0];
@@ -115,6 +116,14 @@ namespace DotRPG.Construct
                     case '>':
                         {
                             ActiveChain[level].PrefabName = GetStringCut(1, dataChunk);
+                            break;
+                        }
+                    case '!':
+                        {
+                            if (level == 0)
+                            {
+                                dataType = GetStringCut(1, dataChunk);
+                            }
                             break;
                         }
                 }
