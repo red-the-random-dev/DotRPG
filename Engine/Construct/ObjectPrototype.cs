@@ -17,6 +17,7 @@ namespace DotRPG.Construct
         {
             ObjectPrototype op = new ObjectPrototype();
             op.Name = xe.Name.LocalName;
+            op.InternalData = xe.Value;
 
             foreach (XAttribute xa in xe.Attributes())
             {

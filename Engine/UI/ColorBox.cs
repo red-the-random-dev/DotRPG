@@ -11,7 +11,12 @@ namespace DotRPG.UI
     public class ColorBox : UserInterfaceElement
     {
         [TABS_Property("color", PropertyType.Color)]
-        public Color DrawColor;
+        public Color DrawColor = Color.Transparent;
+
+        public ColorBox()
+        {
+
+        }
 
         public ColorBox(Color color, Vector2 relativeSize, Vector2 relativePos, Vector2 origin, Int32 defaultScreenHeight = 540)
         {

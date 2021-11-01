@@ -46,6 +46,10 @@ namespace DotRPG.UI
         [Construct.TABS_Property("scrollSound", Construct.PropertyType.Resource_SoundEffect)]
         public SoundEffect ScrollingSound = null;
         protected Int32 LastDrawnText = 0;
+        public TextObject()
+        {
+
+        }
         /// <summary>
         /// Creates an instance of Text Object.
         /// </summary>

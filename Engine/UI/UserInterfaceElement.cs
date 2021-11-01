@@ -20,7 +20,7 @@ namespace DotRPG.UI
         [TABS_Property("subnodePadding", PropertyType.Vector4)]
         public Vector4 SubnodePadding { get; set; } = Vector4.Zero;
         [TABS_Property("relativeSize", PropertyType.Vector2)]
-        public Vector2 RelativeSize { get; set; }
+        public Vector2 RelativeSize { get; set; } = Vector2.One;
         [TABS_Property("relativePos", PropertyType.Vector2)]
         public Vector2 RelativePosition { get; set; } = new Vector2(0.5f, 0.5f);
         [TABS_Property("origin", PropertyType.Vector2)]

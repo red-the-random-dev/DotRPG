@@ -8,7 +8,9 @@ namespace DotRPG.UI
 {
     public class ProgressBar : UserInterfaceElement
     {
+        [Construct.TABS_Property("fgColor", Construct.PropertyType.Color)]
         public Color ForegroundColor;
+        [Construct.TABS_Property("bgColor", Construct.PropertyType.Color)]
         public Color BackgroundColor;
         Single _p = 0.0f;
         public Single Progress_Percentage
@@ -21,6 +23,11 @@ namespace DotRPG.UI
             {
                 _p = Math.Max(0.0f, Math.Min(1.0f, value / 100.0f));
             }
+        }
+
+        public ProgressBar()
+        {
+
         }
 
         public ProgressBar(Color fgColor, Color ? bgColor, Vector2 relativeSize, Vector2 relativePosition, Int32 DefaultScreenHeight = 540)
