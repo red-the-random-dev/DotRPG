@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DotRPG.Algebra;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -63,10 +64,11 @@ namespace DotRPG.Objects
             }
         }
 
-        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Vector2? Origin, Color? drawColor = null, Single drawSize = 1.0f, Single ZIndex = 0.0f)
+        public void Draw(SpriteBatch _sb, Vector2 drawLocation, GameTime gameTime, Vector2? Origin, Color? drawColor = null, Rectangle? aov = null, Vector2? aovl = null, Single drawSize = 1.0f, Single ZIndex = 0.0f)
         {
             Color DrawColor = drawColor ?? Color.White;
             Vector2 origin = Origin ?? Vector2.Zero;
+            Vector2 _aov_l = aovl ?? drawLocation;
             
             Single addFrames = 0.0f;
             if (PlaybackSpeed > 0.0f)
@@ -92,6 +94,25 @@ namespace DotRPG.Objects
                 toDraw.Height
             );
             Vector2 a_origin = new Vector2(origin.X * lololol.Width, origin.Y * lololol.Height);
+            if (aov is Rectangle _aov)
+            {
+                if (_aov == null)
+                {
+                    goto skip;
+                }
+                Rectangle visible = SharedRectangleMethods.GetFromOrigin(_aov_l, origin, new Vector2(lololol.Width, lololol.Height));
+                if (!visible.Intersects(_aov))
+                {
+                    return;
+                }
+                Rectangle visible2 = SharedRectangleMethods.CutInto(visible, _aov);
+                SharedRectangleMethods.GetSizeDifference(visible, visible2, out int dx, out int dy, out int dw, out int dh);
+                lololol = new Rectangle(
+                    lololol.X + dx, lololol.Y + dy, lololol.Width + dw, lololol.Height + dh
+                );
+                a_origin = new Vector2(a_origin.X - dx, a_origin.Y - dy);
+            }
+            skip:
             _sb.Draw
             (
                 toDraw, drawLocation,

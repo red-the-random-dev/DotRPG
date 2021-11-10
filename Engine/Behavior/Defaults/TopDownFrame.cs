@@ -704,8 +704,13 @@ namespace DotRPG.Behavior.Defaults
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
         {
             Rectangle dynDrawZone = Camera.GetDrawArea(drawZone);
+            Rectangle aov_p = new Rectangle(0, 0, 960, 540);
+            Rectangle aov = Camera.GetAOV(aov_p);
+#if DEBUG
+            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], "Top left: " + Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)) + ", AOV: " + aov + ", Focus: " + Camera.Focus, new Vector2(0, 12), Color.White);
             Texture2D t2d = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
             t2d.SetData(new Color[] { Color.White });
+#endif
             foreach (Backdrop b in backdrops)
             {
                 b.Draw(spriteBatch, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetColor("--bg"));
@@ -713,7 +718,7 @@ namespace DotRPG.Behavior.Defaults
             foreach (String i in Props.Keys)
             {
                 Single depth = (0.3f - (0.1f * (Props[i].Location.Y / 540)));
-                Props[i].Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), depth);
+                Props[i].Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), aov, depth);
 #if DEBUG
                 if (showHitboxes)
                 {
@@ -726,7 +731,7 @@ namespace DotRPG.Behavior.Defaults
 #endif
             }
             Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
-            Player.Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), p_depth);
+            Player.Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), aov, p_depth);
 #if DEBUG
             if (showHitboxes)
             {
@@ -737,6 +742,7 @@ namespace DotRPG.Behavior.Defaults
                 }
                 
                 spriteBatch.Draw(t2d, Player.SightArea, new Color(0, 255, 0, 128));
+                spriteBatch.Draw(t2d, aov, new Color(255, 0, 255, 64));
             }
             spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], DebugText, new Vector2(0, 36), Color.Yellow);
             Single y = 48.0f;

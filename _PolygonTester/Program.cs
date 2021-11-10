@@ -9,6 +9,7 @@ namespace _PolygonTester
     {
         static void Main(string[] args)
         {
+            /*
             Vector2[] v1 = PolygonBuilder.BuildFromRect(new Rectangle(0, 0, 64, 64), new Vector2(0.5f, 0.5f)).TurnedVertices;
             Vector2[] v2 = PolygonBuilder.BuildFromRect(new Rectangle(64, 0, 4, 4), new Vector2(0.5f, 0.5f)).TurnedVertices;
             foreach (Vector2 v in v1)
@@ -35,6 +36,15 @@ namespace _PolygonTester
             Vector2 proj = lf.FullLine.GetPointProjection(new Vector2(3, 0));
             Console.WriteLine(proj);
             Console.WriteLine(lf.Intersects(proj));
+            */
+
+            Rectangle alpha = SharedRectangleMethods.GetFromOrigin(new Vector2(16, 16), new Vector2(0.5f, 0.5f), new Vector2(32, 32));
+            Rectangle beta = SharedRectangleMethods.GetFromOrigin(new Vector2(16, 0), new Vector2(1.0f, 0), new Vector2(960, 540));
+            Console.WriteLine(alpha + " " + beta);
+            Rectangle gamma = SharedRectangleMethods.CutInto(alpha, beta);
+            Console.WriteLine(gamma);
+            SharedRectangleMethods.GetSizeDifference(alpha, gamma, out int dx, out int dy, out int dw, out int dh);
+            Console.WriteLine("{0} {1} {2} {3}", dx, dy, dw, dh);
         }
     }
 }

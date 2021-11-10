@@ -389,19 +389,20 @@ namespace DotRPG.Objects.Dynamics
             return false;
         }
 #endif
-        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Single ZIndex = 0.0f)
+        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Rectangle aov, Single ZIndex = 0.0f)
         {
             if (Sprite == null || !Active  || !Visible)
             {
                 return;
             }
+            
             Single sizeMorph = 1.0f * scrollSize.Y / VirtualVSize;
             Vector2 location = new Vector2
             (
                 Location.X * sizeMorph - scrollOffset.X,
                 Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - scrollOffset.Y
             );
-            Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), DrawColor, sizeMorph, ZIndex);
+            Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), DrawColor, aov, Location, sizeMorph, ZIndex);
         }
         protected Boolean _legacy_TryCollideWith(DynamicObject another, out Int32 contactAmount, UInt16 sampleAmount = 1, GameTime gameTime = null)
         {
