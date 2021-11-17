@@ -1,6 +1,8 @@
 using System;
 using DotRPG.Behavior.Defaults;
 using DotRPG.Scripting;
+using DotRPG.UI;
+using Microsoft.Xna.Framework;
 
 namespace DotRPG._Example
 {
@@ -53,16 +55,44 @@ namespace DotRPG._Example
                     {
                         PunchCount = 0.0f;
                     }
-                    if (Scene.UI_NamedList.TryGetValue("treehpbar", out UI.UserInterfaceElement uie))
+                    if (Scene.UI_NamedList.TryGetValue("hpbar", out UI.UserInterfaceElement uie))
                     {
                         if (uie is UI.ProgressBar pb)
                         {
-                            pb.Progress_Percentage = Math.Clamp(9000 - PunchCount, 0, 9000) / 9000;
+                            if (ObjectHeap.Exists("tree"))
+                            {
+                                Single newPerc = Math.Clamp(9000 - PunchCount, 0, 9000) / 90;
+                                if (ObjectHeap.GetDistanceToPlayer("tree") <= 128 && PunchCount > 0)
+                                {
+                                    pb.Progress_Percentage = Math.Min(newPerc, pb.Progress_Percentage);
+                                }
+                                else
+                                {
+                                    pb.Progress_Percentage = newPerc;
+                                }
+                            }
+                        }
+                    }
+                    if (Scene.UI_NamedList.TryGetValue("hp", out UI.UserInterfaceElement uieb))
+                    {
+                        if (ObjectHeap.Exists("tree"))
+                        {
+                            if (ObjectHeap.GetDistanceToPlayer("tree") <= 128 && PunchCount > 0)
+                            {
+                                uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y + ElapsedGameTime / 10000, -0.1f, 0.0f));
+                            }
+                            else
+                            {
+                                uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
+                            }
+                        }
+                        else
+                        {
+                            uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
                         }
                     }
                     break;
                 case "treeouch":
-                    Events.Enqueue(TotalGameTime, 10.0f, "popup:lower:treehp");
                     Events.Enqueue(TotalGameTime, 1000.0f, "kickablereset");
                     Audio.PlayLocal("hit");
                     Camera.Shake(10, 10);

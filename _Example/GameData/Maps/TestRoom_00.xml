@@ -17,9 +17,9 @@
 
     <UI>
         <blank aspectRatio="1.33" defaultHeight="540">
-            <ColorBox id="treehp" relativePos="0,0" origin="0,0" relativeSize="1,0.1" color="0,0,0,255" defaultHeight="540" subnodePadding="4,4,4,4">
-                <Text origin="0,0.5" relativePos="0,0.5" font="g:vcr_large" defaultHeight="108">TREE HP</Text>
-                <ProgressBar id="treehpbar" relativePos="0.75,0.5" origin="0.5,0.5" relativeSize="0.5,1" bgColor="255,0,0,128" fgColor="255,255,0,255" />
+            <ColorBox id="hp" relativePos="0,-0.1" origin="0,0" relativeSize="1,0.1" color="0,0,0,255" defaultHeight="540" subnodePadding="4,4,4,4">
+                <Text id="hpcaption" origin="0,0.5" relativePos="0,0.5" font="g:vcr_large" defaultHeight="108">TREE, GUARDIAN OF WHITE RECTS</Text>
+                <ProgressBar id="hpbar" relativePos="0.75,0.5" origin="0.5,0.5" relativeSize="0.5,0.75" bgColor="255,0,0,255" fgColor="255,255,0,255" defaultHeight="54"/>
             </ColorBox>
             <Text id="tutoriel" origin="0,0" relativePos="0,1" font="g:vcr_large" defaultHeight="1080">[Arrow keys] Move
 [Z] Interact</Text>
