@@ -10,7 +10,7 @@ namespace DotRPG.UI
 {
     public static class UIBuilder
     {
-        public static Boolean TABS_Initialize(out UserInterfaceElement uie, ObjectPrototype op_sub, ResourceHeap resources, TYPE_INDEX typeref)
+        public static Boolean TABS_Initialize(out UserInterfaceElement uie, ObjectPrototype op_sub, ResourceHeap resources, TYPE_INDEX typeref, Dictionary<String, UserInterfaceElement> namedElements)
         {
             Type deploy = typeref[op_sub.Name];
             uie = Activator.CreateInstance(deploy) as UserInterfaceElement;
@@ -114,15 +114,19 @@ namespace DotRPG.UI
             }
             foreach (ObjectPrototype op_sub2 in op_sub.Subnodes)
             {
-                if (TABS_Initialize(out UserInterfaceElement uie_s, op_sub2, resources, typeref))
+                if (TABS_Initialize(out UserInterfaceElement uie_s, op_sub2, resources, typeref, namedElements))
                 {
                     uie.Subnodes.Add(uie_s);
+                    if (op_sub2.Properties.ContainsKey("id"))
+                    {
+                        namedElements.Add(op_sub2.Properties["id"], uie_s);
+                    }
                 }
             }
             return true;
         }
 
-        public static UserInterfaceElement[] BuildFromTABS(ObjectPrototype root, Dictionary<String, ObjectPrototype> namedElements, ResourceHeap resources, TYPE_INDEX lookIn = null)
+        public static UserInterfaceElement[] BuildFromTABS(ObjectPrototype root, Dictionary<String, UserInterfaceElement> namedElements, ResourceHeap resources, TYPE_INDEX lookIn = null)
         {
             if (lookIn == null)
             {
@@ -146,9 +150,13 @@ namespace DotRPG.UI
             
             foreach (ObjectPrototype op_sub in root.Subnodes)
             {
-                if (TABS_Initialize(out UserInterfaceElement uie, op_sub, resources, lookIn))
+                if (TABS_Initialize(out UserInterfaceElement uie, op_sub, resources, lookIn, namedElements))
                 {
                     uiel.Add(uie);
+                    if (op_sub.Properties.ContainsKey("id"))
+                    {
+                        namedElements.Add(op_sub.Properties["id"], uie);
+                    }
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#region Type aliases definition
+using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 using DotRPG.Objects;
@@ -12,9 +13,19 @@ using Microsoft.Xna.Framework.Media;
 using DotRPG.Scripting;
 using DotRPG.Behavior.Routines;
 using Microsoft.Xna.Framework.Input;
+using DotRPG.UI;
 using DotRPG.Waypoints;
 using DotRPG.Behavior.Management;
 using DotRPG.Construct;
+
+using PREFAB_SET = System.Collections.Generic.Dictionary<string, DotRPG.Construct.ObjectPrototype>;
+using SCRIPT_SET = System.Collections.Generic.List<DotRPG.Scripting.IScriptModule>;
+using SCRIPT_DICT = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<DotRPG.Scripting.IScriptModule>>;
+using NAVMAP = System.Collections.Generic.Dictionary<string, DotRPG.Waypoints.Waypoint>;
+using OBJ_SET = System.Collections.Generic.Dictionary<string, DotRPG.Objects.Dynamics.DynamicObject>;
+using UI_ROOT = System.Collections.Generic.List<DotRPG.UI.UserInterfaceElement>;
+using UI_DICT = System.Collections.Generic.Dictionary<string, DotRPG.UI.UserInterfaceElement>;
+#endregion
 
 namespace DotRPG.Behavior.Defaults
 {
@@ -34,14 +45,15 @@ namespace DotRPG.Behavior.Defaults
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<ObjectPrototype> objectPrototypes = new List<ObjectPrototype>();
-        Dictionary<String, ObjectPrototype> prefabs = new Dictionary<string, ObjectPrototype>();
-        List<IScriptModule> Scripts = new List<IScriptModule>();
-        Dictionary<String, List<IScriptModule>> ObjectBoundScripts = new Dictionary<String, List<IScriptModule>>();
+        PREFAB_SET prefabs = new PREFAB_SET();
+        SCRIPT_SET Scripts = new SCRIPT_SET();
+        SCRIPT_DICT ObjectBoundScripts = new SCRIPT_DICT();
         public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
-        public Dictionary<String, Waypoint> NavMap { get; private set; } = new Dictionary<string, Waypoint>();
-
-        public Dictionary<String, DynamicObject> Props { get; private set; } = new Dictionary<string, DynamicObject>();
-        public Dictionary<String, DynamicObject> Interactable { get; private set; } = new Dictionary<string, DynamicObject>();
+        public NAVMAP NavMap { get; private set; } = new NAVMAP();
+        public OBJ_SET Props { get; private set; } = new OBJ_SET();
+        public OBJ_SET Interactable { get; private set; } = new OBJ_SET();
+        public UI_DICT UI_NamedList { get; private set; } = new UI_DICT();
+        public UI_ROOT UI_Root { get; private set; } = new UI_ROOT();
 
         Int32 LastMWheelValue = 0;
         public Boolean[] LastInput { get; private set; } = new bool[8];
@@ -434,6 +446,14 @@ namespace DotRPG.Behavior.Defaults
                         }
                         break;
                     }
+                case "ui":
+                    {
+                        foreach (UserInterfaceElement uie in UIBuilder.BuildFromTABS(op, UI_NamedList, FrameResources))
+                        {
+                            UI_Root.Add(uie);
+                        }
+                        break;
+                    }
                 case "ruleset":
                     {
                         foreach (String opa in op.Properties.Keys)
@@ -497,7 +517,7 @@ namespace DotRPG.Behavior.Defaults
                         }
                     case "prefab":
                         {
-                            XMLSceneLoader.GetPrefab(xe.Attribute(XName.Get("objType")).Value, Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value)), prefabs, out String newID, resourceLoad);
+                            XMLSceneLoader.GetPrefab(xe.Attribute(XName.Get("objType")).Value, Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value)), prefabs, out String _newID, resourceLoad);
                             break;
                         }
                     default:
@@ -713,7 +733,7 @@ namespace DotRPG.Behavior.Defaults
 #endif
             foreach (Backdrop b in backdrops)
             {
-                b.Draw(spriteBatch, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetColor("--bg"));
+                b.Draw(spriteBatch, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), aov, Palette.GetColor("--bg"));
             }
             foreach (String i in Props.Keys)
             {
@@ -732,6 +752,11 @@ namespace DotRPG.Behavior.Defaults
             }
             Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
             Player.Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), aov, p_depth);
+
+            foreach (UserInterfaceElement uie in UI_Root)
+            {
+                uie.Draw(gameTime, spriteBatch, drawZone);
+            }
 #if DEBUG
             if (showHitboxes)
             {
@@ -789,6 +814,8 @@ namespace DotRPG.Behavior.Defaults
             Player = null;
             Scripts.Clear();
             backdrops.Clear();
+            UI_NamedList.Clear();
+            UI_Root.Clear();
             content = 0;
             objects = 0;
             ready = false;
