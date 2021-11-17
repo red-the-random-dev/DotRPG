@@ -105,7 +105,7 @@ namespace DotRPG.UI
                             pi.SetValue(uie, Behavior.XMLSceneLoader.ResolveVector4(op_sub.Properties[tpa.ID]));
                             break;
                         case PropertyType.Color:
-                            pi.SetValue(uie, Behavior.XMLSceneLoader.ResolveColorVector4(op_sub.Properties[tpa.ID]));
+                            pi.SetValue(uie, new Microsoft.Xna.Framework.Color(Behavior.XMLSceneLoader.ResolveColorVector4(op_sub.Properties[tpa.ID])));
                             break;
                         case PropertyType.Resource_Font:
                             pi.SetValue(uie, op_sub.Properties[tpa.ID].Split(':')[0] == "g" ? resources.Global.Fonts[op_sub.Properties[tpa.ID].Split(':')[1]] : resources.Fonts[op_sub.Properties[tpa.ID]]);

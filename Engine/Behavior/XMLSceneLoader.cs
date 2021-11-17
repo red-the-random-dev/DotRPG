@@ -203,7 +203,7 @@ namespace DotRPG.Behavior
             {
                 throw new SerializationException(String.Format("Unable to load Vector2 from {0}-dimensional string vector.", dims.Length));
             }
-            return new Vector2(Single.Parse(dims[0]), Single.Parse(dims[1]));
+            return new Vector2(Single.Parse(dims[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture), Single.Parse(dims[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture));
         }
 
         public static Vector3 ResolveVector3(String intake)
@@ -221,7 +221,7 @@ namespace DotRPG.Behavior
             {
                 throw new SerializationException(String.Format("Unable to load Vector3 from {0}-dimensional string vector.", dims.Length));
             }
-            return new Vector3(Single.Parse(dims[0]), Single.Parse(dims[1]), Single.Parse(dims[2]));
+            return new Vector3(Single.Parse(dims[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture), Single.Parse(dims[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture), Single.Parse(dims[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture));
         }
 
         public static Vector4 ResolveVector4(String intake)
@@ -239,7 +239,7 @@ namespace DotRPG.Behavior
             {
                 throw new SerializationException(String.Format("Unable to load Vector4 from {0}-dimensional string vector.", dims.Length));
             }
-            return new Vector4(Single.Parse(dims[0]), Single.Parse(dims[1]), Single.Parse(dims[2]), Single.Parse(dims[3]));
+            return new Vector4(Single.Parse(dims[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture), Single.Parse(dims[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture), Single.Parse(dims[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture), Single.Parse(dims[3], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture));
         }
         public static Vector4 ResolveColorVector4(String intake)
         {
@@ -256,7 +256,7 @@ namespace DotRPG.Behavior
             {
                 throw new SerializationException(String.Format("Unable to load Vector4 from {0}-dimensional string vector.", dims.Length));
             }
-            return new Vector4(Single.Parse(dims[0]) / 255.0f, Single.Parse(dims[1]) / 255.0f, Single.Parse(dims[2]) / 255.0f, Single.Parse(dims[3]) / 255.0f);
+            return new Vector4(Single.Parse(dims[0], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture) / 255.0f, Single.Parse(dims[1], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture) / 255.0f, Single.Parse(dims[2], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture) / 255.0f, Single.Parse(dims[3], System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture) / 255.0f);
         }
 
         public static SpriteController LoadSpriteController(XElement xe2, ResourceHeap FrameResources)

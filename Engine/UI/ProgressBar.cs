@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DotRPG.UI
 {
+    [Construct.TABS_Deployable("ProgressBar", Construct.ObjectType.UserInterfaceElement)]
     public class ProgressBar : UserInterfaceElement
     {
         [Construct.TABS_Property("fgColor", Construct.PropertyType.Color)]

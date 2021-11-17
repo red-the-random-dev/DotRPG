@@ -731,18 +731,23 @@ namespace DotRPG.Behavior.Defaults
             Rectangle aov_p = new Rectangle(0, 0, 960, 540);
             Rectangle aov = Camera.GetAOV(aov_p);
 #if DEBUG
-            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], "Top left: " + Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)) + ", AOV: " + aov + ", Focus: " + Camera.Focus, new Vector2(0, 12), Color.White);
             Texture2D t2d = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
             t2d.SetData(new Color[] { Color.White });
 #endif
+            SpriteBatch obj_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
+            SpriteBatch bg_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
+            
+            bg_sb.Begin();
             foreach (Backdrop b in backdrops)
             {
-                b.Draw(spriteBatch, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), aov, Palette.GetColor("--bg"));
+                b.Draw(bg_sb, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), aov, Palette.GetColor("--bg"));
             }
+            bg_sb.End();
+            obj_sb.Begin(SpriteSortMode.BackToFront);
             foreach (String i in Props.Keys)
             {
                 Single depth = (0.3f - (0.1f * (Props[i].Location.Y / 540)));
-                Props[i].Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), aov, depth);
+                Props[i].Draw(obj_sb, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), aov, depth);
 #if DEBUG
                 if (showHitboxes)
                 {
@@ -755,12 +760,16 @@ namespace DotRPG.Behavior.Defaults
 #endif
             }
             Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
-            Player.Draw(spriteBatch, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), aov, p_depth);
-
+            Player.Draw(obj_sb, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), aov, p_depth);
+            obj_sb.End();
+            SpriteBatch ui_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
+            ui_sb.Begin();
             foreach (UserInterfaceElement uie in UI_Root)
             {
-                uie.Draw(gameTime, spriteBatch, drawZone);
+                uie.Draw(gameTime, ui_sb, drawZone);
             }
+            ui_sb.End();
+            
 #if DEBUG
             if (showHitboxes)
             {

@@ -1,5 +1,4 @@
 using System;
-using DotRPG.Waypoints;
 using DotRPG.Behavior.Defaults;
 using DotRPG.Scripting;
 
@@ -9,6 +8,7 @@ namespace DotRPG._Example
     public class TestRoomScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
+        Boolean started = false;
         public override bool RequireRawSceneData => true;
         public override bool RequireResourceHeap => true;
 
@@ -29,6 +29,14 @@ namespace DotRPG._Example
         }
         public override void UpdateInternal(String EventID, Single ElapsedGameTime, Single TotalGameTime)
         {
+            if (!started)
+            {
+                Events.Enqueue(TotalGameTime, 0.0f, "popup:setspeed:300");
+                Events.Enqueue(TotalGameTime, 0.1f, "popup:raise:tutoriel");
+                Events.Enqueue(TotalGameTime, 5000.0f, "popup:lower:tutoriel");
+                Events.Enqueue(TotalGameTime, 6000.0f, "popup:pause:tutoriel");
+                started = true;
+            }
             switch (EventID)
             {
                 case "default":
@@ -45,8 +53,16 @@ namespace DotRPG._Example
                     {
                         PunchCount = 0.0f;
                     }
+                    if (Scene.UI_NamedList.TryGetValue("treehpbar", out UI.UserInterfaceElement uie))
+                    {
+                        if (uie is UI.ProgressBar pb)
+                        {
+                            pb.Progress_Percentage = Math.Clamp(9000 - PunchCount, 0, 9000) / 9000;
+                        }
+                    }
                     break;
                 case "treeouch":
+                    Events.Enqueue(TotalGameTime, 10.0f, "popup:lower:treehp");
                     Events.Enqueue(TotalGameTime, 1000.0f, "kickablereset");
                     Audio.PlayLocal("hit");
                     Camera.Shake(10, 10);
