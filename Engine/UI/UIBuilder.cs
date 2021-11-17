@@ -5,6 +5,7 @@ using DotRPG.Construct;
 using System.Reflection;
 using TYPE_INDEX = System.Collections.Generic.Dictionary<System.String, System.Type>;
 using DotRPG.Objects;
+using System.Globalization;
 
 namespace DotRPG.UI
 {
@@ -22,6 +23,7 @@ namespace DotRPG.UI
             foreach (PropertyInfo pi in deploy.GetProperties())
             {
                 var tp = pi.GetCustomAttribute(typeof(TABS_PropertyAttribute));
+                var tp2 = pi.GetCustomAttribute(typeof(TABS_InternalTextAttribute));
                 if (tp is TABS_PropertyAttribute tpa)
                 {
                     if (!op_sub.Properties.ContainsKey(tpa.ID))
@@ -37,7 +39,7 @@ namespace DotRPG.UI
                             pi.SetValue(uie, Int32.Parse(op_sub.Properties[tpa.ID]));
                             break;
                         case PropertyType.FloatPoint:
-                            pi.SetValue(uie, Single.Parse(op_sub.Properties[tpa.ID]));
+                            pi.SetValue(uie, Single.Parse(op_sub.Properties[tpa.ID], NumberStyles.Any, CultureInfo.InvariantCulture));
                             break;
                         case PropertyType.Boolean:
                             pi.SetValue(uie, Boolean.Parse(op_sub.Properties[tpa.ID]));
@@ -65,9 +67,14 @@ namespace DotRPG.UI
                             break;
                     }
                 }
+                if (tp2 is TABS_InternalTextAttribute)
+                {
+                    pi.SetValue(uie, op_sub.InternalData);
+                }
             }
             foreach (FieldInfo pi in deploy.GetFields())
             {
+                var tp2 = pi.GetCustomAttribute(typeof(TABS_InternalTextAttribute));
                 if (pi.GetCustomAttribute(typeof(TABS_PropertyAttribute)) is TABS_PropertyAttribute tpa)
                 {
                     if (!op_sub.Properties.ContainsKey(tpa.ID))
@@ -110,6 +117,10 @@ namespace DotRPG.UI
                             pi.SetValue(uie, op_sub.Properties[tpa.ID].Split(':')[0] == "g" ? resources.Global.Sounds[op_sub.Properties[tpa.ID].Split(':')[1]] : resources.Sounds[op_sub.Properties[tpa.ID]]);
                             break;
                     }
+                }
+                if (tp2 is TABS_InternalTextAttribute)
+                {
+                    pi.SetValue(uie, op_sub.InternalData);
                 }
             }
             foreach (ObjectPrototype op_sub2 in op_sub.Subnodes)

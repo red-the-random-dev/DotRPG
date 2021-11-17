@@ -5,9 +5,11 @@ using DotRPG.Algebra;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using System.Diagnostics;
 
 namespace DotRPG.UI
 {
+    [DebuggerDisplay("{DebugInfo,np}")]
     [Construct.TABS_Deployable("Text", Construct.ObjectType.UserInterfaceElement)]
     /// <summary>
     /// Instance of drawable object that represents scrollable text.
@@ -15,11 +17,19 @@ namespace DotRPG.UI
     public class TextObject : UserInterfaceElement
     {
         [Construct.TABS_InternalText]
-        public String Text;
+        public String Text = String.Empty;
         [Construct.TABS_Property("color", Construct.PropertyType.Color)]
         public Color TextColor = Color.White;
         AlignMode anc;
         Random stringRandomizer = new Random();
+
+        public String DebugInfo
+        {
+            get
+            {
+                return String.Format("{0}:{1}", DrawnText, Text);
+            }
+        }
 
         public AlignMode AlignAnchor
         {

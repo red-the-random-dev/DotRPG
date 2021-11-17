@@ -718,6 +718,10 @@ namespace DotRPG.Behavior.Defaults
             {
                 LastInput[i] = controls[i];
             }
+            foreach (UserInterfaceElement uie in UI_Root)
+            {
+                uie.Update(gameTime);
+            }
             Running = false;
         }
 

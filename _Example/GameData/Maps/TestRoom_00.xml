@@ -15,6 +15,12 @@
         <SoundEffect id="sam_reset" location="Sounds/TTS/RESET"/>
     </Require>
 
+    <UI>
+        <blank aspectRatio="1.33" defaultHeight="540">
+            <Text origin="0,1" relativePos="0,1" font="g:vcr" defaultHeight="270">Hello World!</Text>
+        </blank>
+    </UI>
+
     <Backdrop local="backdrop" offset="480,270" />
 
     <RuleSet allowManualZoom="true"/>
