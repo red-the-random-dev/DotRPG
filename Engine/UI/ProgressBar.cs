@@ -6,9 +6,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DotRPG.UI
 {
+    [Construct.TABS_Deployable("ProgressBar", Construct.ObjectType.UserInterfaceElement)]
     public class ProgressBar : UserInterfaceElement
     {
+        [Construct.TABS_Property("fgColor", Construct.PropertyType.Color)]
         public Color ForegroundColor;
+        [Construct.TABS_Property("bgColor", Construct.PropertyType.Color)]
         public Color BackgroundColor;
         Single _p = 0.0f;
         public Single Progress_Percentage
@@ -23,6 +26,11 @@ namespace DotRPG.UI
             }
         }
 
+        public ProgressBar()
+        {
+
+        }
+
         public ProgressBar(Color fgColor, Color ? bgColor, Vector2 relativeSize, Vector2 relativePosition, Int32 DefaultScreenHeight = 540)
         {
             ForegroundColor = fgColor;
@@ -32,9 +40,9 @@ namespace DotRPG.UI
             DefaultDrawAreaHeight = DefaultScreenHeight;
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateElement(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            
         }
 
         protected override void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 offset, float turn)

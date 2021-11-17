@@ -2,6 +2,7 @@
 using DotRPG.Algebra;
 using System.Collections.Generic;
 using System.Text;
+using DotRPG.Construct;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
@@ -10,14 +11,29 @@ namespace DotRPG.UI
     public abstract class UserInterfaceElement
     {
         public readonly HashSet<UserInterfaceElement> Subnodes = new HashSet<UserInterfaceElement>();
+        [TABS_Property("rotation", PropertyType.FloatPoint)]
         public Single Rotation { get; set; } = 0.0f;
+        [TABS_Property("defaultHeight", PropertyType.Integer)]
         public Int32 DefaultDrawAreaHeight { get; set; }
+        [TABS_Property("elementPadding", PropertyType.Vector4)]
         public Vector4 ElementPadding { get; set; } = Vector4.Zero;
+        [TABS_Property("subnodePadding", PropertyType.Vector4)]
         public Vector4 SubnodePadding { get; set; } = Vector4.Zero;
-        public Vector2 RelativeSize { get; set; }
-        public Vector2 RelativePosition { get; set; }
+        [TABS_Property("relativeSize", PropertyType.Vector2)]
+        public Vector2 RelativeSize { get; set; } = Vector2.One;
+        [TABS_Property("relativePos", PropertyType.Vector2)]
+        public Vector2 RelativePosition { get; set; } = new Vector2(0.5f, 0.5f);
+        [TABS_Property("origin", PropertyType.Vector2)]
         public Vector2 RotationOrigin { get; set; } = new Vector2(0.5f, 0.5f);
-        public abstract void Update(GameTime gameTime);
+        protected abstract void UpdateElement(GameTime gameTime);
+        public void Update(GameTime gameTime)
+        {
+            UpdateElement(gameTime);
+            foreach (UserInterfaceElement uie in Subnodes)
+            {
+                uie.Update(gameTime);
+            }
+        }
         protected abstract void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 positionOverride, Single turn);
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Single turn = 0)
         {

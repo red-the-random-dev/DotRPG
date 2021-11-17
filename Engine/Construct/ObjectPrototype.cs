@@ -11,11 +11,13 @@ namespace DotRPG.Construct
         public readonly Dictionary<String, String> Properties = new Dictionary<string, string>();
         public readonly List<ObjectPrototype> Subnodes = new List<ObjectPrototype>();
         public String PrefabName = null;
+        public String InternalData = "";
 
         public static ObjectPrototype FromXML(XElement xe)
         {
             ObjectPrototype op = new ObjectPrototype();
             op.Name = xe.Name.LocalName;
+            op.InternalData = xe.Value;
 
             foreach (XAttribute xa in xe.Attributes())
             {

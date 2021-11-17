@@ -18,6 +18,7 @@ namespace DotRPG.Behavior.Defaults
         protected ResourceHeap FrameResources;
         protected PaletteManager Palette;
         protected PathfindingManager Pathfinder;
+        protected FeedbackManager Feedback;
 
         public virtual Boolean RequireRawSceneData => false;
         public virtual Boolean RequireResourceHeap => false;
@@ -52,6 +53,9 @@ namespace DotRPG.Behavior.Defaults
                     break;
                 case "navmap":
                     Pathfinder = value as PathfindingManager;
+                    break;
+                case "feedback":
+                    Feedback = value as FeedbackManager;
                     break;
             }
         }

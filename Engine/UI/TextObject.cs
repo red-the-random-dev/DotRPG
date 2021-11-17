@@ -5,17 +5,32 @@ using DotRPG.Algebra;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using System.Diagnostics;
 
 namespace DotRPG.UI
 {
+    [DebuggerDisplay("{DebugInfo,np}")]
+    [Construct.TABS_Deployable("Text", Construct.ObjectType.UserInterfaceElement)]
     /// <summary>
     /// Instance of drawable object that represents scrollable text.
     /// </summary>
     public class TextObject : UserInterfaceElement
     {
-        public String Text;
-        public Color TextColor;
+        [Construct.TABS_InternalText]
+        public String Text = String.Empty;
+        [Construct.TABS_Property("color", Construct.PropertyType.Color)]
+        public Color TextColor = Color.White;
         AlignMode anc;
+        Random stringRandomizer = new Random();
+
+        public String DebugInfo
+        {
+            get
+            {
+                return String.Format("{0}:{1}", DrawnText, Text);
+            }
+        }
+
         public AlignMode AlignAnchor
         {
             get
@@ -28,15 +43,23 @@ namespace DotRPG.UI
                 anc = value;
             }
         }
+        [Construct.TABS_Property("font", Construct.PropertyType.Resource_Font)]
         public SpriteFont Font;
-        public Single ScrollDelay;
+        [Construct.TABS_Property("scrollDelay", Construct.PropertyType.FloatPoint)]
+        public Single ScrollDelay = 1.0f / 32;
         protected Double ScrollTimer;
         protected Int32 DrawnText;
+        [Construct.TABS_Property("scrollPerTick", Construct.PropertyType.Integer)]
         public Int32 ScrollPerTick;
         public Single Depth;
         protected String WrittenString = String.Empty;
+        [Construct.TABS_Property("scrollSound", Construct.PropertyType.Resource_SoundEffect)]
         public SoundEffect ScrollingSound = null;
         protected Int32 LastDrawnText = 0;
+        public TextObject()
+        {
+
+        }
         /// <summary>
         /// Creates an instance of Text Object.
         /// </summary>
@@ -80,7 +103,7 @@ namespace DotRPG.UI
             Vector2 AbsoluteRotationOrigin = new Vector2(str.X * RotationOrigin.X, str.Y * RotationOrigin.Y);
             // Alighning text according to set anchor position and client bounds
             Vector2 position = new Vector2(drawArea.Width * (RelativePosition.X + offset.X), drawArea.Height * (RelativePosition.Y + offset.Y)) + new Vector2(drawArea.X, drawArea.Y);
-            spriteBatch.DrawString(Font, (ScrollPerTick > 0 ? WrittenString : Text), position, TextColor, Rotation+turn, AbsoluteRotationOrigin, rescale, SpriteEffects.None, Depth);
+            spriteBatch.DrawString(Font, WrittenString, position, TextColor, Rotation+turn, AbsoluteRotationOrigin, rescale, SpriteEffects.None, Depth);
             LastDrawnText = DrawnText;
         }
         public void ResetToStart()
@@ -108,7 +131,7 @@ namespace DotRPG.UI
         /// Prepare a line of text according to elapsed gametime.
         /// </summary>
         /// <param name="gameTime">Gametime retrieved via game's Update() method parameter.</param>
-        public override void Update(GameTime gameTime)
+        protected override void UpdateElement(GameTime gameTime)
         {
             LastDrawnText = DrawnText;
             WrittenString = "";
@@ -121,13 +144,27 @@ namespace DotRPG.UI
                 }
                 for (int i = 0; i < Math.Min(DrawnText, Text.Length); i++)
                 {
-                    WrittenString += Text[i];
+                    Char toAdd = Text[i];
+                    if (toAdd == '`')
+                    {
+                        toAdd = Char.ConvertFromUtf32(stringRandomizer.Next(32, 127))[0];
+                    }
+                    WrittenString += toAdd;
                 }
                 ScrollTimer += gameTime.ElapsedGameTime.TotalSeconds;
             }
             else
             {
-                WrittenString = Text;
+                WrittenString = "";
+                for (int i = 0; i < Text.Length; i++)
+                {
+                    Char toAdd = Text[i];
+                    if (toAdd == '`')
+                    {
+                        toAdd = Char.ConvertFromUtf32(stringRandomizer.Next(32, 127))[0];
+                    }
+                    WrittenString += toAdd;
+                }
             }
         }
     }

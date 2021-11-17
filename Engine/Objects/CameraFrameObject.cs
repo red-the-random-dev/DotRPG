@@ -67,6 +67,13 @@ namespace DotRPG.Objects
 
             return new Rectangle(offsetX, offsetY, newWidth, newHeight);
         }
+        public Rectangle GetAOV(Rectangle viewport)
+        {
+            Int32 height = viewport.Height;
+            Single aspectRatio = 1.0f * viewport.Width / viewport.Height;
+            Rectangle x = Algebra.SharedRectangleMethods.GetFromOrigin(Focus.ToVector2(), new Vector2(0.5f, 0.5f), new Vector2(height * aspectRatio, height));
+            return x;
+        }
         public void Update(GameTime gameTime)
         {
             Move(ref FocusRaw, TrackTarget, CameraVelocity, gameTime);

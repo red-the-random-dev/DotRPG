@@ -1,14 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DotRPG.Construct;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace DotRPG.UI
 {
+    [TABS_Deployable("ColorBox", ObjectType.UserInterfaceElement)]
     public class ColorBox : UserInterfaceElement
     {
-        public Color DrawColor;
+        [TABS_Property("color", PropertyType.Color)]
+        public Color DrawColor = Color.Transparent;
+
+        public ColorBox()
+        {
+
+        }
 
         public ColorBox(Color color, Vector2 relativeSize, Vector2 relativePos, Vector2 origin, Int32 defaultScreenHeight = 540)
         {
@@ -42,7 +50,7 @@ namespace DotRPG.UI
             );
         }
 
-        public override void Update(GameTime gameTime)
+        protected override void UpdateElement(GameTime gameTime)
         {
             
         }

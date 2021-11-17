@@ -91,21 +91,18 @@ namespace DotRPG.Objects.Dynamics
         }
         public Boolean TryCollideWith(DynamicObject another, out Int32 contactAmount, UInt16 sampleAmount = 1, GameTime gameTime = null)
         {
-            if
-            (
-#if FORCE_USE_LEGACY
-                true
-#else
-                UseSimplifiedCollision
-#endif
-            )
+#if !FORCE_USE_LEGACY
+            if(UseSimplifiedCollision)
             {
+#endif
                 return _legacy_TryCollideWith(another, out contactAmount, sampleAmount, gameTime);
+#if !FORCE_USE_LEGACY
             }
             else
             {
                 return _poly_TryCollideWith(another, out contactAmount, sampleAmount, gameTime);
             }
+#endif
         }
         public Vector2 Momentum
         {
@@ -240,6 +237,7 @@ namespace DotRPG.Objects.Dynamics
                 }
             }
         }
+#if !FORCE_USE_LEGACY
         protected static void Shift(DynamicObject one, DynamicObject two, Vector2[] v1, Vector2[] v2, Vector2[] c, LineFragment[] e1, LineFragment[] e2, out Vector2 normal, Boolean inverted = false)
         {
             if (one.Static || (one.Mass >= two.Mass && !inverted))
@@ -339,22 +337,6 @@ namespace DotRPG.Objects.Dynamics
             Velocity += summaryMomentum / Mass;
             another.Velocity += summaryMomentum / another.Mass;
         }
-
-        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Single ZIndex = 0.0f)
-        {
-            if (Sprite == null || !Active  || !Visible)
-            {
-                return;
-            }
-            Single sizeMorph = 1.0f * scrollSize.Y / VirtualVSize;
-            Vector2 location = new Vector2
-            (
-                Location.X * sizeMorph - scrollOffset.X,
-                Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - scrollOffset.Y
-            );
-            Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), DrawColor, sizeMorph, ZIndex);
-        }
-
         protected Boolean _poly_TryCollideWith(DynamicObject another, out Int32 contactAmount, UInt16 sampleAmount = 1, GameTime gameTime = null)
         {
             contactAmount = 0;
@@ -405,6 +387,22 @@ namespace DotRPG.Objects.Dynamics
                 }
             }
             return false;
+        }
+#endif
+        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Rectangle aov, Single ZIndex = 0.0f)
+        {
+            if (Sprite == null || !Active  || !Visible)
+            {
+                return;
+            }
+            
+            Single sizeMorph = 1.0f * scrollSize.Y / VirtualVSize;
+            Vector2 location = new Vector2
+            (
+                Location.X * sizeMorph - scrollOffset.X,
+                Location.Y * sizeMorph + (BodySize.Y * sizeMorph / 2) - scrollOffset.Y
+            );
+            Sprite.Draw(_sb, location, gameTime, new Vector2(0.5f, 1.0f), DrawColor, aov, Location, sizeMorph, ZIndex);
         }
         protected Boolean _legacy_TryCollideWith(DynamicObject another, out Int32 contactAmount, UInt16 sampleAmount = 1, GameTime gameTime = null)
         {

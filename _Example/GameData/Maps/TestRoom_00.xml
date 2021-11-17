@@ -15,6 +15,17 @@
         <SoundEffect id="sam_reset" location="Sounds/TTS/RESET"/>
     </Require>
 
+    <UI>
+        <blank aspectRatio="1.33" defaultHeight="540">
+            <ColorBox id="hp" relativePos="0,-0.1" origin="0,0" relativeSize="1,0.1" color="0,0,0,255" defaultHeight="540" subnodePadding="4,4,4,4">
+                <Text id="hpcaption" origin="0,0.5" relativePos="0,0.5" font="g:vcr_large" defaultHeight="108">TREE, GUARDIAN OF WHITE RECTS</Text>
+                <ProgressBar id="hpbar" relativePos="0.75,0.5" origin="0.5,0.5" relativeSize="0.5,0.75" bgColor="255,0,0,255" fgColor="255,255,0,255" defaultHeight="54"/>
+            </ColorBox>
+            <Text id="tutoriel" origin="0,0" relativePos="0,1" font="g:vcr_large" defaultHeight="1080">[Arrow keys] Move
+[Z] Interact</Text>
+        </blank>
+    </UI>
+
     <Backdrop local="backdrop" offset="480,270" />
 
     <RuleSet allowManualZoom="true"/>
@@ -107,6 +118,7 @@
     <Prop id="barrier_l" startPos="-48,270" colliderSize="96,600" mass="1000" static="true"/>
     <Prop id="barrier_r" startPos="1008,270" colliderSize="96,600" mass="1000" static="true"/>
 
+    <PreBuiltScript name="default/popup"/>
     <PreBuiltScript name="testroom_00" location="Scripts/DialogComp.cs"/>
     <!--
     <TextBox relativeSize="1.0,0.2" location="0.0,0.8" textColor="255,255,255,255" backgroundColor="0,0,0,255">

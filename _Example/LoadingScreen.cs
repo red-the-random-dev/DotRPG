@@ -66,6 +66,7 @@ namespace DotRPG._Example
             }
             progress.Progress_Percentage = Loader.LoadPercentage;
             percentage.Text = Loader.LoadPercentage.ToString() + "%";
+            percentage.Update(gameTime);
             base.Update(gameTime, controls);
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
