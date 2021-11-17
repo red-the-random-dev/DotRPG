@@ -1,8 +1,9 @@
 # DotRPG
 A game engine for creation of jRPGs and visual novels based on MonoGame.
 
-## Things implemented so far (week 5 day 2)
+## Things implemented so far (week 8 day 4)
 + User interface elements such as text boxes and progress bars
++ User interface rendering in TopDownFrames (see Testroom_00 and TestRoomScript)
 + Sprite display and animation assistance
 + Embedded scripting engine, which supports Lua and pre-built C# modules
 + Rigid body collision physics (see \_Example and Objects/Dynamics projects)
