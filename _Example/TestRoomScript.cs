@@ -10,6 +10,7 @@ namespace DotRPG._Example
     public class TestRoomScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
+        Random random = new Random();
         Boolean started = false;
         public override bool RequireRawSceneData => true;
         public override bool RequireResourceHeap => true;
@@ -79,16 +80,17 @@ namespace DotRPG._Example
                         {
                             if (ObjectHeap.GetDistanceToPlayer("tree") <= 128 && PunchCount > 0)
                             {
-                                uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y + ElapsedGameTime / 10000, -0.1f, 0.0f));
+                                uieb.RelativePosition = new Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y + ElapsedGameTime / 10000, -0.1f, 0.0f));
                             }
                             else
                             {
-                                uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
+                                uieb.RelativePosition = new Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
+                                Dialogue.SkipTextBox();
                             }
                         }
                         else
                         {
-                            uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
+                            uieb.RelativePosition = new Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
                         }
                     }
                     break;
@@ -100,8 +102,15 @@ namespace DotRPG._Example
                     ObjectHeap.SetPlayerAnimationSequence("red.idle." + Scene.Player.SightDirection.ToString().ToLower());
                     ObjectHeap.EnablePlayerControls();
                     PunchCount += 2500.0f;
+                    if (PunchCount > 3000)
+                    {
+                        Dialogue.SetFlags(false);
+                        String[] randomResponses = { "Ouch!", "Ah, fuck! It hurts!", "Please stop!", "Are you a Minecrap fan or smth?", "Dude, wtf is your problem?", "Harder, master!", "AAAAAAH!"};
+                        Dialogue.Show(randomResponses[random.Next(0, randomResponses.Length)]);
+                    }
                     if (PunchCount > 9000)
                     {
+                        Dialogue.SkipTextBox();
                         Palette.SetColor("treecolor", 255, 255, 255, 255);
                         // Palette.SetColor("global", 255, 0, 0, 255);
                         Audio.PlayLocal("kaboom");
