@@ -79,16 +79,16 @@ namespace DotRPG._Example
                         {
                             if (ObjectHeap.GetDistanceToPlayer("tree") <= 128 && PunchCount > 0)
                             {
-                                uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y + ElapsedGameTime / 10000, -0.1f, 0.0f));
+                                uieb.RelativePosition = new Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y + ElapsedGameTime / 10000, -0.1f, 0.0f));
                             }
                             else
                             {
-                                uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
+                                uieb.RelativePosition = new Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
                             }
                         }
                         else
                         {
-                            uieb.RelativePosition = new Microsoft.Xna.Framework.Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
+                            uieb.RelativePosition = new Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
                         }
                     }
                     break;

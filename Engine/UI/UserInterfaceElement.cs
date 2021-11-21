@@ -11,6 +11,10 @@ namespace DotRPG.UI
     public abstract class UserInterfaceElement
     {
         public readonly HashSet<UserInterfaceElement> Subnodes = new HashSet<UserInterfaceElement>();
+        [TABS_Property("visible", PropertyType.Boolean)]
+        public Boolean Visible { get; set; } = true;
+        [TABS_Property("updated", PropertyType.Boolean)]
+        public Boolean Updated { get; set; } = true;
         [TABS_Property("rotation", PropertyType.FloatPoint)]
         public Single Rotation { get; set; } = 0.0f;
         [TABS_Property("defaultHeight", PropertyType.Integer)]
@@ -28,6 +32,10 @@ namespace DotRPG.UI
         protected abstract void UpdateElement(GameTime gameTime);
         public void Update(GameTime gameTime)
         {
+            if (!Updated)
+            {
+                return;
+            }
             UpdateElement(gameTime);
             foreach (UserInterfaceElement uie in Subnodes)
             {
@@ -41,6 +49,10 @@ namespace DotRPG.UI
         }
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 positionOverride, Single turn = 0)
         {
+            if (!Visible)
+            {
+                return;
+            }
             Single sizeMorph = 1.0f * drawArea.Height / DefaultDrawAreaHeight;
             drawArea = SharedVectorMethods.ApplyPadding(drawArea, ElementPadding, sizeMorph);
             DrawElement(gameTime, spriteBatch, drawArea, positionOverride, turn);

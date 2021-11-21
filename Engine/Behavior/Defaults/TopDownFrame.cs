@@ -41,6 +41,7 @@ namespace DotRPG.Behavior.Defaults
         public PathfindingManager Pathfinder { get; private set; }
         public ScriptEventManager EventTimer { get; private set; }
         public FeedbackManager Feedback { get; private set; } = new FeedbackManager();
+        public DialogueManager Dialogue { get; private set; }
         public PlayerObject Player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -454,6 +455,22 @@ namespace DotRPG.Behavior.Defaults
                         }
                         break;
                     }
+                case "dialogue":
+                    {
+                        foreach (String a in op.Properties.Keys)
+                        {
+                            switch (a)
+                            {
+                                case "textbox":
+                                    Dialogue.SetTextBoxName(op.Properties[a]);
+                                    break;
+                                case "textline":
+                                    Dialogue.SetTextLineName(op.Properties[a]);
+                                    break;
+                            }
+                        }
+                        break;
+                    }
                 case "ruleset":
                     {
                         foreach (String opa in op.Properties.Keys)
@@ -589,6 +606,7 @@ namespace DotRPG.Behavior.Defaults
             ObjectManager = new ObjectHeapManager(Props, prefabs, LoadObject, FinalizeObject);
             Audio = new SoundManager(FrameResources);
             EventTimer = new ScriptEventManager(Execute);
+            Dialogue = new DialogueManager(UI_NamedList, Execute);
         }
 
         public void Execute(Object sender, String e, GameTime g)
