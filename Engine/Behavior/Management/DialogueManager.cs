@@ -108,6 +108,10 @@ namespace DotRPG.Behavior.Management
         }
         public void Show(String text, Boolean autoScroll = false, Boolean goOn = false)
         {
+            if (!UIElements.ContainsKey(TextName) || TextName == "")
+            {
+                return;
+            }
             Active = true;
             UI.UserInterfaceElement uie = UIElements[TextName];
             if (uie is UI.TextObject to)
