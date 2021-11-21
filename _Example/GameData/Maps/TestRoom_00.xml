@@ -23,6 +23,11 @@
             </ColorBox>
             <Text id="tutoriel" origin="0,0" relativePos="0,1" font="g:vcr_large" defaultHeight="1080">[Arrow keys] Move
 [Z] Interact</Text>
+            <ColorBox id="dialogue_box" visible="false" relativePos="0,1" origin="0.5,1" defaultHeight="540" relativeSize="1,0.2" color="255,255,255,255" elementPadding="16,16,16,16" subnodePadding="16,16,16,16">
+                <ColorBox relativePos="0,0" relativeSize="1,1" origin="0,0" defaultHeight="108" color="0,0,0,255" subnodePadding="16,16,16,16">
+                    <Text scrollPerTick="1" id="dialogue_text" defaultHeight="108" font="g:vcr_large" origin="0,0" relativePos="0,0">* Please stand by</Text>
+                </ColorBox>
+            </ColorBox>
         </blank>
     </UI>
 

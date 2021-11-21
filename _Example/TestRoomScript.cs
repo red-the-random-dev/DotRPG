@@ -100,8 +100,13 @@ namespace DotRPG._Example
                     ObjectHeap.SetPlayerAnimationSequence("red.idle." + Scene.Player.SightDirection.ToString().ToLower());
                     ObjectHeap.EnablePlayerControls();
                     PunchCount += 2500.0f;
+                    if (PunchCount > 7500)
+                    {
+                        Dialogue.Show("Ouch!");
+                    }
                     if (PunchCount > 9000)
                     {
+                        Dialogue.SkipTextBox();
                         Palette.SetColor("treecolor", 255, 255, 255, 255);
                         // Palette.SetColor("global", 255, 0, 0, 255);
                         Audio.PlayLocal("kaboom");

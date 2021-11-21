@@ -273,6 +273,7 @@ namespace DotRPG.Behavior.Defaults
             x.AddData("palette", Palette);
             x.AddData("navmap", Pathfinder);
             x.AddData("feedback", Feedback);
+            x.AddData("dialogue", Dialogue);
             x.SuppressExceptions = SuppressScriptExceptions;
             if (x is TopDownFrameScript)
             {
@@ -721,6 +722,7 @@ namespace DotRPG.Behavior.Defaults
             Camera.Update(gameTime);
             EventTimer.Update(gameTime);
             Execute(this, "default", gameTime);
+            Dialogue.Update(gameTime, controls, LastInput);
             if (AllowManualZoom)
             {
                 Int32 mwheel = Mouse.GetState().ScrollWheelValue - LastMWheelValue;

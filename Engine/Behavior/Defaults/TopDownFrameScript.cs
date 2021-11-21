@@ -19,6 +19,7 @@ namespace DotRPG.Behavior.Defaults
         protected PaletteManager Palette;
         protected PathfindingManager Pathfinder;
         protected FeedbackManager Feedback;
+        protected DialogueManager Dialogue;
 
         public virtual Boolean RequireRawSceneData => false;
         public virtual Boolean RequireResourceHeap => false;
@@ -56,6 +57,9 @@ namespace DotRPG.Behavior.Defaults
                     break;
                 case "feedback":
                     Feedback = value as FeedbackManager;
+                    break;
+                case "dialogue":
+                    Dialogue = value as DialogueManager;
                     break;
             }
         }
