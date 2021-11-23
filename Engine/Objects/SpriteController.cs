@@ -105,12 +105,14 @@ namespace DotRPG.Objects
                 {
                     return;
                 }
+                /*
                 Rectangle visible2 = SharedRectangleMethods.CutInto(visible, _aov);
                 SharedRectangleMethods.GetSizeDifference(visible, visible2, out int dx, out int dy, out int dw, out int dh);
                 lololol = new Rectangle(
                     lololol.X + dx, lololol.Y + dy, lololol.Width + dw, lololol.Height + dh
                 );
                 a_origin = new Vector2(a_origin.X - dx, a_origin.Y - dy);
+                */
             }
             skip:
             _sb.Draw

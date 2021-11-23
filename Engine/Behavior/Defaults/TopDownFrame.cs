@@ -19,6 +19,7 @@ using DotRPG.Behavior.Management;
 using DotRPG.Construct;
 
 using PREFAB_SET = System.Collections.Generic.Dictionary<string, DotRPG.Construct.ObjectPrototype>;
+using PREFAB_INCLUDE_SET = System.Collections.Generic.Dictionary<string, DotRPG.Construct.ObjectPrototype[]>;
 using SCRIPT_SET = System.Collections.Generic.List<DotRPG.Scripting.IScriptModule>;
 using SCRIPT_DICT = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<DotRPG.Scripting.IScriptModule>>;
 using NAVMAP = System.Collections.Generic.Dictionary<string, DotRPG.Waypoints.Waypoint>;
@@ -47,6 +48,7 @@ namespace DotRPG.Behavior.Defaults
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
         List<ObjectPrototype> objectPrototypes = new List<ObjectPrototype>();
         PREFAB_SET prefabs = new PREFAB_SET();
+        PREFAB_INCLUDE_SET prefab_includes = new PREFAB_INCLUDE_SET();
         SCRIPT_SET Scripts = new SCRIPT_SET();
         SCRIPT_DICT ObjectBoundScripts = new SCRIPT_DICT();
         public List<Backdrop> backdrops { get; private set; } = new List<Backdrop>();
@@ -495,6 +497,13 @@ namespace DotRPG.Behavior.Defaults
                         break;
                     }
             }
+            if (op.PrefabName != null)
+            {
+                foreach (ObjectPrototype op_n in prefab_includes[op.PrefabName])
+                {
+                    LoadObject(op_n);
+                }
+            }
         }
         public override void LoadContent()
         {
@@ -535,17 +544,19 @@ namespace DotRPG.Behavior.Defaults
                         }
                     case "prefab":
                         {
-                            XMLSceneLoader.GetPrefab(xe.Attribute(XName.Get("objType")).Value, Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value)), prefabs, out String _newID, resourceLoad);
+                            XMLSceneLoader.GetPrefab(xe.Attribute(XName.Get("objType")).Value, Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xe.Attribute(XName.Get("location")).Value)), prefabs, out String _newID, out ObjectPrototype[] ops, resourceLoad);
+                            prefab_includes.Add(_newID, ops);
                             break;
                         }
                     default:
                         ObjectPrototype x = ObjectPrototype.FromXML(xe);
+                        ObjectPrototype[] y = null;
                         foreach (XAttribute xa in xe.Attributes())
                         {
                             if (xa.Name.LocalName.ToString() == "_usePrefab")
                             {
                                 String loadPath = Path.GetFullPath(Path.Combine(Owner.Content.RootDirectory, xa.Value.ToString()));
-                                XMLSceneLoader.GetPrefab(xe.Name.LocalName, loadPath, prefabs, out String newID, resourceLoad);
+                                XMLSceneLoader.GetPrefab(xe.Name.LocalName, loadPath, prefabs, out String newID, out y, resourceLoad);
                                 x.PrefabName = newID;
                                 break;
                             }
@@ -555,6 +566,13 @@ namespace DotRPG.Behavior.Defaults
                             }
                         }
                         objectPrototypes.Add(x);
+                        if (y != null)
+                        {
+                            foreach (ObjectPrototype xx in y)
+                            {
+                                objectPrototypes.Add(xx);
+                            }
+                        }
                         break;
                 }
             }
@@ -756,18 +774,21 @@ namespace DotRPG.Behavior.Defaults
 #endif
             SpriteBatch obj_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
             SpriteBatch bg_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
-            
+
+            Point topLeft = Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height));
+
+
             bg_sb.Begin();
             foreach (Backdrop b in backdrops)
             {
-                b.Draw(bg_sb, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), aov, Palette.GetColor("--bg"));
+                b.Draw(bg_sb, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), aov, Palette.GetColor("--bg"));
             }
             bg_sb.End();
             obj_sb.Begin(SpriteSortMode.BackToFront);
             foreach (String i in Props.Keys)
             {
                 Single depth = (0.3f - (0.1f * (Props[i].Location.Y / 540)));
-                Props[i].Draw(obj_sb, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), aov, depth);
+                Props[i].Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), aov, depth);
 #if DEBUG
                 if (showHitboxes)
                 {
@@ -780,7 +801,7 @@ namespace DotRPG.Behavior.Defaults
 #endif
             }
             Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
-            Player.Draw(obj_sb, gameTime, 540, Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height)), new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), aov, p_depth);
+            Player.Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), aov, p_depth);
             obj_sb.End();
             SpriteBatch ui_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
             ui_sb.Begin();

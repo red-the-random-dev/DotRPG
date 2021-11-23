@@ -5,7 +5,6 @@
     <!-- Used to pre-load resources -->
     <Require>
         <Texture2D id="backdrop" location="Texture2D/backdrop"/>
-        <SoundEffect id="pixelText" location="Sounds/text-scroll"/>
         <SoundEffect id="hit" location="Sounds/impact"/>
         <SoundEffect id="slide" location="Sounds/wallcling"/>
 
@@ -23,14 +22,9 @@
             </ColorBox>
             <Text id="tutoriel" origin="0,0" relativePos="0,1" font="g:vcr_large" defaultHeight="1080">[Arrow keys] Move
 [Z] Interact</Text>
-            <ColorBox id="dialogue_box" visible="false" relativePos="0,1" origin="0,1" defaultHeight="540" relativeSize="1,0.2" color="255,255,255,255" elementPadding="16,16,16,16" subnodePadding="4,4,4,4">
-                <ColorBox relativePos="0,0" relativeSize="1,1" origin="0,0" defaultHeight="108" color="0,0,0,255" subnodePadding="4,4,4,4">
-                    <Text scrollPerTick="1" id="dialogue_text" defaultHeight="216" font="g:vcr_large" origin="0,0" relativePos="0,0">* Please stand by</Text>
-                </ColorBox>
-            </ColorBox>
         </blank>
     </UI>
-    <Dialogue textbox="dialogue_box" textline="dialogue_text" />
+    <UI _usePrefab="Prefabs/UI/DefaultTextBox.xml" />
 
     <Backdrop local="backdrop" offset="480,270" />
 

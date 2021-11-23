@@ -36,7 +36,7 @@ namespace DotRPG._Example
         private Boolean FullScreen;
         private Double EscapeTimer = 0.0f;
 #if DEBUG
-        private Double LastRegisteredEventTime;
+        private Int64 LastRegisteredEventTime;
 #endif
         private Double TimeSinceError = 0.0f;
         private HashSet<TimedEvent> LogicEventSet = new HashSet<TimedEvent>();
@@ -156,7 +156,7 @@ namespace DotRPG._Example
         protected override void Update(GameTime gameTime)
         {
             #if DEBUG
-            LastRegisteredEventTime = gameTime.ElapsedGameTime.TotalMilliseconds;
+            Int64 BeginTicksAmount = DateTime.Now.Ticks;
             #endif
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
@@ -203,7 +203,6 @@ namespace DotRPG._Example
                     Content.Unload();
                     LoadContent();
                     ActiveFrame = stageSelect;
-                    GC.Collect();
                 }
             }
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter)) && !GameStarted)
@@ -261,6 +260,10 @@ namespace DotRPG._Example
             PressStart.Rotation = (Single)Math.Sin(gameTime.TotalGameTime.TotalSeconds * Math.PI / 2) / 8;
             PressStart.Update(gameTime);
             base.Update(gameTime);
+            #if DEBUG
+            Int64 EndTicksAmount = DateTime.Now.Ticks;
+            LastRegisteredEventTime = EndTicksAmount - BeginTicksAmount;
+            #endif
         }
 
         protected override void Draw(GameTime gameTime)
@@ -322,7 +325,7 @@ namespace DotRPG._Example
                 ActiveSubframe.Draw(gameTime, _spriteBatch);
             }
 #if DEBUG
-            _spriteBatch.DrawString(_spriteFont, "FPS: " + FrameRate.ToString() + " || Fullscreen: " + FullScreen.ToString() + String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: " + (ActiveFrame != null ? ActiveFrame.FrameID.ToString() : "-1") + " || Update rate: " + Math.Round(1000 / LastRegisteredEventTime), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));
+            _spriteBatch.DrawString(_spriteFont, "FPS: " + FrameRate.ToString() + " || Fullscreen: " + FullScreen.ToString() + String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: " + (ActiveFrame != null ? ActiveFrame.FrameID.ToString() : "-1") + " || Update time: " + Math.Round(1.0m * LastRegisteredEventTime / 10000, 2), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));
 #endif
             _spriteBatch.DrawString(_spriteFont, "Quitting...", new Vector2(0, 12), new Color(new Vector4((float)EscapeTimer / 1000)));
             _spriteBatch.End();

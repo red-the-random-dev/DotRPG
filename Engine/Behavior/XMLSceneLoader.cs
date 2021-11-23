@@ -152,10 +152,10 @@ namespace DotRPG.Behavior
             }
         }
 
-        public static void GetPrefab(String elementName, String prefabFileName, Dictionary<String, ObjectPrototype> prefabs, out String ID, List<ResourceLoadTask> addResources = null)
+        public static void GetPrefab(String elementName, String prefabFileName, Dictionary<String, ObjectPrototype> prefabs, out String ID, out ObjectPrototype[] include, List<ResourceLoadTask> addResources = null)
         {
             XDocument Document = XDocument.Parse(File.ReadAllText(prefabFileName));
-
+            List<ObjectPrototype> includes = new List<ObjectPrototype>();
             if (Document.DocumentType.Name != "dotrpg-prefab")
             {
                 throw new System.Runtime.Serialization.SerializationException("Unable to load prototype data from document of following type: " + Document.DocumentType.Name + " (type \"dotrpg-prefab\" expected).");
@@ -168,6 +168,7 @@ namespace DotRPG.Behavior
             ID = rt.Attribute(XName.Get("id")).Value;
             if (prefabs.ContainsKey(ID))
             {
+                include = includes.ToArray();
                 return;
             }
             foreach (XElement xe in Document.Root.Elements())
@@ -179,9 +180,17 @@ namespace DotRPG.Behavior
                         addResources.Add(rlt);
                     }
                 }
+                else if (xe.Name.LocalName.ToLower() == "include")
+                {
+                    foreach (XElement xe2 in xe.Elements())
+                    {
+                        includes.Add(ObjectPrototype.FromXML(xe2));
+                    }
+                }
                 else if (xe.Name.LocalName.ToLower() == elementName.ToLower())
                 {
                     prefabs.Add(ID, ObjectPrototype.FromXML(xe));
+                    include = includes.ToArray();
                     return;
                 }
             }

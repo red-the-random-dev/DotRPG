@@ -42,6 +42,9 @@
 #begin Prefabs/tree.xml
 /copy:Prefabs/tree.xml
 
+#begin Prefabs/UI/DefaultTextBox.xml
+/copy:Prefabs/UI/DefaultTextBox.xml
+
 #begin Prefabs/whiterect.xml
 /copy:Prefabs/whiterect.xml
 
