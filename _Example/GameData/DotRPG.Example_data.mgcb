@@ -51,6 +51,9 @@
 #begin Scripts/bullet_ballistic.lua
 /copy:Scripts/bullet_ballistic.lua
 
+#begin Scripts/dialog.lua
+/copy:Scripts/dialog.lua
+
 #begin Scripts/kickable.lua
 /copy:Scripts/kickable.lua
 

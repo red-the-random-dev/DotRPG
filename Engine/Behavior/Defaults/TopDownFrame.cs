@@ -845,6 +845,7 @@ namespace DotRPG.Behavior.Defaults
         public override void UnloadContent()
         {
             Feedback.Reset();
+            Dialogue.Eject();
             foreach (String x in Props.Keys)
             {
                 FinalizeObject(x);

@@ -6,7 +6,8 @@
         <Texture2D id="bananas" location="Texture2D/Banana" />
     </Require>
 
-    <RuleSet allowManualZoom="true" />
+    <!--<RuleSet allowManualZoom="true" />-->
+    <UI _usePrefab="Prefabs/UI/DefaultTextBox.xml" />
 
     <Player startPos="0,0" colliderSize="250,250" interactFieldSize="64,64" mass="20">
         <Sprite frameRate="12">
@@ -14,4 +15,6 @@
         </Sprite>
         <Motion movementSpeed="0" />
     </Player>
+
+    <Script location="Scripts/dialog.lua" />
 </Scene>
