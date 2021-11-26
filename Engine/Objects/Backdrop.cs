@@ -11,12 +11,20 @@ namespace DotRPG.Objects
         public Texture2D Sprite;
         public Vector2 Position;
 
-        public void Draw(SpriteBatch sb, Int32 VirtualVSize, Point drawOffset, Point drawSize, Rectangle aov, Color drawColor)
+        public void Draw(SpriteBatch sb, Int32 VirtualVSize, Point drawOffset, Point drawSize, Rectangle ? aov, Color drawColor)
         {
             Single transform = 1.0f * drawSize.Y / VirtualVSize;
             Rectangle sproot = new Rectangle((int)(Position.X-Sprite.Width/2), (int)(Position.Y - Sprite.Height / 2), Sprite.Width, Sprite.Height);
             Vector2 origin = new Vector2(Sprite.Width * 0.5f, Sprite.Height * 0.5f);
-            Rectangle spront = Algebra.SharedRectangleMethods.CutInto(sproot, aov);
+            Rectangle spront;
+            if (aov is Rectangle _aov)
+            {
+                spront = Algebra.SharedRectangleMethods.CutInto(sproot, _aov);
+            }
+            else
+            {
+                spront = sproot;
+            }
             Algebra.SharedRectangleMethods.GetSizeDifference(sproot, spront, out int dx, out int dy, out int dw, out int dh);
             origin = new Vector2(origin.X - dx, origin.Y - dy);
             sb.Draw

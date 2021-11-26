@@ -814,7 +814,7 @@ namespace DotRPG.Behavior.Defaults
             obj_sb.Begin(SpriteSortMode.BackToFront);
             foreach (String i in Props.Keys)
             {
-                Single depth = (0.3f - (0.1f * (Props[i].Location.Y / 540)));
+                Single depth = 0.3f - (0.1f * (Props[i].Location.Y / 540));
                 Props[i].Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), /*aov*/ null, depth);
 #if DEBUG
                 if (showHitboxes)

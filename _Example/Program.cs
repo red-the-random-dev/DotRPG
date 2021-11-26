@@ -20,7 +20,7 @@ namespace DotRPG._Example
         }
             catch (Exception e)
             {
-                File.WriteAllText("error-" + DateTime.Now + ".txt", e.Message);
+                File.WriteAllText("error-" + DateTime.Now.Ticks + ".txt", e.ToString());
             }
 #endif
         }
