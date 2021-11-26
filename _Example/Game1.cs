@@ -32,15 +32,17 @@ namespace DotRPG._Example
         private SpriteFont _spriteFontLarge;
         private Boolean GameStarted;
         private Double GameStartMark;
-        private Boolean[] IsCtrlKeyDown = new bool[8] { false, false, false, false, false, false, false, false};
+        private ControlInput IsCtrlKeyDown = new ControlInput(8);
         private Boolean FullScreen;
         private Double EscapeTimer = 0.0f;
 #if DEBUG
         private Int64 LastRegisteredEventTime;
 #endif
         private Double TimeSinceError = 0.0f;
+        private Byte FrameCounter = 0;
         private HashSet<TimedEvent> LogicEventSet = new HashSet<TimedEvent>();
         private Boolean ContinuityError = false;
+        private Boolean RunningWithoutGC = false;
         private Boolean WideScreen
         {
             get
@@ -155,6 +157,7 @@ namespace DotRPG._Example
 
         protected override void Update(GameTime gameTime)
         {
+            IsCtrlKeyDown.NextInput();
             #if DEBUG
             Int64 BeginTicksAmount = DateTime.Now.Ticks;
             #endif

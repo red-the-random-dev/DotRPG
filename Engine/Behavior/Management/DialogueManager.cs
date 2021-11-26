@@ -15,9 +15,9 @@ namespace DotRPG.Behavior.Management
         protected UI_DICT UIElements;
         protected String BoxName = "";
         protected String TextName = "";
-        protected Int32 ScrollKey = 4;
-        protected Int32 FastScrollKey = 5;
-        protected Int32 SkipKey = 6;
+        protected Byte ScrollKey = 4;
+        protected Byte FastScrollKey = 5;
+        protected Byte SkipKey = 6;
         protected Int32 LetsPerSecond_Normal = 32;
         protected Int32 LetsPerSecond_Alt = 64;
 
@@ -45,15 +45,15 @@ namespace DotRPG.Behavior.Management
 
         public void SetScrollKey(Int32 k)
         {
-            ScrollKey = Math.Clamp(k, 0, Int32.MaxValue);
+            ScrollKey = (Byte)Math.Clamp(k, 0, 255);
         }
         public void SetFastScrollKey(Int32 k)
         {
-            FastScrollKey = Math.Clamp(k, 0, Int32.MaxValue);
+            FastScrollKey = (Byte)Math.Clamp(k, 0, 255);
         }
         public void SetSkipKey(Int32 k)
         {
-            SkipKey = Math.Clamp(k, 0, Int32.MaxValue);
+            SkipKey = (Byte)Math.Clamp(k, 0, 255);
         }
         public void SetTextBoxName(String name)
         {
@@ -123,7 +123,7 @@ namespace DotRPG.Behavior.Management
             Continue = goOn;
         }
 
-        public void Update(GameTime gameTime, Boolean[] ctrl, Boolean[] last_ctrl)
+        public void Update(GameTime gameTime, ControlInput ctrl)
         {
             if (BoxName == "" || !UIElements.ContainsKey(BoxName) || TextName == "" || !UIElements.ContainsKey(TextName))
             {
@@ -146,11 +146,12 @@ namespace DotRPG.Behavior.Management
             if (Active)
             {
                 uif.Visible = true;
-                if (CanFastScrollManually && ctrl[FastScrollKey] && !last_ctrl[FastScrollKey])
+                uif.Updated = true;
+                if (CanFastScrollManually && ctrl.KeyPressed(FastScrollKey))
                 {
                     to.SkipToEnd();
                 }
-                if ((to.ReachedEnd && ((ctrl[ScrollKey] && !last_ctrl[ScrollKey] && CanScrollManually) || AutoScroll)) || CanSkip && ctrl[SkipKey] && !last_ctrl[SkipKey] || ConditionlessSkip)
+                if ((to.ReachedEnd && ((ctrl.KeyPressed(ScrollKey) && CanScrollManually) || AutoScroll)) || CanSkip && ctrl.KeyPressed(SkipKey) || ConditionlessSkip)
                 {
                     Active = false;
                     ConditionlessSkip = false;
@@ -168,6 +169,7 @@ namespace DotRPG.Behavior.Management
             else
             {
                 uif.Visible = false;
+                uif.Updated = false;
             }
         }
     }

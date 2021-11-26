@@ -389,7 +389,7 @@ namespace DotRPG.Objects.Dynamics
             return false;
         }
 #endif
-        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Rectangle aov, Single ZIndex = 0.0f)
+        public void Draw(SpriteBatch _sb, GameTime gameTime, Int32 VirtualVSize, Point scrollOffset, Point scrollSize, Color DrawColor, Rectangle ? aov, Single ZIndex = 0.0f)
         {
             if (Sprite == null || !Active  || !Visible)
             {

@@ -53,7 +53,7 @@ namespace DotRPG._Example
         {
             throw new NotImplementedException();
         }
-        public override void Update(GameTime gameTime, bool[] controls)
+        public override void Update(GameTime gameTime, ControlInput controls)
         {
             timeCountdown += (Single)gameTime.ElapsedGameTime.TotalSeconds;
             cb.RelativeSize = new Vector2(0.75f, Math.Max(0.01f, Math.Min(0.5f, timeCountdown*4)));

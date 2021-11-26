@@ -33,27 +33,22 @@ namespace DotRPG._Example
             WelcomeMessage = welcomeMsg;
         }
 
-        public override void Update(GameTime gameTime, bool[] controls)
+        public override void Update(GameTime gameTime, ControlInput controls)
         {
-            if (controls[0] && !lastInput[0])
+            if (controls.KeyPressed(0))
             {
                 Index--;
             }
-            else if (controls[1] && !lastInput[1])
+            else if (controls.KeyPressed(1))
             {
                 Index++;
             }
-            else if (controls[4] && !lastInput[4])
+            else if (controls.KeyPressed(4))
             {
                 SelectedOption = Index;
             }
             Index = Math.Max(0, Index);
             Index = Math.Min(OptionsList.Length-1, Index);
-
-            for (int i = 0; i < Math.Min(controls.Length, lastInput.Length); i++)
-            {
-                lastInput[i] = controls[i];
-            }
             base.Update(gameTime, controls);
         }
 

@@ -37,7 +37,7 @@ namespace DotRPG.Behavior
             Instantiated = true;
         }
 
-        public virtual void Update(GameTime gameTime, Boolean[] controls)
+        public virtual void Update(GameTime gameTime, ControlInput controls)
         {
             if (LocalEventSet.Count > 0)
             {

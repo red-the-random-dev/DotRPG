@@ -59,7 +59,6 @@ namespace DotRPG.Behavior.Defaults
         public UI_ROOT UI_Root { get; private set; } = new UI_ROOT();
 
         Int32 LastMWheelValue = 0;
-        public Boolean[] LastInput { get; private set; } = new bool[8];
 
         Boolean AllowManualZoom = false;
         Boolean SuppressScriptExceptions = false;
@@ -647,10 +646,8 @@ namespace DotRPG.Behavior.Defaults
             }
         }
 
-        public override void Update(GameTime gameTime, bool[] controls)
+        protected void Update_Player(GameTime gameTime, ControlInput controls)
         {
-            Running = true;
-            DebugText = "";
             Single loco_x = 0.0f; Single loco_y = 0.0f;
             if (Player.Controlled)
             {
@@ -693,29 +690,10 @@ namespace DotRPG.Behavior.Defaults
                 Player.AppliedForce += Player.Velocity * -Player.Motion.MovementSpeed;
             }
             Player.Update(gameTime);
-            foreach (String i in Props.Keys)
-            {
-                Props[i].Update(gameTime);
-                if (Player.TryCollideWith(Props[i], out Int32 hits_p, 0, gameTime))
-                {
-                    DebugText += String.Format("Player hits {0} with {1} contact(s)\n", i, hits_p);
-                }
-                if (!Props[i].Static)
-                {
-                    foreach (String x in Props.Keys)
-                    {
-                        if (i == x)
-                        {
-                            continue;
-                        }
-                        if (Props[i].TryCollideWith(Props[x], out Int32 hits, 0, gameTime))
-                        {
-                            DebugText += String.Format("{0} hits {1} with {2} contact(s)\n", i, x, hits);
-                        }
-                    }
-                }
-            }
-            if (controls[4] && !LastInput[4] && Player.Controlled)
+        }
+        protected void Update_Interact(GameTime gameTime, ControlInput controls)
+        {
+            if (controls.KeyPressed(4) && Player.Controlled)
             {
                 foreach (String i in Interactable.Keys)
                 {
@@ -728,19 +706,72 @@ namespace DotRPG.Behavior.Defaults
                     }
                 }
             }
+        }
+        protected void Update_Collide(GameTime gameTime, ControlInput controls)
+        {
+            HashSet<String> used = new HashSet<string>();
+            foreach (String i in Props.Keys)
+            {
+                Props[i].Update(gameTime);
+                if (!Props[i].Collidable || !Props[i].Active)
+                {
+                    used.Add(i);
+                    continue;
+                }
+                if (Player.TryCollideWith(Props[i], out Int32 hits_p, 0, gameTime))
+                {
+                    DebugText += String.Format("Player hits {0} with {1} contact(s)\n", i, hits_p);
+                }
+                if (!Props[i].Static)
+                {
+                    foreach (String x in Props.Keys)
+                    {
+                        if (i == x || used.Contains(x))
+                        {
+                            continue;
+                        }
+                        if (Props[i].TryCollideWith(Props[x], out Int32 hits, 0, gameTime))
+                        {
+                            DebugText += String.Format("{0} hits {1} with {2} contact(s)\n", i, x, hits);
+                        }
+                    }
+                    used.Add(i);
+                }
+            }
+        }
+        protected void Update_ShowHitboxes(GameTime gameTime, ControlInput controls)
+        {
 #if DEBUG
             if (Keyboard.GetState().IsKeyDown(Keys.F3))
             {
                 showHitboxes = true;
             }
-#endif            
+#endif       
+        }
+        protected void Update_Camera(GameTime gameTime, ControlInput controls)
+        {
             CameraManager.Update(gameTime);
             Camera.TrackTarget = CameraManager.TrackPoint;
             Camera.OffsetTarget = CameraManager.Offset;
             Camera.Update(gameTime);
+        }
+        protected void Update_Scripts(GameTime gameTime, ControlInput controls)
+        {
             EventTimer.Update(gameTime);
             Execute(this, "default", gameTime);
-            Dialogue.Update(gameTime, controls, LastInput);
+            Dialogue.Update(gameTime, controls);
+        }
+
+        public override void Update(GameTime gameTime, ControlInput controls)
+        {
+            Running = true;
+            DebugText = "";
+            Update_Player(gameTime, controls);
+            Update_Collide(gameTime, controls);
+            Update_Interact(gameTime, controls);
+            //Update_ShowHitboxes(gameTime, controls);
+            Update_Camera(gameTime, controls);
+            Update_Scripts(gameTime, controls);
             if (AllowManualZoom)
             {
                 Int32 mwheel = Mouse.GetState().ScrollWheelValue - LastMWheelValue;
@@ -752,10 +783,6 @@ namespace DotRPG.Behavior.Defaults
             Feedback.Update(gameTime);
             base.Update(gameTime, controls);
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
-            for (int i = 0; i < Math.Min(controls.Length, LastInput.Length); i++)
-            {
-                LastInput[i] = controls[i];
-            }
             foreach (UserInterfaceElement uie in UI_Root)
             {
                 uie.Update(gameTime);
@@ -788,7 +815,7 @@ namespace DotRPG.Behavior.Defaults
             foreach (String i in Props.Keys)
             {
                 Single depth = (0.3f - (0.1f * (Props[i].Location.Y / 540)));
-                Props[i].Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), aov, depth);
+                Props[i].Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor(i), /*aov*/ null, depth);
 #if DEBUG
                 if (showHitboxes)
                 {
@@ -801,7 +828,7 @@ namespace DotRPG.Behavior.Defaults
 #endif
             }
             Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
-            Player.Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), aov, p_depth);
+            Player.Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), /*aov*/ null, p_depth);
             obj_sb.End();
             SpriteBatch ui_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
             ui_sb.Begin();
