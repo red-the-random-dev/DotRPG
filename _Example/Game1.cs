@@ -39,10 +39,8 @@ namespace DotRPG._Example
         private Int64 LastRegisteredEventTime;
 #endif
         private Double TimeSinceError = 0.0f;
-        private Byte FrameCounter = 0;
         private HashSet<TimedEvent> LogicEventSet = new HashSet<TimedEvent>();
         private Boolean ContinuityError = false;
-        private Boolean RunningWithoutGC = false;
         private Boolean WideScreen
         {
             get
