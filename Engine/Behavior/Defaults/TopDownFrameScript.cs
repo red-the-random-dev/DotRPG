@@ -20,6 +20,7 @@ namespace DotRPG.Behavior.Defaults
         protected PathfindingManager Pathfinder;
         protected FeedbackManager Feedback;
         protected DialogueManager Dialogue;
+        protected CheckpointManager Checkpoint;
 
         public virtual Boolean RequireRawSceneData => false;
         public virtual Boolean RequireResourceHeap => false;
@@ -60,6 +61,9 @@ namespace DotRPG.Behavior.Defaults
                     break;
                 case "dialogue":
                     Dialogue = value as DialogueManager;
+                    break;
+                case "checkpoint":
+                    Checkpoint = value as CheckpointManager;
                     break;
             }
         }

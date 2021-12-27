@@ -42,15 +42,15 @@ namespace DotRPG.Algebra
 
         public static UInt32 u32_Read(Byte[] num, Int32 start = 0)
         {
-            return (UInt32)num[start] << 24 + num[start+1] << 16 + num[start+2] << 8 + num[start+3];
+            return ((UInt32)num[start] << 24) + ((UInt32)num[start+1] << 16) + ((UInt32)num[start+2] << 8) + (UInt32)num[start+3];
         }
         public static UInt16 u16_Read(Byte[] num, Int32 start = 0)
         {
-            return (UInt16)(num[start] << 8 + num[start + 1]);
+            return (UInt16)((num[start] << 8) + num[start + 1]);
         }
         public static UInt64 u64_Read(Byte[] num, Int32 start = 0)
         {
-            return (UInt64)num[start] << 56 + num[start + 1] << 48 + num[start + 2] << 40 + num[start + 3] << 32 + num[start + 4] << 24 + num[start + 5] << 16 + num[start + 6] << 8 + num[start + 7];
+            return ((UInt64)num[start] << 56) + ((UInt64)num[start + 1] << 48) + ((UInt64)num[start + 2] << 40) + ((UInt64)num[start + 3] << 32) + ((UInt64)num[start + 4] << 24) + ((UInt64)num[start + 5] << 16) + ((UInt64)num[start + 6] << 8) + (UInt64)num[start + 7];
         }
         public static Single f32_Read(Byte[] num, Int32 start = 0)
         {
@@ -105,7 +105,7 @@ namespace DotRPG.Algebra
             UInt32 a = BitConverter.ToUInt32(n);
             u32_Write(a, num, start);
         }
-        public static void f64_Write(Single value, Byte[] num, Int32 start = 0)
+        public static void f64_Write(Double value, Byte[] num, Int32 start = 0)
         {
             Byte[] n = BitConverter.GetBytes(value);
             if (BitConverter.IsLittleEndian)

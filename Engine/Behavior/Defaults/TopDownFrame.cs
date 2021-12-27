@@ -26,6 +26,7 @@ using NAVMAP = System.Collections.Generic.Dictionary<string, DotRPG.Waypoints.Wa
 using OBJ_SET = System.Collections.Generic.Dictionary<string, DotRPG.Objects.Dynamics.DynamicObject>;
 using UI_ROOT = System.Collections.Generic.List<DotRPG.UI.UserInterfaceElement>;
 using UI_DICT = System.Collections.Generic.Dictionary<string, DotRPG.UI.UserInterfaceElement>;
+using DotRPG.Behavior.Data;
 #endregion
 
 namespace DotRPG.Behavior.Defaults
@@ -34,6 +35,9 @@ namespace DotRPG.Behavior.Defaults
     public class TopDownFrame : Frame, IXMLSceneBuilder, ILoadable
     {
         public String DebugText = "";
+        Boolean SavefileFetched = false;
+        public CheckpointManager Checkpoint { get; private set; } = new CheckpointManager();
+        public StateFile SaveFile { get; private set; } = new StateFile();
         public CameraFrameObject Camera { get; private set; } = new CameraFrameObject();
         public CameraManager CameraManager { get; private set; }
         public ObjectHeapManager ObjectManager { get; private set; }
@@ -174,11 +178,18 @@ namespace DotRPG.Behavior.Defaults
         }
         public void PostLoadTask()
         {
-            Camera.Focus = Player.Location.ToPoint();
             Pathfinder = new PathfindingManager(NavMap, Props, Player);
+            ObjectManager.Player = Player;
             foreach (IScriptModule x in Scripts)
             {
                 StartScript(x);
+                if (SavefileFetched)
+                {
+                    foreach (System.Reflection.PropertyInfo pi in x.GetType().GetProperties())
+                    {
+                        SaveFile.ExportTo(x, pi);
+                    }
+                }
             }
             foreach (List<IScriptModule> scripts in ObjectBoundScripts.Values)
             {
@@ -189,9 +200,9 @@ namespace DotRPG.Behavior.Defaults
             }
             loaded = true;
             LastMWheelValue = Mouse.GetState().ScrollWheelValue;
+            Camera.Focus = Player.Location.ToPoint();
             CameraManager.Player = Player;
             CameraManager.TrackToPlayer();
-            ObjectManager.Player = Player;
         }
         public Boolean SupportsMultiLoading
         {
@@ -275,6 +286,7 @@ namespace DotRPG.Behavior.Defaults
             x.AddData("navmap", Pathfinder);
             x.AddData("feedback", Feedback);
             x.AddData("dialogue", Dialogue);
+            x.AddData("checkpoint", Checkpoint);
             x.SuppressExceptions = SuppressScriptExceptions;
             if (x is TopDownFrameScript)
             {
@@ -493,6 +505,15 @@ namespace DotRPG.Behavior.Defaults
                 case "navmesh":
                     {
                         WaypointGraph.LoadNavMap(op, NavMap);
+                        break;
+                    }
+                case "savefile":
+                    {
+                        if (!Running)
+                        {
+                            SaveFile.Location = Path.GetFullPath(op.Properties["path"]);
+                            SavefileFetched = SaveFile.Fetch();
+                        }
                         break;
                     }
             }
@@ -765,6 +786,21 @@ namespace DotRPG.Behavior.Defaults
         public override void Update(GameTime gameTime, ControlInput controls)
         {
             Running = true;
+            if (Checkpoint.DoSave)
+            {
+                foreach (IScriptModule x in Scripts)
+                {
+                    foreach (System.Reflection.PropertyInfo pi in x.GetType().GetProperties())
+                    {
+                        SaveFile.ImportFrom(x, pi);
+                    }
+                }
+                if (SaveFile.Location != "")
+                {
+                    SaveFile.Push();
+                }
+                Checkpoint.DoSave = false;
+            }
             DebugText = "";
             Update_Player(gameTime, controls);
             Update_Collide(gameTime, controls);

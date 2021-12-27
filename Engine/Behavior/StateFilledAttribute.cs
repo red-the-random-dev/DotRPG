@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotRPG.Behavior
+namespace DotRPG.Behavior.Data
 {
     public enum StateType : Byte
     {
@@ -22,7 +22,7 @@ namespace DotRPG.Behavior
     /// Indicates that property is filled from save file.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    class StateFilledAttribute : Attribute
+    public class StateFilledAttribute : Attribute
     {
         public Int32 FileIndex;
         public StateType DataType;
@@ -37,7 +37,7 @@ namespace DotRPG.Behavior
     /// Indicates that boolean property is filled from switch field.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    class SwitchedAttribute : Attribute
+    public class SwitchedAttribute : Attribute
     {
         public Int32 FileIndex;
 

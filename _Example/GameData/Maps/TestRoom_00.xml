@@ -13,7 +13,7 @@
         <SoundEffect id="sam_b" location="Sounds/TTS/B"/>
         <SoundEffect id="sam_reset" location="Sounds/TTS/RESET"/>
     </Require>
-
+    <SaveFile path="testroom.bin" />
     <UI>
         <blank aspectRatio="1.33" defaultHeight="540">
             <ColorBox id="hp" relativePos="0,-0.1" origin="0,0" relativeSize="1,0.1" color="0,0,0,255" defaultHeight="540" subnodePadding="4,4,4,4">
@@ -36,9 +36,11 @@
         <ColorChannel channel="treecolor"/>
     </Prop>
     <Prefab objType="Prop" location="Prefabs/whiterect.xml" />
+
+    <Prop id="whiterect2" startPos="328,328" mass="60" static="true" _usePrefabID="whiterect">
+        <Interactable interactAction="savetalk"/>
+    </Prop>
     <!--
-    <Prop id="whiterect2" startPos="328,328" mass="60" _usePrefabID="whiterect" />
-    
     <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefabID="whiterect">
         <IgnoreCollisions />
         <ColorChannel channel="r"/>

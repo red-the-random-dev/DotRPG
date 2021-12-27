@@ -1,4 +1,5 @@
 using System;
+using DotRPG.Behavior.Data;
 using DotRPG.Behavior.Defaults;
 using DotRPG.Scripting;
 using DotRPG.UI;
@@ -10,6 +11,35 @@ namespace DotRPG._Example
     public class TestRoomScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
+
+        [StateFilled(8, StateType.Float32)]
+        public Single TreeDamage { get { return PunchCount; } set { PunchCount = value; } }
+        [Switched(0)]
+        public Boolean TreeExists { get { return ObjectHeap.Exists("tree"); } set { if (!value && ObjectHeap.Exists("tree")) { ObjectHeap.DestroyObject("tree"); } } }
+        [StateFilled(0, StateType.Int32)]
+        public UInt32 P_X
+        {
+            get
+            {
+                return (UInt32)ObjectHeap.Player_X();
+            }
+            set
+            {
+                ObjectHeap.SetPlayerPosition(value, ObjectHeap.Player_Y());
+            }
+        }
+        [StateFilled(4, StateType.Int32)]
+        public UInt32 P_Y
+        {
+            get
+            {
+                return (UInt32)ObjectHeap.Player_Y();
+            }
+            set
+            {
+                ObjectHeap.SetPlayerPosition(ObjectHeap.Player_X(), value);
+            }
+        }
         Random random = new Random();
         Boolean started = false;
         public override bool RequireRawSceneData => true;
@@ -152,6 +182,10 @@ namespace DotRPG._Example
                 case "set_w":
                     Audio.PlayLocal("sam_reset");
                     Palette.SetColor("global", 255, 255, 255, 255);
+                    break;
+                case "savetalk":
+                    Scene.DebugText = "Saving...";
+                    Checkpoint.Save();
                     break;
             }
         }
