@@ -11,6 +11,7 @@ namespace DotRPG._Example
     public class TestRoomScript : TopDownFrameScript
     {
         Single PunchCount = 0.0f;
+        Int32 CheckpointDoneCount = 0;
 
         [StateFilled(8, StateType.Float32)]
         public Single TreeDamage { get { return PunchCount; } set { PunchCount = value; } }
@@ -124,6 +125,11 @@ namespace DotRPG._Example
                             uieb.RelativePosition = new Vector2(uieb.RelativePosition.X, Math.Clamp(uieb.RelativePosition.Y - ElapsedGameTime / 10000, -0.1f, 0.0f));
                         }
                     }
+                    if (!Checkpoint.DoSave && CheckpointDoneCount > 0)
+                    {
+                        Scene.DebugText = "Saving... done";
+                        CheckpointDoneCount -= (Int32)ElapsedGameTime;
+                    }
                     break;
                 case "treeouch":
                     Events.Enqueue(TotalGameTime, 1000.0f, "kickablereset");
@@ -185,6 +191,7 @@ namespace DotRPG._Example
                     break;
                 case "savetalk":
                     Scene.DebugText = "Saving...";
+                    CheckpointDoneCount = 2000;
                     Checkpoint.Save();
                     break;
             }
