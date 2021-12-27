@@ -52,6 +52,26 @@ namespace DotRPG.Algebra
         {
             return (UInt64)num[start] << 56 + num[start + 1] << 48 + num[start + 2] << 40 + num[start + 3] << 32 + num[start + 4] << 24 + num[start + 5] << 16 + num[start + 6] << 8 + num[start + 7];
         }
+        public static Single f32_Read(Byte[] num, Int32 start = 0)
+        {
+            UInt32 a = u32_Read(num, start);
+            Byte[] n = BitConverter.GetBytes(a);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(n);
+            }
+            return BitConverter.ToSingle(n);
+        }
+        public static Double f64_Read(Byte[] num, Int32 start = 0)
+        {
+            UInt64 a = u64_Read(num, start);
+            Byte[] n = BitConverter.GetBytes(a);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(n);
+            }
+            return BitConverter.ToDouble(n);
+        }
         public static void u32_Write(UInt32 value, Byte[] num, Int32 start = 0)
         {
             num[start] = (Byte)(value >> 24);
@@ -59,7 +79,7 @@ namespace DotRPG.Algebra
             num[start + 2] = (Byte)(value >> 8 % 256);
             num[start + 3] = (Byte)(value % 256);
         }
-        public static void u64_Write(UInt32 value, Byte[] num, Int32 start = 0)
+        public static void u64_Write(UInt64 value, Byte[] num, Int32 start = 0)
         {
             num[start] = (Byte)(value >> 56);
             num[start + 1] = (Byte)(value >> 48 % 256);
@@ -74,6 +94,26 @@ namespace DotRPG.Algebra
         {
             num[start] = (Byte)(value >> 8);
             num[start + 1] = (Byte)(value % 256);
+        }
+        public static void f32_Write(Single value, Byte[] num, Int32 start = 0)
+        {
+            Byte[] n = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(n);
+            }
+            UInt32 a = BitConverter.ToUInt32(n);
+            u32_Write(a, num, start);
+        }
+        public static void f64_Write(Single value, Byte[] num, Int32 start = 0)
+        {
+            Byte[] n = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(n);
+            }
+            UInt64 a = BitConverter.ToUInt64(n);
+            u64_Write(a, num, start);
         }
     }
 }
