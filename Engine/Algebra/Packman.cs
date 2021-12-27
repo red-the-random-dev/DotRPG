@@ -48,6 +48,32 @@ namespace DotRPG.Algebra
         {
             return (UInt16)(num[start] << 8 + num[start + 1]);
         }
-
+        public static UInt64 u64_Read(Byte[] num, Int32 start = 0)
+        {
+            return (UInt64)num[start] << 56 + num[start + 1] << 48 + num[start + 2] << 40 + num[start + 3] << 32 + num[start + 4] << 24 + num[start + 5] << 16 + num[start + 6] << 8 + num[start + 7];
+        }
+        public static void u32_Write(UInt32 value, Byte[] num, Int32 start = 0)
+        {
+            num[start] = (Byte)(value >> 24);
+            num[start + 1] = (Byte)(value >> 16 % 256);
+            num[start + 2] = (Byte)(value >> 8 % 256);
+            num[start + 3] = (Byte)(value % 256);
+        }
+        public static void u64_Write(UInt32 value, Byte[] num, Int32 start = 0)
+        {
+            num[start] = (Byte)(value >> 56);
+            num[start + 1] = (Byte)(value >> 48 % 256);
+            num[start + 2] = (Byte)(value >> 40 % 256);
+            num[start + 3] = (Byte)(value >> 32 % 256);
+            num[start + 4] = (Byte)(value >> 24 % 256);
+            num[start + 5] = (Byte)(value >> 16 % 256);
+            num[start + 6] = (Byte)(value >> 8 % 256);
+            num[start + 7] = (Byte)(value % 256);
+        }
+        public static void u16_Write(UInt16 value, Byte[] num, Int32 start = 0)
+        {
+            num[start] = (Byte)(value >> 8);
+            num[start + 1] = (Byte)(value % 256);
+        }
     }
 }

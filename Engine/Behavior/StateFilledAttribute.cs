@@ -33,7 +33,9 @@ namespace DotRPG.Behavior
             DataType = stateType;
         }
     }
-
+    /// <summary>
+    /// Indicates that boolean property is filled from switch field.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     class SwitchedAttribute : Attribute
     {
