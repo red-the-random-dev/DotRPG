@@ -4,6 +4,9 @@ using System.Text;
 
 namespace DotRPG.Algebra
 {
+    /// <summary>
+    /// Static class for compact data packing.
+    /// </summary>
     public static class Packman
     {
         /// <summary>
@@ -36,5 +39,15 @@ namespace DotRPG.Algebra
         {
             return (Byte)(i1 & (~i2 % 256));
         }
+
+        public static UInt32 u32_Read(Byte[] num, Int32 start = 0)
+        {
+            return (UInt32)num[start] << 24 + num[start+1] << 16 + num[start+2] << 8 + num[start+3];
+        }
+        public static UInt16 u16_Read(Byte[] num, Int32 start = 0)
+        {
+            return (UInt16)(num[start] << 8 + num[start + 1]);
+        }
+
     }
 }
