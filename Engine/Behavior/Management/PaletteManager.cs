@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using DotRPG.Algebra;
+
 namespace DotRPG.Behavior.Management
 {
     public class PaletteManager : IDisposable
@@ -29,9 +31,7 @@ namespace DotRPG.Behavior.Management
             Color x = Channels[channel];
             if (MixWithGlobal[channel])
             {
-                GetColorMask(GetColor("global"), out Single r2, out Single g2, out Single b2, out Single a2);
-                GetColorMask(x, out Single r1, out Single g1, out Single b1, out Single a1);
-                x = new Color(new Vector4(r1 * r2, g1 * g2, b1 * b2, a1 * a2));
+                x = SharedVectorMethods.MultiplyColors(GetColor("global"), x);
             }
             return x;
         }
@@ -54,14 +54,6 @@ namespace DotRPG.Behavior.Management
         {
             if (!ObjectColors.ContainsKey(obj)) ObjectColors.Add(obj, "global");
             ObjectColors[obj] = ch;
-        }
-
-        public void GetColorMask(Color color, out Single r, out Single g, out Single b, out Single a)
-        {
-            r = 1.0f * color.R / 255.0f;
-            g = 1.0f * color.G / 255.0f;
-            b = 1.0f * color.B / 255.0f;
-            a = 1.0f * color.A / 255.0f;
         }
 
         public void SetMixWithGlobal(String channel, Boolean mix)

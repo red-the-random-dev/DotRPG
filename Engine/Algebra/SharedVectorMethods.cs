@@ -126,5 +126,20 @@ namespace DotRPG.Algebra
         {
             return new Vector2(src.X * (Single)Math.Cos(src.Y), src.X * (Single)Math.Sin(src.Y));
         }
+
+        public static Color MultiplyColors(Color c1, Color c2)
+        {
+            Single r1 = 1.0f * c1.R / 255.0f;
+            Single g1 = 1.0f * c1.G / 255.0f;
+            Single b1 = 1.0f * c1.B / 255.0f;
+            Single a1 = 1.0f * c1.A / 255.0f;
+
+            Single r2 = 1.0f * c2.R / 255.0f;
+            Single g2 = 1.0f * c2.G / 255.0f;
+            Single b2 = 1.0f * c2.B / 255.0f;
+            Single a2 = 1.0f * c2.A / 255.0f;
+
+            return new Color(new Vector4(r1 * r2, g1 * g2, b1 * b2, a1 * a2));
+        }
     }
 }

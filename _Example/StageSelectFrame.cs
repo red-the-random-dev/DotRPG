@@ -57,9 +57,11 @@ namespace DotRPG._Example
             
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
+        public override void Draw(GameTime gameTime, GraphicsDevice gd, Rectangle drawZone)
         {
             Vector2 Measure = Font.MeasureString("@");
+            SpriteBatch spriteBatch = new SpriteBatch(gd);
+            spriteBatch.Begin();
             Texture2D t = new Texture2D(spriteBatch.GraphicsDevice, drawZone.Width, Measure.ToPoint().Y);
             Color[] data = new Color[drawZone.Width * Measure.ToPoint().Y];
             for (int i = 0; i < data.Length; i++) data[i] = Color.Blue;
@@ -76,6 +78,7 @@ namespace DotRPG._Example
                 }
                 spriteBatch.DrawString(Font, OptionsList[i], ListOffset + (Measure_v * i) + (Measure_h * 2), i == Index ? Color.Yellow : Color.White, 0.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             }
+            spriteBatch.End();
         }
 
         public override void LoadContent()

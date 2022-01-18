@@ -57,10 +57,10 @@ namespace DotRPG.Behavior
             }
         }
 
-        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone);
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public abstract void Draw(GameTime gameTime, GraphicsDevice gd, Rectangle drawZone);
+        public void Draw(GameTime gameTime, GraphicsDevice gd)
         {
-            Draw(gameTime, spriteBatch, new Rectangle(new Point(0, 0), new Point(Owner.Window.ClientBounds.Width, Owner.Window.ClientBounds.Height)));
+            Draw(gameTime, gd, new Rectangle(new Point(0, 0), new Point(Owner.Window.ClientBounds.Width, Owner.Window.ClientBounds.Height)));
         }
         public abstract void LoadContent();
         public abstract void Initialize();

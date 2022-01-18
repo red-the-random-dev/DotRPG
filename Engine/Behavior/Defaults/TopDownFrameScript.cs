@@ -21,6 +21,7 @@ namespace DotRPG.Behavior.Defaults
         protected FeedbackManager Feedback;
         protected DialogueManager Dialogue;
         protected CheckpointManager Checkpoint;
+        protected PostProcessManager PostProcess;
 
         public virtual Boolean RequireRawSceneData => false;
         public virtual Boolean RequireResourceHeap => false;
@@ -64,6 +65,9 @@ namespace DotRPG.Behavior.Defaults
                     break;
                 case "checkpoint":
                     Checkpoint = value as CheckpointManager;
+                    break;
+                case "postproc":
+                    PostProcess = value as PostProcessManager;
                     break;
             }
         }

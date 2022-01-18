@@ -69,9 +69,12 @@ namespace DotRPG._Example
             percentage.Update(gameTime);
             base.Update(gameTime, controls);
         }
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
+        public override void Draw(GameTime gameTime, GraphicsDevice gd, Rectangle drawZone)
         {
-            cb.Draw(gameTime, spriteBatch, drawZone);
+            SpriteBatch sb = new SpriteBatch(gd);
+            sb.Begin();
+            cb.Draw(gameTime, sb, drawZone);
+            sb.End();
         }
         public override void Initialize()
         {

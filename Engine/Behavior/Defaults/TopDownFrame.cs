@@ -47,6 +47,8 @@ namespace DotRPG.Behavior.Defaults
         public ScriptEventManager EventTimer { get; private set; }
         public FeedbackManager Feedback { get; private set; } = new FeedbackManager();
         public DialogueManager Dialogue { get; private set; }
+        public PostProcessManager PostProcess { get; private set; } = new PostProcessManager();
+
         public PlayerObject Player;
         Int32 _id;
         readonly List<ResourceLoadTask> resourceLoad = new List<ResourceLoadTask>();
@@ -61,6 +63,7 @@ namespace DotRPG.Behavior.Defaults
         public OBJ_SET Interactable { get; private set; } = new OBJ_SET();
         public UI_DICT UI_NamedList { get; private set; } = new UI_DICT();
         public UI_ROOT UI_Root { get; private set; } = new UI_ROOT();
+        RenderTarget2D canvas = null;
 
         Int32 LastMWheelValue = 0;
 
@@ -287,6 +290,7 @@ namespace DotRPG.Behavior.Defaults
             x.AddData("feedback", Feedback);
             x.AddData("dialogue", Dialogue);
             x.AddData("checkpoint", Checkpoint);
+            x.AddData("postproc", PostProcess);
             x.SuppressExceptions = SuppressScriptExceptions;
             if (x is TopDownFrameScript)
             {
@@ -826,17 +830,26 @@ namespace DotRPG.Behavior.Defaults
             Running = false;
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawZone)
+        public override void Draw(GameTime gameTime, GraphicsDevice gd, Rectangle drawZone)
         {
             Rectangle dynDrawZone = Camera.GetDrawArea(drawZone);
             Rectangle aov_p = new Rectangle(0, 0, 960, 540);
             Rectangle aov = Camera.GetAOV(aov_p);
-#if DEBUG
-            Texture2D t2d = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+            Texture2D t2d = new Texture2D(gd, 1, 1);
             t2d.SetData(new Color[] { Color.White });
-#endif
-            SpriteBatch obj_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
-            SpriteBatch bg_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
+            if (canvas == null)
+            {
+                canvas = new RenderTarget2D(gd, drawZone.Width, drawZone.Height, false, gd.PresentationParameters.BackBufferFormat, gd.PresentationParameters.DepthStencilFormat);
+            }
+            else if (canvas.Width != drawZone.Width || canvas.Height != drawZone.Height)
+            {
+                canvas.Dispose();
+                canvas = new RenderTarget2D(gd, drawZone.Width, drawZone.Height, false, gd.PresentationParameters.BackBufferFormat, gd.PresentationParameters.DepthStencilFormat);
+            }
+            
+            SpriteBatch obj_sb = new SpriteBatch(gd);
+            SpriteBatch bg_sb = new SpriteBatch(gd);
+            gd.SetRenderTarget(canvas);
 
             Point topLeft = Camera.GetTopLeftAngle(new Point(drawZone.Width, drawZone.Height));
 
@@ -858,7 +871,7 @@ namespace DotRPG.Behavior.Defaults
                     Vector2[] ppts = Props[i].Collider.TurnedVertices;
                     foreach (Vector2 pt in ppts)
                     {
-                        spriteBatch.Draw(t2d, new Rectangle((int)pt.X, (int)pt.Y, 4, 4), Interactable.ContainsValue(Props[i]) ? Color.Yellow : Color.Red);
+                        obj_sb.Draw(t2d, new Rectangle((int)pt.X, (int)pt.Y, 4, 4), Interactable.ContainsValue(Props[i]) ? Color.Yellow : Color.Red);
                     }
                 }
 #endif
@@ -866,37 +879,64 @@ namespace DotRPG.Behavior.Defaults
             Single p_depth = 0.3f - (0.1f * (Player.Location.Y / 540));
             Player.Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), /*aov*/ null, p_depth);
             obj_sb.End();
-            SpriteBatch ui_sb = new SpriteBatch(spriteBatch.GraphicsDevice);
+            gd.SetRenderTarget(null);
+            obj_sb.Begin();
+            if (PostProcess.LinePaint != 0 || PostProcess.LineSkip != 0)
+            {
+                for (Int32 i = 0; i < canvas.Height; i++)
+                {
+                    if (PostProcess.GlitchGen.Next(255) >= PostProcess.LineSkip)
+                    {
+                        if (PostProcess.GlitchGen.Next(255) >= PostProcess.LinePaint)
+                        {
+                            obj_sb.Draw(canvas, new Vector2(drawZone.X, drawZone.Y + i), new Rectangle(PostProcess.GlitchGen.Next(-PostProcess.LineShift, PostProcess.LineShift+1), i, canvas.Width, 1), PostProcess.Tint);
+                        }
+                        else
+                        {
+                            obj_sb.Draw(t2d, new Vector2(drawZone.X, drawZone.Y + i), new Rectangle(0, 0, drawZone.Width, 1), PostProcess.RandomMonoColor);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                obj_sb.Draw(canvas, drawZone, PostProcess.Tint);
+            }
+            obj_sb.End();
+            SpriteBatch ui_sb = new SpriteBatch(gd);
             ui_sb.Begin();
             foreach (UserInterfaceElement uie in UI_Root)
             {
                 uie.Draw(gameTime, ui_sb, drawZone);
             }
             ui_sb.End();
-            
+
 #if DEBUG
+            SpriteBatch debug_sb = new SpriteBatch(gd);
+            debug_sb.Begin();
             if (showHitboxes)
             {
                 Vector2[] ppts = Player.Collider.TurnedVertices;
                 foreach (Vector2 pt in ppts)
                 {
-                    spriteBatch.Draw(t2d, new Rectangle((int)pt.X, (int)pt.Y, 4, 4), Color.Green);
+                    debug_sb.Draw(t2d, new Rectangle((int)pt.X, (int)pt.Y, 4, 4), Color.Green);
                 }
                 
-                spriteBatch.Draw(t2d, Player.SightArea, new Color(0, 255, 0, 128));
-                spriteBatch.Draw(t2d, aov, new Color(255, 0, 255, 64));
+                debug_sb.Draw(t2d, Player.SightArea, new Color(0, 255, 0, 128));
+                debug_sb.Draw(t2d, aov, new Color(255, 0, 255, 64));
             }
-            spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], DebugText, new Vector2(0, 36), Color.Yellow);
+            debug_sb.DrawString(FrameResources.Global.Fonts["vcr"], DebugText, new Vector2(0, 36), Color.Yellow);
             Single y = 48.0f;
             Int32 c = Scripts.Count;
             for (int i = 0; i < c; i++)
             {
                 if (Scripts[i].LastError != "")
                 {
-                    spriteBatch.DrawString(FrameResources.Global.Fonts["vcr"], i + ": " + Scripts[i].LastError, new Vector2(0, y), Color.Yellow);
+                    debug_sb.DrawString(FrameResources.Global.Fonts["vcr"], i + ": " + Scripts[i].LastError, new Vector2(0, y), Color.Yellow);
                     y += 12;
                 }
             }
+            debug_sb.End();
 #endif
         }
 
@@ -907,6 +947,8 @@ namespace DotRPG.Behavior.Defaults
 
         public override void UnloadContent()
         {
+            canvas.Dispose();
+            canvas = null;
             Feedback.Reset();
             Dialogue.Eject();
             foreach (String x in Props.Keys)

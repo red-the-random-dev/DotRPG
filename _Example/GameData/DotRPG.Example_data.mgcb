@@ -27,8 +27,11 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/MainFont_Large.spritefont
 
-#begin Maps/TestRoom_00.xml
-/copy:Maps/TestRoom_00.xml
+#begin Maps/00_testroom.xml
+/copy:Maps/00_testroom.xml
+
+#begin Maps/01_glitchLab.xml
+/copy:Maps/01_glitchLab.xml
 
 #begin Maps/void.xml
 /copy:Maps/void.xml
@@ -86,6 +89,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/text-scroll.wav
+
+#begin Sounds/tone-50hz.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/tone-50hz.wav
 
 #begin Sounds/TTS/B.wav
 /importer:WavImporter

@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE dotrpg-frame>
+
+<Scene id="Glitch Laboratory" behaviorType="default/topdown" index="1">
+  <!-- Used to pre-load resources -->
+  <Require>
+    <SoundEffect id="50hz" location="Sounds/tone-50hz"/>
+  </Require>
+  <RuleSet allowManualZoom="true"/>
+
+  <Player startPos="0,328" _usePrefab="Prefabs/red.xml" />
+  <Prefab objType="Prop" location="Prefabs/whiterect.xml" />
+  <Prop id="whiterect" startPos="640,328" mass="60" static="true" _usePrefabID="whiterect"/>
+  <PreBuiltScript name="default/popup"/>
+  <PreBuiltScript name="testroom_01"/>
+</Scene>
