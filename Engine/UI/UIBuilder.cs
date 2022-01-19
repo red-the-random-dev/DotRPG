@@ -65,6 +65,9 @@ namespace DotRPG.UI
                         case PropertyType.Resource_SoundEffect:
                             pi.SetValue(uie, op_sub.Properties[tpa.ID].Split(':')[0] == "g" ? resources.Global.Sounds[op_sub.Properties[tpa.ID].Split(':')[1]] : resources.Sounds[op_sub.Properties[tpa.ID]]);
                             break;
+                        case PropertyType.Resource_Effect:
+                            pi.SetValue(uie, op_sub.Properties[tpa.ID].Split(':')[0] == "g" ? resources.Global.Shading[op_sub.Properties[tpa.ID].Split(':')[1]] : resources.Shading[op_sub.Properties[tpa.ID]]);
+                            break;
                     }
                 }
                 if (tp2 is TABS_InternalTextAttribute)
@@ -115,6 +118,9 @@ namespace DotRPG.UI
                             break;
                         case PropertyType.Resource_SoundEffect:
                             pi.SetValue(uie, op_sub.Properties[tpa.ID].Split(':')[0] == "g" ? resources.Global.Sounds[op_sub.Properties[tpa.ID].Split(':')[1]] : resources.Sounds[op_sub.Properties[tpa.ID]]);
+                            break;
+                        case PropertyType.Resource_Effect:
+                            pi.SetValue(uie, op_sub.Properties[tpa.ID].Split(':')[0] == "g" ? resources.Global.Shading[op_sub.Properties[tpa.ID].Split(':')[1]] : resources.Shading[op_sub.Properties[tpa.ID]]);
                             break;
                     }
                 }

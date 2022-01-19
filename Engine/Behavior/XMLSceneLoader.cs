@@ -142,6 +142,7 @@ namespace DotRPG.Behavior
                         "soundeffect" => ResourceType.SoundEffect,
                         "spritefont" => ResourceType.SpriteFont,
                         "song" => ResourceType.Song,
+                        "effect" => ResourceType.Effect,
                         _ => throw new SerializationException("No such resource type: " + xe2.Name.ToString()),
                     },
                     ResourceID = xe2.Attribute(XName.Get("id")).Value,

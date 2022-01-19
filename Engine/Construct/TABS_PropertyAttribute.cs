@@ -17,7 +17,8 @@ namespace DotRPG.Construct
         Resource = 128,
         Resource_Font = 129,
         Resource_Texture2D = 130,
-        Resource_SoundEffect = 132
+        Resource_SoundEffect = 132,
+        Resource_Effect = 136
     }
 
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]

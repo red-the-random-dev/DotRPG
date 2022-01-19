@@ -7,7 +7,7 @@ namespace DotRPG.Behavior
 {
     public enum ResourceType
     {
-        Texture2D, SoundEffect, SpriteFont, Song
+        Texture2D, SoundEffect, SpriteFont, Song, Effect
     }
 
     public enum ResourceLocation

@@ -18,6 +18,7 @@ namespace DotRPG.Objects
         public Dictionary<String, SoundEffect> Sounds = new Dictionary<String, SoundEffect>();
         public Dictionary<String, SpriteFont> Fonts = new Dictionary<String, SpriteFont>();
         public Dictionary<String, Song> Music = new Dictionary<String, Song>();
+        public Dictionary<String, Effect> Shading = new Dictionary<String, Effect>();
 
         public ResourceHeap(ResourceHeap globalResourceReference)
         {

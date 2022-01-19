@@ -281,6 +281,16 @@ namespace DotRPG.Behavior.Defaults
                     }
                     FrameResources.Music.Add(rlt.ResourceID, Owner.Content.Load<Song>(rlt.ResourcePath));
                 end_m: break;
+                case ResourceType.Effect:
+                    foreach (String x in FrameResources.Textures.Keys)
+                    {
+                        if (x == rlt.ResourceID)
+                        {
+                            goto end_fx;
+                        }
+                    }
+                    FrameResources.Shading.Add(rlt.ResourceID, Owner.Content.Load<Effect>(rlt.ResourcePath));
+                end_fx: break;
             }
         }
         protected void StartScript(IScriptModule x)
