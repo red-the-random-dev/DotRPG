@@ -38,13 +38,13 @@
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
         <Interactable interactAction="treetalk"/>
         <ColorChannel channel="treecolor"/>
-        <DynLight range="128" color="255,255,255,255" local="circ"/>
-        <DynLight range="512" color="255,128,0,255" local="circ"/>
     </Prop>
     <Prefab objType="Prop" location="Prefabs/whiterect.xml" />
 
     <Prop id="whiterect2" startPos="328,328" mass="60" static="true" _usePrefabID="whiterect">
         <Interactable interactAction="savetalk"/>
+        <DynLight range="128" color="255,255,255,255" local="circ"/>
+        <DynLight range="512" color="255,128,0,255" local="circ"/>
     </Prop>
     <!--
     <Prop id="whiterecttl" startPos="328,328" mass="20" _usePrefabID="whiterect">

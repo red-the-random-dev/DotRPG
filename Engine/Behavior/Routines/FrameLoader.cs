@@ -21,7 +21,7 @@ namespace DotRPG.Behavior.Routines
             }
         }
 
-        public void Update()
+        public void Update(Microsoft.Xna.Framework.Graphics.GraphicsDevice gd)
         {
             if (Loaded.Loaded)
             {
@@ -33,7 +33,7 @@ namespace DotRPG.Behavior.Routines
             }
             else if (Loaded.ContentTasks_Done < Loaded.ContentTasks_Total)
             {
-                Loaded.PerformContentTask();
+                Loaded.PerformContentTask(gd);
             }
             else if (Loaded.ObjectTasks_Done < Loaded.ObjectTasks_Total)
             {

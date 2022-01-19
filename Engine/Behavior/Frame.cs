@@ -62,7 +62,7 @@ namespace DotRPG.Behavior
         {
             Draw(gameTime, gd, new Rectangle(new Point(0, 0), new Point(Owner.Window.ClientBounds.Width, Owner.Window.ClientBounds.Height)));
         }
-        public abstract void LoadContent();
+        public abstract void LoadContent(GraphicsDevice gd);
         public abstract void Initialize();
         public abstract void UnloadContent();
     }

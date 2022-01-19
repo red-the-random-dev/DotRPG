@@ -147,21 +147,21 @@ namespace DotRPG.Behavior.Defaults
             }
             Props.Remove(name);
         }
-        public void PerformContentTask()
+        public void PerformContentTask(GraphicsDevice gd)
         {
-            PerformContentTasks(1);
+            PerformContentTasks(1, gd);
         }
         public void PerformObjectTask()
         {
             PerformObjectTasks(1);
         }
-        public void PerformContentTasks(Int32 step)
+        public void PerformContentTasks(Int32 step, GraphicsDevice gd)
         {
             Int32 x = content;
             for (int i = content; i < Math.Min(x + step, resourceLoad.Count); i++)
             {
                 ResourceLoadTask rlt = resourceLoad[i];
-                LoadResource(rlt);
+                LoadResource(gd, rlt);
                 content = i + 1;
             }
         }
@@ -238,7 +238,7 @@ namespace DotRPG.Behavior.Defaults
             }
         }
         #region Loader
-        protected void LoadResource(ResourceLoadTask rlt)
+        protected void LoadResource(GraphicsDevice gd, ResourceLoadTask rlt)
         {
             switch (rlt.Resource)
             {
@@ -283,7 +283,7 @@ namespace DotRPG.Behavior.Defaults
                     FrameResources.Music.Add(rlt.ResourceID, Owner.Content.Load<Song>(rlt.ResourcePath));
                 end_m: break;
                 case ResourceType.Effect:
-                    foreach (String x in FrameResources.Textures.Keys)
+                    foreach (String x in FrameResources.Shading.Keys)
                     {
                         if (x == rlt.ResourceID)
                         {
@@ -292,6 +292,18 @@ namespace DotRPG.Behavior.Defaults
                     }
                     FrameResources.Shading.Add(rlt.ResourceID, Owner.Content.Load<Effect>(rlt.ResourcePath));
                 end_fx: break;
+                case ResourceType.MGFX:
+                    foreach (String x in FrameResources.Shading.Keys)
+                    {
+                        if (x == rlt.ResourceID)
+                        {
+                            goto end_mgfx;
+                        }
+                    }
+                    Byte[] b = File.ReadAllBytes(Path.Combine(Owner.Content.RootDirectory, rlt.ResourcePath));
+                    Effect e = new Effect(gd, b);
+                    FrameResources.Shading.Add(rlt.ResourceID, e);
+                    end_mgfx: break;
             }
         }
         protected void StartScript(IScriptModule x)
@@ -416,15 +428,15 @@ namespace DotRPG.Behavior.Defaults
                                         le.AssociatedObject = ID;
                                         le.Range = Math.Clamp(Single.Parse(op2.Properties["range"]), 1.0f, 1024);
                                         le.EmitterColor = new Color(XMLSceneLoader.ResolveColorVector4(op2.Properties["color"]));
-                                        foreach (String x in op.Properties.Keys)
+                                        foreach (String x in op2.Properties.Keys)
                                         {
                                             switch (x)
                                             {
                                                 case "global":
-                                                    le.EmitterShader = FrameResources.Global.Shading[op.Properties[x]];
+                                                    le.EmitterShader = FrameResources.Global.Shading[op2.Properties["global"]];
                                                     break;
                                                 case "local":
-                                                    le.EmitterShader = FrameResources.Shading[op.Properties[x]];
+                                                    le.EmitterShader = FrameResources.Shading[op2.Properties["local"]];
                                                     break;
                                             }
                                         }
@@ -582,12 +594,12 @@ namespace DotRPG.Behavior.Defaults
                 }
             }
         }
-        public override void LoadContent()
+        public override void LoadContent(GraphicsDevice gd)
         {
             PreloadTask();
             foreach (ResourceLoadTask rlt in resourceLoad)
             {
-                LoadResource(rlt);
+                LoadResource(gd, rlt);
             }
             foreach (ObjectPrototype op in objectPrototypes)
             {

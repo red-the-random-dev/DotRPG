@@ -19,6 +19,7 @@ namespace DotRPG._Example
         ProgressBar progress;
         ColorBox cb;
         Single timeCountdown;
+        GraphicsDevice Graphics;
         
         public ILoadable LoadedFrame
         {
@@ -38,8 +39,9 @@ namespace DotRPG._Example
                 return -129;
             }
         }
-        public LoadingScreen(ILoadable il, Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet) : base(owner, globalGameResources, globalEventSet)
+        public LoadingScreen(ILoadable il, Game owner, ResourceHeap globalGameResources, HashSet<TimedEvent> globalEventSet, GraphicsDevice gd) : base(owner, globalGameResources, globalEventSet)
         {
+            Graphics = gd;
             Loader = new FrameLoader(il);
             percentage = new TextObject(globalGameResources.Fonts["vcr_large"], "0%", 0.5f, 0.35f, Color.White, AlignMode.BottomCenter, 540);
             progress = new ProgressBar(Color.Gray, Color.Black, new Vector2(0.75f, 0.1f), new Vector2(0.5f, 1.0f));
@@ -62,7 +64,7 @@ namespace DotRPG._Example
 #endif
             if (timeCountdown > 0.125f)
             {
-                Loader.Update();
+                Loader.Update(Graphics);
             }
             progress.Progress_Percentage = Loader.LoadPercentage;
             percentage.Text = Loader.LoadPercentage.ToString() + "%";
@@ -80,7 +82,7 @@ namespace DotRPG._Example
         {
             
         }
-        public override void LoadContent()
+        public override void LoadContent(GraphicsDevice gd)
         {
             
         }

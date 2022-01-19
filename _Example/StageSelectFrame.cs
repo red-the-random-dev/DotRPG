@@ -81,7 +81,7 @@ namespace DotRPG._Example
             spriteBatch.End();
         }
 
-        public override void LoadContent()
+        public override void LoadContent(GraphicsDevice gd)
         {
             
         }

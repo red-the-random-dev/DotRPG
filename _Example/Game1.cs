@@ -80,7 +80,7 @@ namespace DotRPG._Example
                         {
                             game.ActiveFrame.UnloadContent();
                             game.ActiveFrame = game.Frames[fse.FrameID];
-                            game.ActiveFrame.LoadContent();
+                            game.ActiveFrame.LoadContent(game.GraphicsDevice);
                         }
                         catch (NullReferenceException)
                         {
@@ -190,12 +190,12 @@ namespace DotRPG._Example
                     Frame toLoad = Frames[stageSelect.SelectedOption];
                     if (toLoad is ILoadable load)
                     {
-                        ActiveSubframe = new LoadingScreen(load, this, ResourceHGlobal, LogicEventSet);
+                        ActiveSubframe = new LoadingScreen(load, this, ResourceHGlobal, LogicEventSet, GraphicsDevice);
                     }
                     else
                     {
                         ActiveFrame = toLoad;
-                        ActiveFrame.LoadContent();
+                        ActiveFrame.LoadContent(GraphicsDevice);
                     }
                 }
                 else if (ActiveFrame.FrameID != -128 && Keyboard.GetState().IsKeyDown(Keys.F2))

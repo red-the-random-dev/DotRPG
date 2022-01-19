@@ -42,20 +42,22 @@ namespace DotRPG.Objects.Effects
             */
             RenderTarget2D intermediate = new RenderTarget2D(gd, destination.Width, destination.Height);
             RenderTarget2D lightMask = new RenderTarget2D(gd, destination.Width, destination.Height);
-            Texture2D t2d = new Texture2D(gd, 1, 1);
             foreach (LightEmitter le in lights)
             {
+                Effect sh = le.EmitterShader;
+                if (sh == null)
+                {
+                    continue;
+                }
                 gd.SetRenderTarget(intermediate);
                 sb.Begin();
-                Effect sh = le.EmitterShader;
-                sh.Parameters["canvas"].SetValue(lightMask);
-                sh.Parameters["sourceLocation"].SetValue(objs[le.AssociatedObject].Location);
+                sh.Parameters["source"].SetValue(objs[le.AssociatedObject].Location);
                 sh.Parameters["topLeft"].SetValue(topLeft);
                 sh.Parameters["distResize"].SetValue(resize);
                 sh.Parameters["range"].SetValue(le.Range);
-                sh.Parameters["sourceColor"].SetValue(le.EmitterColor.ToVector4());
-                sh.Techniques["Light"].Passes[0].Apply();
-                sb.Draw(t2d, Vector2.Zero, new Rectangle(0, 0, intermediate.Width, intermediate.Height), Color.White);
+                sh.Parameters["source_c"].SetValue(le.EmitterColor.ToVector4());
+                sh.CurrentTechnique.Passes[0].Apply();
+                sb.Draw(lightMask, Vector2.Zero, new Rectangle(0, 0, intermediate.Width, intermediate.Height), Color.White);
                 sb.End();
                 gd.SetRenderTarget(lightMask);
                 sb.Begin();
