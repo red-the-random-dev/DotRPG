@@ -1,6 +1,14 @@
 sampler s0;
 texture level;
-sampler s1 = sampler_state {Texture: level;};
+sampler s1 = sampler_state
+{
+    Texture = <level>;
+    MagFilter = LINEAR; 
+	MinFilter = LINEAR; 
+	MipFilter = LINEAR; 
+	AddressU = WRAP; 
+	AddressV = WRAP;
+};
 float4 PixelShaderFunction(float2 coords: TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(s0, coords);

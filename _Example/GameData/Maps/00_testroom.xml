@@ -12,7 +12,11 @@
         <SoundEffect id="sam_g" location="Sounds/TTS/G"/>
         <SoundEffect id="sam_b" location="Sounds/TTS/B"/>
         <SoundEffect id="sam_reset" location="Sounds/TTS/RESET"/>
+
+        <Effect id="circ" location="Shaders/circleLight"/>
+        <Effect id="light_fin" location="Shaders/lightFinal"/>
     </Require>
+    <LightShader local="light_fin" />
     <SaveFile path="testroom.bin" />
     <UI>
         <blank aspectRatio="1.33" defaultHeight="540">
@@ -34,8 +38,8 @@
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
         <Interactable interactAction="treetalk"/>
         <ColorChannel channel="treecolor"/>
-        <DynLight range="128" color="255,255,255,255"/>
-        <DynLight range="512" color="255,128,0,255"/>
+        <DynLight range="128" color="255,255,255,255" local="circ"/>
+        <DynLight range="512" color="255,128,0,255" local="circ"/>
     </Prop>
     <Prefab objType="Prop" location="Prefabs/whiterect.xml" />
 

@@ -416,6 +416,18 @@ namespace DotRPG.Behavior.Defaults
                                         le.AssociatedObject = ID;
                                         le.Range = Math.Clamp(Single.Parse(op2.Properties["range"]), 1.0f, 1024);
                                         le.EmitterColor = new Color(XMLSceneLoader.ResolveColorVector4(op2.Properties["color"]));
+                                        foreach (String x in op.Properties.Keys)
+                                        {
+                                            switch (x)
+                                            {
+                                                case "global":
+                                                    le.EmitterShader = FrameResources.Global.Shading[op.Properties[x]];
+                                                    break;
+                                                case "local":
+                                                    le.EmitterShader = FrameResources.Shading[op.Properties[x]];
+                                                    break;
+                                            }
+                                        }
                                         Lights.Add(le);
                                         break;
                                     }
@@ -437,6 +449,18 @@ namespace DotRPG.Behavior.Defaults
                     }
                 case "lightshader":
                     {
+                        foreach (String x in op.Properties.Keys)
+                        {
+                            switch (x)
+                            {
+                                case "global":
+                                    LightAdder = FrameResources.Global.Shading[op.Properties[x]];
+                                    break;
+                                case "local":
+                                    LightAdder = FrameResources.Shading[op.Properties[x]];
+                                    break;
+                            }
+                        }
 
                         break;
                     }
@@ -939,9 +963,9 @@ namespace DotRPG.Behavior.Defaults
             obj_sb.End();
             gd.SetRenderTarget(null);
             RenderTarget2D final = canvas;
-            if (PostProcess.LightResolution > 0)
+            if (PostProcess.LightResolution > 0 && LightAdder != null)
             {
-                LightProvider.Draw(gd, Camera, Props, Lights, (Byte)Math.Truncate(1.0f / PostProcess.LightResolution * 100.0f), drawZone.Height / 540.0f, new Point(dynDrawZone.Width, dynDrawZone.Height), canvas, canvasL);
+                LightProvider.Draw(gd, Camera, Props, Lights, LightAdder, drawZone.Height / 540.0f, new Point(dynDrawZone.Width, dynDrawZone.Height), canvas, canvasL);
                 final = canvasL;
             }
             obj_sb.Begin();
@@ -1013,6 +1037,7 @@ namespace DotRPG.Behavior.Defaults
         {
             canvas.Dispose();
             canvas = null;
+            LightAdder = null;
             if (canvasL != null)
             {
                 canvasL.Dispose();

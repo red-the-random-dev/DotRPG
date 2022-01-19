@@ -60,6 +60,18 @@
 #begin Scripts/kickable.lua
 /copy:Scripts/kickable.lua
 
+#begin Shaders/circleLight.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/circleLight.hlsl
+
+#begin Shaders/lightFinal.hlsl
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/lightFinal.hlsl
+
 #begin Sounds/clickText.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

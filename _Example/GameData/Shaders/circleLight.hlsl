@@ -1,6 +1,14 @@
 sampler s0;
 texture canvas;
-sampler fin = sampler_state {Texture: canvas;};
+sampler fin = sampler_state
+{
+    Texture = <canvas>;
+    MagFilter = LINEAR; 
+	MinFilter = LINEAR; 
+	MipFilter = LINEAR; 
+	AddressU = WRAP; 
+	AddressV = WRAP;
+};
 float2 sourceLocation;
 float2 topLeft;
 float range;

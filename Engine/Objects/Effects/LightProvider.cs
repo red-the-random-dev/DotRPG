@@ -53,6 +53,7 @@ namespace DotRPG.Objects.Effects
                 sh.Parameters["topLeft"].SetValue(topLeft);
                 sh.Parameters["distResize"].SetValue(resize);
                 sh.Parameters["range"].SetValue(le.Range);
+                sh.Parameters["sourceColor"].SetValue(le.EmitterColor.ToVector4());
                 sh.Techniques["Light"].Passes[0].Apply();
                 sb.Draw(t2d, Vector2.Zero, new Rectangle(0, 0, intermediate.Width, intermediate.Height), Color.White);
                 sb.End();
@@ -64,8 +65,11 @@ namespace DotRPG.Objects.Effects
             gd.SetRenderTarget(destination);
             finalize.Parameters["level"].SetValue(source);
             sb.Begin();
+            finalize.CurrentTechnique.Passes[0].Apply();
             sb.Draw(lightMask, Vector2.Zero, new Rectangle(0, 0, intermediate.Width, intermediate.Height), Color.White);
             sb.End();
+            lightMask.Dispose();
+            intermediate.Dispose();
             gd.SetRenderTarget(fallback);
         }
     }
