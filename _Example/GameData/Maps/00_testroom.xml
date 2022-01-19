@@ -34,6 +34,8 @@
     <Prop id="tree" startPos="128,160" _usePrefab="Prefabs/tree.xml">
         <Interactable interactAction="treetalk"/>
         <ColorChannel channel="treecolor"/>
+        <DynLight range="128" color="255,255,255,255"/>
+        <DynLight range="512" color="255,128,0,255"/>
     </Prop>
     <Prefab objType="Prop" location="Prefabs/whiterect.xml" />
 

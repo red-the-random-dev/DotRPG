@@ -69,11 +69,13 @@ namespace DotRPG._Example
                 Events.Enqueue(TotalGameTime, 0.1f, "popup:raise:tutoriel");
                 Events.Enqueue(TotalGameTime, 5000.0f, "popup:lower:tutoriel");
                 Events.Enqueue(TotalGameTime, 6000.0f, "popup:pause:tutoriel");
+                PostProcess.LightResolution = 12;
                 started = true;
             }
             switch (EventID)
             {
                 case "default":
+
                     /*
                     Pathfinder.BuildPath("whiterectchase", Pathfinder.GetClosestWaypointToObject("whiterect2"), Pathfinder.GetClosestWaypointToPlayer());
                     Pathfinder.ForceMoveObjectByPath("whiterect2", "whiterectchase", 256, 16);

@@ -319,11 +319,15 @@ namespace DotRPG._Example
             }
             if (ActiveFrame != null)
             {
+                _spriteBatch.End();
                 ActiveFrame.Draw(gameTime, GraphicsDevice);
+                _spriteBatch.Begin();
             }
             if (ActiveSubframe != null)
             {
+                _spriteBatch.End();
                 ActiveSubframe.Draw(gameTime, GraphicsDevice);
+                _spriteBatch.Begin();
             }
 #if DEBUG
             _spriteBatch.DrawString(_spriteFont, "FPS: " + FrameRate.ToString() + " || Fullscreen: " + FullScreen.ToString() + String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: " + (ActiveFrame != null ? ActiveFrame.FrameID.ToString() : "-1") + " || Update time: " + Math.Round(1.0m * LastRegisteredEventTime / 10000, 2), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));

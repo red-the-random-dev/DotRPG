@@ -17,6 +17,7 @@ using DotRPG.UI;
 using DotRPG.Waypoints;
 using DotRPG.Behavior.Management;
 using DotRPG.Construct;
+using DotRPG.Objects.Effects;
 
 using PREFAB_SET = System.Collections.Generic.Dictionary<string, DotRPG.Construct.ObjectPrototype>;
 using PREFAB_INCLUDE_SET = System.Collections.Generic.Dictionary<string, DotRPG.Construct.ObjectPrototype[]>;
@@ -26,6 +27,7 @@ using NAVMAP = System.Collections.Generic.Dictionary<string, DotRPG.Waypoints.Wa
 using OBJ_SET = System.Collections.Generic.Dictionary<string, DotRPG.Objects.Dynamics.DynamicObject>;
 using UI_ROOT = System.Collections.Generic.List<DotRPG.UI.UserInterfaceElement>;
 using UI_DICT = System.Collections.Generic.Dictionary<string, DotRPG.UI.UserInterfaceElement>;
+using DYNL_SET = System.Collections.Generic.HashSet<DotRPG.Objects.Effects.LightEmitter>;
 using DotRPG.Behavior.Data;
 #endregion
 
@@ -61,9 +63,11 @@ namespace DotRPG.Behavior.Defaults
         public NAVMAP NavMap { get; private set; } = new NAVMAP();
         public OBJ_SET Props { get; private set; } = new OBJ_SET();
         public OBJ_SET Interactable { get; private set; } = new OBJ_SET();
+        public DYNL_SET Lights { get; private set; } = new DYNL_SET();
         public UI_DICT UI_NamedList { get; private set; } = new UI_DICT();
         public UI_ROOT UI_Root { get; private set; } = new UI_ROOT();
         RenderTarget2D canvas = null;
+        RenderTarget2D canvasL = null;
 
         Int32 LastMWheelValue = 0;
 
@@ -393,6 +397,15 @@ namespace DotRPG.Behavior.Defaults
                                         {
                                             StartScript(lm);
                                         }
+                                        break;
+                                    }
+                                case "dynlight":
+                                    {
+                                        LightEmitter le = new LightEmitter();
+                                        le.AssociatedObject = ID;
+                                        le.Range = Math.Clamp(Single.Parse(op2.Properties["range"]), 1.0f, 1024);
+                                        le.EmitterColor = new Color(XMLSceneLoader.ResolveColorVector4(op2.Properties["color"]));
+                                        Lights.Add(le);
                                         break;
                                     }
                             }
@@ -806,6 +819,18 @@ namespace DotRPG.Behavior.Defaults
                 Checkpoint.DoSave = false;
             }
             DebugText = "";
+            DYNL_SET forDel = new DYNL_SET();
+            foreach (LightEmitter le in Lights)
+            {
+                if (!ObjectManager.Exists(le.AssociatedObject))
+                {
+                    forDel.Add(le);
+                }
+            }
+            foreach (LightEmitter le in forDel)
+            {
+                Lights.Remove(le);
+            }
             Update_Player(gameTime, controls);
             Update_Collide(gameTime, controls);
             Update_Interact(gameTime, controls);
@@ -846,6 +871,23 @@ namespace DotRPG.Behavior.Defaults
                 canvas.Dispose();
                 canvas = new RenderTarget2D(gd, drawZone.Width, drawZone.Height, false, gd.PresentationParameters.BackBufferFormat, gd.PresentationParameters.DepthStencilFormat);
             }
+            if (PostProcess.LightResolution > 0)
+            {
+                if (canvasL == null)
+                {
+                    canvasL = new RenderTarget2D(gd, canvas.Width, canvas.Height, false, gd.PresentationParameters.BackBufferFormat, gd.PresentationParameters.DepthStencilFormat);
+                }
+                else if (canvas.Width != canvasL.Width || canvas.Height != canvasL.Height)
+                {
+                    canvasL.Dispose();
+                    canvasL = new RenderTarget2D(gd, canvas.Width, canvas.Height, false, gd.PresentationParameters.BackBufferFormat, gd.PresentationParameters.DepthStencilFormat);
+                }
+            }
+            else if (canvasL != null)
+            {
+                canvasL.Dispose();
+                canvasL = null;
+            }
             
             SpriteBatch obj_sb = new SpriteBatch(gd);
             SpriteBatch bg_sb = new SpriteBatch(gd);
@@ -880,16 +922,22 @@ namespace DotRPG.Behavior.Defaults
             Player.Draw(obj_sb, gameTime, 540, topLeft, new Point(dynDrawZone.Width, dynDrawZone.Height), Palette.GetObjectColor("--player"), /*aov*/ null, p_depth);
             obj_sb.End();
             gd.SetRenderTarget(null);
-            obj_sb.Begin();
-            if (PostProcess.LinePaint != 0 || PostProcess.LineSkip != 0)
+            RenderTarget2D final = canvas;
+            if (PostProcess.LightResolution > 0)
             {
-                for (Int32 i = 0; i < canvas.Height; i++)
+                LightProvider.Draw(gd, Camera, Props, Lights, (Byte)Math.Truncate(1.0f / PostProcess.LightResolution * 100.0f), drawZone.Height / 540.0f, new Point(dynDrawZone.Width, dynDrawZone.Height), canvas, canvasL);
+                final = canvasL;
+            }
+            obj_sb.Begin();
+            if (PostProcess.LinePaint != 0 || PostProcess.LineSkip != 0 || PostProcess.LineShift != 0)
+            {
+                for (Int32 i = 0; i < final.Height; i++)
                 {
                     if (PostProcess.GlitchGen.Next(255) >= PostProcess.LineSkip)
                     {
                         if (PostProcess.GlitchGen.Next(255) >= PostProcess.LinePaint)
                         {
-                            obj_sb.Draw(canvas, new Vector2(drawZone.X, drawZone.Y + i), new Rectangle(PostProcess.GlitchGen.Next(-PostProcess.LineShift, PostProcess.LineShift+1), i, canvas.Width, 1), PostProcess.Tint);
+                            obj_sb.Draw(final, new Vector2(drawZone.X, drawZone.Y + i), new Rectangle(PostProcess.GlitchGen.Next(-PostProcess.LineShift, PostProcess.LineShift+1), i, final.Width, 1), PostProcess.Tint);
                         }
                         else
                         {
@@ -900,7 +948,7 @@ namespace DotRPG.Behavior.Defaults
             }
             else
             {
-                obj_sb.Draw(canvas, drawZone, PostProcess.Tint);
+                obj_sb.Draw(final, drawZone, PostProcess.Tint);
             }
             obj_sb.End();
             SpriteBatch ui_sb = new SpriteBatch(gd);
@@ -949,8 +997,14 @@ namespace DotRPG.Behavior.Defaults
         {
             canvas.Dispose();
             canvas = null;
+            if (canvasL != null)
+            {
+                canvasL.Dispose();
+                canvasL = null;
+            }
             Feedback.Reset();
             Dialogue.Eject();
+            PostProcess.Reset();
             foreach (String x in Props.Keys)
             {
                 FinalizeObject(x);

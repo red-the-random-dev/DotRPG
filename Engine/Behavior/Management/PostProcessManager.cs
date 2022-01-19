@@ -17,6 +17,19 @@ namespace DotRPG.Behavior.Management
         public Byte TintB = 255;
         public Byte TintA = 255;
 
+        Byte _lres = 0;
+        public Byte LightResolution
+        {
+            get
+            {
+                return _lres;
+            }
+            set
+            {
+                _lres = (byte)Math.Clamp((int)value, 0, 100);
+            }
+        }
+
         public Color Tint
         {
             get
@@ -42,5 +55,19 @@ namespace DotRPG.Behavior.Management
                 }
             }
         }
+
+        public void Reset()
+        {
+            GlitchGen = new Random();
+            LineSkip = 0;
+            LinePaint = 0;
+            LineShift = 0;
+            TintR = 255;
+            TintG = 255;
+            TintB = 255;
+            TintA = 255;
+
+            _lres = 0;
+    }
     }
 }
