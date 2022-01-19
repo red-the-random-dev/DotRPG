@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace DotRPG.Objects.Effects
 {
@@ -9,6 +10,7 @@ namespace DotRPG.Objects.Effects
     {
         public String AssociatedObject;
         public Color EmitterColor;
+        public Effect EmitterShader;
         public Single Range;
 
         public virtual Single GetBrightnessIn(Vector2 destination, Vector2 source)

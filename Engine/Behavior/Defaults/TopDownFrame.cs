@@ -68,6 +68,7 @@ namespace DotRPG.Behavior.Defaults
         public UI_ROOT UI_Root { get; private set; } = new UI_ROOT();
         RenderTarget2D canvas = null;
         RenderTarget2D canvasL = null;
+        Effect LightAdder = null;
 
         Int32 LastMWheelValue = 0;
 
@@ -432,6 +433,11 @@ namespace DotRPG.Behavior.Defaults
                         {
                             Palette.SetMixWithGlobal(ID, bool.Parse(op.Properties["mixWithGlobal"]));
                         }
+                        break;
+                    }
+                case "lightshader":
+                    {
+
                         break;
                     }
                 case "script":

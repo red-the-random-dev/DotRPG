@@ -12,13 +12,14 @@ namespace DotRPG.Objects.Effects
 {
     public static class LightProvider
     {
-        public static void Draw(GraphicsDevice gd, CameraFrameObject camera, OBJ_SET objs, DYNL_SET lights, Byte step, Single resize, Point screenScale, Texture2D source, RenderTarget2D destination, RenderTarget2D fallback = null)
+        public static void Draw(GraphicsDevice gd, CameraFrameObject camera, OBJ_SET objs, DYNL_SET lights, Effect finalize, Single resize, Point screenScale, Texture2D source, RenderTarget2D destination, RenderTarget2D fallback = null)
         {
             Vector2 topLeft = camera.GetTopLeftAngle(screenScale).ToVector2();
-            gd.SetRenderTarget(destination);
             SpriteBatch sb = new SpriteBatch(gd);
-            sb.Begin();
 
+            /*
+             * gd.SetRenderTarget(destination);
+             * sb.Begin();
             for (int x = 0; x < destination.Width; x += step)
             {
                 for (int y = 0; y < destination.Height; y += step)
@@ -38,6 +39,32 @@ namespace DotRPG.Objects.Effects
                     sb.Draw(source, new Vector2(x, y), new Rectangle(x, y, step, step), c);
                 }
             }
+            */
+            RenderTarget2D intermediate = new RenderTarget2D(gd, destination.Width, destination.Height);
+            RenderTarget2D lightMask = new RenderTarget2D(gd, destination.Width, destination.Height);
+            Texture2D t2d = new Texture2D(gd, 1, 1);
+            foreach (LightEmitter le in lights)
+            {
+                gd.SetRenderTarget(intermediate);
+                sb.Begin();
+                Effect sh = le.EmitterShader;
+                sh.Parameters["canvas"].SetValue(lightMask);
+                sh.Parameters["sourceLocation"].SetValue(objs[le.AssociatedObject].Location);
+                sh.Parameters["topLeft"].SetValue(topLeft);
+                sh.Parameters["distResize"].SetValue(resize);
+                sh.Parameters["range"].SetValue(le.Range);
+                sh.Techniques["Light"].Passes[0].Apply();
+                sb.Draw(t2d, Vector2.Zero, new Rectangle(0, 0, intermediate.Width, intermediate.Height), Color.White);
+                sb.End();
+                gd.SetRenderTarget(lightMask);
+                sb.Begin();
+                sb.Draw(intermediate, Vector2.Zero, new Rectangle(0, 0, intermediate.Width, intermediate.Height), Color.White);
+                sb.End();
+            }
+            gd.SetRenderTarget(destination);
+            finalize.Parameters["level"].SetValue(source);
+            sb.Begin();
+            sb.Draw(lightMask, Vector2.Zero, new Rectangle(0, 0, intermediate.Width, intermediate.Height), Color.White);
             sb.End();
             gd.SetRenderTarget(fallback);
         }
