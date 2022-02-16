@@ -33,6 +33,7 @@ namespace DotRPG._Example
         private Boolean GameStarted;
         private Double GameStartMark;
         private ControlInput IsCtrlKeyDown = new ControlInput(8);
+        private ControlInput CtrlDummy = new ControlInput(8);
         private Boolean FullScreen;
         private Double EscapeTimer = 0.0f;
 #if DEBUG
@@ -41,6 +42,8 @@ namespace DotRPG._Example
         private Double TimeSinceError = 0.0f;
         private HashSet<TimedEvent> LogicEventSet = new HashSet<TimedEvent>();
         private Boolean ContinuityError = false;
+        private Boolean OpenSettingsMenu = false;
+        private SettingsFrame SettingsMenu = null;
         private Boolean WideScreen
         {
             get
@@ -146,7 +149,8 @@ namespace DotRPG._Example
             ResourceHGlobal.Fonts.Add("vcr_large", Content.Load<SpriteFont>("Fonts/MainFont_Large"));
             _spriteFontLarge = ResourceHGlobal.Fonts["vcr_large"];
             _spriteFont = ResourceHGlobal.Fonts["vcr"];
-            stageSelect = new StageSelectFrame("Please select the map to continue.\n[UP/DOWN] Scroll\n[Z] Select\n[F2] Quit to stage select", FrameNames.ToArray(), _spriteFont, this, ResourceHGlobal, LogicEventSet);
+            SettingsMenu = new SettingsFrame(_spriteFont, this, ResourceHGlobal, LogicEventSet);
+            stageSelect = new StageSelectFrame("Please select the map to continue.\n[UP/DOWN] Scroll\n[Z] Select\n[F1] Settings menu\n[F2] Quit to stage select", FrameNames.ToArray(), _spriteFont, this, ResourceHGlobal, LogicEventSet);
             PressStart = new TextObject(_spriteFontLarge, "[Press START or ENTER]", 0.5f, 0.5f, Color.White, AlignMode.Center, (WideScreen ? 1080 : 960));
             ResetAspectRatio();
 
@@ -205,6 +209,10 @@ namespace DotRPG._Example
                     LoadContent();
                     ActiveFrame = stageSelect;
                 }
+                else if (ActiveFrame.FrameID != -128 && !OpenSettingsMenu && Keyboard.GetState().IsKeyDown(Keys.F1))
+                {
+                    OpenSettingsMenu = true;
+                } 
             }
             if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Enter)) && !GameStarted)
             {
@@ -229,7 +237,10 @@ namespace DotRPG._Example
             IsCtrlKeyDown[1] = Keyboard.GetState().IsKeyDown(Keys.Down) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadDown);
             IsCtrlKeyDown[2] = Keyboard.GetState().IsKeyDown(Keys.Left) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadLeft);
             IsCtrlKeyDown[3] = Keyboard.GetState().IsKeyDown(Keys.Right) || GamePad.GetState(PlayerIndex.One).IsButtonDown(Buttons.DPadRight);
-
+            if (OpenSettingsMenu && IsCtrlKeyDown.KeyPressed(5))
+            {
+                OpenSettingsMenu = false;
+            }
             if (LogicEventSet.Count > 0)
             {
                 TimedEvent[] tea = new TimedEvent[LogicEventSet.Count];
@@ -252,11 +263,17 @@ namespace DotRPG._Example
             }
             else if (ActiveFrame != null)
             {
-                ActiveFrame.Update(gameTime, IsCtrlKeyDown);
+                ActiveFrame.Update(gameTime, OpenSettingsMenu ? CtrlDummy : IsCtrlKeyDown);
             }
             if (ContinuityError)
             {
                 TimeSinceError += gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if (OpenSettingsMenu)
+            {
+                SettingsMenu.Update(gameTime, IsCtrlKeyDown);
+                _graphics.SynchronizeWithVerticalRetrace = SettingsMenu.TurnOnVSync;
+                TargetElapsedTime = TimeSpan.FromMilliseconds(1000.0 / (30 << SettingsMenu.FramerateOption));
             }
             PressStart.Rotation = (Single)Math.Sin(gameTime.TotalGameTime.TotalSeconds * Math.PI / 2) / 8;
             PressStart.Update(gameTime);
@@ -328,6 +345,10 @@ namespace DotRPG._Example
                 _spriteBatch.End();
                 ActiveSubframe.Draw(gameTime, GraphicsDevice);
                 _spriteBatch.Begin();
+            }
+            if (OpenSettingsMenu)
+            {
+                SettingsMenu.Draw(gameTime, GraphicsDevice);
             }
 #if DEBUG
             _spriteBatch.DrawString(_spriteFont, "FPS: " + FrameRate.ToString() + " || Fullscreen: " + FullScreen.ToString() + String.Format(" || Resolution: {0}x{1}", Window.ClientBounds.Width, Window.ClientBounds.Height) + " || Frame active: " + (ActiveFrame != null ? ActiveFrame.FrameID.ToString() : "-1") + " || Update time: " + Math.Round(1.0m * LastRegisteredEventTime / 10000, 2), new Vector2(0, 0), (FrameRate > 50 ? Color.White : (FrameRate > 24 ? Color.Yellow : Color.Red)));

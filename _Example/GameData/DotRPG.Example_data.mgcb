@@ -60,20 +60,8 @@
 #begin Scripts/kickable.lua
 /copy:Scripts/kickable.lua
 
-#begin Shaders/circleLight.hlsl
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Shaders/circleLight.hlsl
-
 #begin Shaders/circleLight.mgfx
 /copy:Shaders/circleLight.mgfx
-
-#begin Shaders/lightFinal.hlsl
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Shaders/lightFinal.hlsl
 
 #begin Shaders/lightFinal.mgfx
 /copy:Shaders/lightFinal.mgfx

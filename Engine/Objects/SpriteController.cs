@@ -11,6 +11,9 @@ namespace DotRPG.Objects
     {
         public String CurrentAnimationSequence { get; protected set; } = "default";
         public Single PlaybackSpeed = 1.0f;
+        // Used for lighting
+        public Texture2D Emission = null;
+        public Color EmissionColor = Color.White;
         protected Dictionary<String, Texture2D> AnimationSequenceCollection = new Dictionary<string, Texture2D>();
         protected Dictionary<String, UInt16> FrameAmount = new Dictionary<string, ushort>();
         public UInt16 SpriteIndex

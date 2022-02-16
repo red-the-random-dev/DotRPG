@@ -66,6 +66,7 @@ namespace DotRPG.Behavior.Defaults
         public DYNL_SET Lights { get; private set; } = new DYNL_SET();
         public UI_DICT UI_NamedList { get; private set; } = new UI_DICT();
         public UI_ROOT UI_Root { get; private set; } = new UI_ROOT();
+        // Fields used for object rendering
         RenderTarget2D canvas = null;
         RenderTarget2D canvasL = null;
         Effect LightAdder = null;

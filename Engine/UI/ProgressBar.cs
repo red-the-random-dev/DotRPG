@@ -48,7 +48,7 @@ namespace DotRPG.UI
         protected override void DrawElement(GameTime gameTime, SpriteBatch spriteBatch, Rectangle drawArea, Vector2 offset, float turn)
         {
             Vector2 v = new Vector2(drawArea.X + (drawArea.Width * (RelativePosition.X + offset.X)), drawArea.Y + (drawArea.Height * (RelativePosition.Y + offset.Y)));
-            Texture2D t1 = new Texture2D(spriteBatch.GraphicsDevice, (Int32)(drawArea.Width * RelativeSize.X), (Int32)Math.Ceiling(drawArea.Height * RelativeSize.Y));
+            Texture2D t1 = new Texture2D(spriteBatch.GraphicsDevice, (Int32)(drawArea.Width * RelativeSize.X), Math.Max(1, (Int32)Math.Ceiling(drawArea.Height * RelativeSize.Y)));
             Texture2D t2 = new Texture2D(spriteBatch.GraphicsDevice, Math.Max((Int32)(t1.Width * _p), 1), t1.Height);
             
             Color[] d1 = new Color[t1.Width * t1.Height];
